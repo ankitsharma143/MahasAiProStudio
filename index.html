@@ -296,6 +296,65 @@ html, body { min-height: 100dvh; }
       background-size: 200% 100%;
       animation: hudShimmer 1.8s linear infinite;
     }
+  
+    /* === FULL DISPLAY PRO CAMERA + ZERO GRID / ZERO ANIMATION === */
+    .camera-grid-thirds,
+    .focus-reticle,
+    #camViewportWrap .camera-grid-thirds,
+    #camViewportWrap .focus-reticle {
+      display: none !important;
+      opacity: 0 !important;
+      animation: none !important;
+    }
+
+    #mahaFullCamOverlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      z-index: 9990;
+      background: #000;
+      overflow: hidden;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    #mahaFullCamOverlay *,
+    #mahaFullCamOverlay video {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    #mahaCamMainVideo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform-origin: center center;
+    }
+
+    #mahaCamDualVideo {
+      position: absolute;
+      top: 72px;
+      right: 14px;
+      width: 112px;
+      height: 158px;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.88);
+      background: #000;
+      z-index: 20;
+      display: none;
+    }
+
+    .maha-hud-bar {
+      background: rgba(0, 0, 0, 0.50);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
   </style>
 </head>
 <body class="bg-[#07080d] text-slate-100 min-h-screen">
@@ -4872,9 +4931,12 @@ const VideoStudioEngine = (() => {
     ctx.save();
     ctx.globalAlpha = alpha;
     ctx.filter = buildVideoFilterString();
-    ctx.translate(w / 2 + panX + glitchShift, h / 2);
+    const uZoom = Math.max(0.3, Math.min(4.0, Number(clip.userZoom || 1)));
+    const uPanX = Number(clip.userPanX || 0);
+    const uPanY = Number(clip.userPanY || 0);
+    ctx.translate(w / 2 + panX + glitchShift + uPanX, h / 2 + uPanY);
     if (clip.rotate) ctx.rotate((clip.rotate * Math.PI) / 180);
-    ctx.scale(scaleK, scaleK);
+    ctx.scale(scaleK * uZoom, scaleK * uZoom);
     if (clip.kind === 'photo' && clip.imageEl) {
       const im = clip.imageEl;
       const ir = im.width / Math.max(1, im.height);
@@ -5443,6 +5505,12 @@ const VideoStudioEngine = (() => {
     setCinematic: (patch) => { Object.assign(cinematicState, patch); },
     setTime: (t) => { currentTime = Math.max(0, Math.min(getTotalDuration(), t)); },
     renderPreviewFrame,
+    adjustActiveClipTransform: (fn) => {
+      const active = getActiveClipAtTime(currentTime);
+      if (!active || !active.clip) return null;
+      fn(active.clip);
+      return active.clip;
+    },
     startPlayback,
     pausePlayback,
     exportTimelineVideo,
@@ -9674,7 +9742,7 @@ const App = (() => {
       };
     }
 
-    if (state.route === 'camera') bindCameraEvents();
+    if (state.route === 'camera') { if (window.MahaProFullCamera) window.MahaProFullCamera.open(() => goBackInApp()); else bindCameraEvents(); }
     else if (state.route === 'poses') bindPoseEvents();
     else if (state.route === 'photoshoot') bindPhotoshootEvents();
     else if (state.route === 'photo-editor') bindPhotoEditorEvents();
@@ -10716,6 +10784,33 @@ const App = (() => {
     };
     drawComposite();
 
+    if (canvas && window.MahaTouchTransform) {
+      window.MahaTouchTransform.bind(canvas, {
+        panFactor: 420,
+        onDown: () => ({
+          zoom: (state.bgGenCfg.scale || 100) / 100,
+          panX: state.bgGenCfg.offsetX || 0,
+          panY: state.bgGenCfg.offsetY || 0
+        }),
+        onUpdate: (next) => {
+          state.bgGenCfg.scale = Math.max(30, Math.min(220, Math.round(next.zoom * 100)));
+          state.bgGenCfg.offsetX = Math.max(-360, Math.min(360, Math.round(next.panX)));
+          state.bgGenCfg.offsetY = Math.max(-450, Math.min(450, Math.round(next.panY)));
+          const scEl = document.getElementById('bgGenScale'), scVal = document.getElementById('bgGenScaleVal');
+          if (scEl) scEl.value = String(state.bgGenCfg.scale);
+          if (scVal) scVal.textContent = state.bgGenCfg.scale + '%';
+          drawComposite();
+        },
+        onReset: () => {
+          state.bgGenCfg.scale = 100; state.bgGenCfg.offsetX = 0; state.bgGenCfg.offsetY = 0;
+          const scEl = document.getElementById('bgGenScale'), scVal = document.getElementById('bgGenScaleVal');
+          if (scEl) scEl.value = '100';
+          if (scVal) scVal.textContent = '100%';
+          drawComposite();
+        }
+      });
+    }
+
     document.querySelectorAll('[data-bg-scene]').forEach((b) => {
       b.onclick = () => { state.customBgImage = null; state.bgGenCfg.sceneId = b.getAttribute('data-bg-scene'); renderApp(); };
     });
@@ -11143,6 +11238,42 @@ const App = (() => {
     drawCustomFrame();
 
     const curSlot = () => fg.slots[fg.activeSlot] || fg.slots[0];
+
+    if (canvas && window.MahaTouchTransform) {
+      window.MahaTouchTransform.bind(canvas, {
+        onDown: (relX, relY) => {
+          const pxPct = relX * 100, pyPct = relY * 100;
+          for (let i = fg.slots.length - 1; i >= 0; i--) {
+            const s = fg.slots[i];
+            if (pxPct >= s.x && pxPct <= s.x + s.w && pyPct >= s.y && pyPct <= s.y + s.h) {
+              fg.activeSlot = i;
+              break;
+            }
+          }
+          const s = curSlot();
+          return { zoom: Number(s.zoom || 1), panX: Number(s.panX || 0), panY: Number(s.panY || 0), rotate: Number(s.rotate || 0) };
+        },
+        onUpdate: (next) => {
+          const s = curSlot();
+          s.zoom = Math.max(0.2, Math.min(4.0, +next.zoom.toFixed(2)));
+          s.panX = Math.max(-100, Math.min(100, Math.round(next.panX)));
+          s.panY = Math.max(-100, Math.min(100, Math.round(next.panY)));
+          if (typeof next.rotate === 'number') s.rotate = Math.max(-180, Math.min(180, Math.round(next.rotate)));
+          const ez = document.getElementById('fgPhotoZoom'), er = document.getElementById('fgPhotoRot');
+          const ex = document.getElementById('fgPhotoPanX'), ey = document.getElementById('fgPhotoPanY');
+          if (ez) ez.value = String(s.zoom);
+          if (er) er.value = String(s.rotate);
+          if (ex) ex.value = String(s.panX);
+          if (ey) ey.value = String(s.panY);
+          drawCustomFrame();
+        },
+        onReset: () => {
+          const s = curSlot();
+          s.zoom = 1; s.panX = 0; s.panY = 0; s.rotate = 0;
+          drawCustomFrame();
+        }
+      });
+    }
 
     // AI Generate Frame Background
     const genBtn = document.getElementById('fgGenAiBgBtn');
@@ -11881,38 +12012,40 @@ const App = (() => {
     const p2 = document.getElementById('pfPlusBtn2');
     if (p2) p2.onclick = () => triggerSlotPicker(1);
 
-    // 1-Finger Touch / Mouse Drag directly on preview canvas to move photo smoothly inside frame!
-    if (canvas) {
-      let dragging = false, startX = 0, startY = 0, origPanX = 0, origPanY = 0;
-      canvas.addEventListener('pointerdown', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const selF = PhotoFrameEngine.getFrameById(state.photoFrameId);
-        if (selF.dual) {
-          const relX = (e.clientX - rect.left) / Math.max(1, rect.width);
-          state.pfActiveSlot = relX < 0.5 ? 0 : 1;
+    // Full Multi-Touch Finger Zoom (Pinch) + 1-Finger Drag Position + 2-Finger Rotate + Double-Tap Reset!
+    if (canvas && window.MahaTouchTransform) {
+      window.MahaTouchTransform.bind(canvas, {
+        onDown: (relX) => {
+          const selF = PhotoFrameEngine.getFrameById(state.photoFrameId);
+          if (selF && (selF.dual || state.pfForceDual)) {
+            state.pfActiveSlot = relX < 0.5 ? 0 : 1;
+          }
+          const tr = state.pfSlotTransforms[state.pfActiveSlot || 0];
+          return { zoom: tr.zoom || 1, panX: tr.panX || 0, panY: tr.panY || 0, rotate: tr.rotate || 0 };
+        },
+        onUpdate: (next) => {
+          const tr = state.pfSlotTransforms[state.pfActiveSlot || 0];
+          tr.zoom = Math.max(0.2, Math.min(4.0, +next.zoom.toFixed(2)));
+          tr.panX = Math.max(-100, Math.min(100, Math.round(next.panX)));
+          tr.panY = Math.max(-100, Math.min(100, Math.round(next.panY)));
+          if (typeof next.rotate === 'number') tr.rotate = Math.max(-180, Math.min(180, Math.round(next.rotate)));
+          const sx = document.getElementById('pfPanXSlider'), sy = document.getElementById('pfPanYSlider');
+          const zs = document.getElementById('pfZoomSlider'), rs = document.getElementById('pfRotSlider');
+          const zv = document.getElementById('pfZoomVal'), rv = document.getElementById('pfRotVal');
+          if (sx) sx.value = String(tr.panX);
+          if (sy) sy.value = String(tr.panY);
+          if (zs) zs.value = String(tr.zoom);
+          if (rs) rs.value = String(tr.rotate);
+          if (zv) zv.textContent = Number(tr.zoom).toFixed(2) + 'x';
+          if (rv) rv.textContent = Math.round(tr.rotate) + '°';
+          redraw();
+        },
+        onReset: () => {
+          const tr = state.pfSlotTransforms[state.pfActiveSlot || 0];
+          tr.zoom = 1; tr.panX = 0; tr.panY = 0; tr.rotate = 0;
+          syncTrUI();
         }
-        dragging = true;
-        startX = e.clientX; startY = e.clientY;
-        const tr = state.pfSlotTransforms[state.pfActiveSlot];
-        origPanX = tr.panX || 0; origPanY = tr.panY || 0;
-        canvas.setPointerCapture?.(e.pointerId);
       });
-      canvas.addEventListener('pointermove', (e) => {
-        if (!dragging) return;
-        const rect = canvas.getBoundingClientRect();
-        const dx = ((e.clientX - startX) / Math.max(1, rect.width)) * 160;
-        const dy = ((e.clientY - startY) / Math.max(1, rect.height)) * 160;
-        const tr = state.pfSlotTransforms[state.pfActiveSlot];
-        tr.panX = Math.max(-100, Math.min(100, Math.round(origPanX + dx)));
-        tr.panY = Math.max(-100, Math.min(100, Math.round(origPanY + dy)));
-        const sx = document.getElementById('pfPanXSlider'), sy = document.getElementById('pfPanYSlider');
-        if (sx) sx.value = String(tr.panX);
-        if (sy) sy.value = String(tr.panY);
-        redraw();
-      });
-      const endDrag = () => { dragging = false; };
-      canvas.addEventListener('pointerup', endDrag);
-      canvas.addEventListener('pointercancel', endDrag);
     }
 
     document.querySelectorAll('[data-pf-slot]').forEach((b) => {
@@ -13681,7 +13814,7 @@ if (!window.__aiproDlHooked) {
   const origAnchorClick = HTMLAnchorElement.prototype.click;
   HTMLAnchorElement.prototype.click = function (...args) {
     try {
-      if (this && this.download && window.ExportProgressHUD && !window.ExportProgressHUD.isActive()) {
+      if (this && this.download && this.dataset && this.dataset.silentSave !== '1' && window.ExportProgressHUD && !window.ExportProgressHUD.isActive()) {
         window.ExportProgressHUD.pulseQuickDownload(`Downloading ${this.download}`);
       }
     } catch (_) {}
@@ -13697,5 +13830,796 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
   </script>
+
+<script>
+// ============================================================================
+// MAHA PRO FULL-DISPLAY CAMERA
+// Full Screen • Photo & Video On-Display Settings • 200x Zoom • Dual Shoot
+// iPhone-Level Pro HDR Pipeline • Automatic Phone Gallery Save
+// Zero Grid Lines • Zero Animations
+// ============================================================================
+window.MahaProFullCamera = (() => {
+  let mainStream = null;
+  let dualStream = null;
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let isRecording = false;
+  let recTimerId = null;
+  let recSeconds = 0;
+  let onCloseCallback = null;
+  let dualCanvasRaf = null;
+
+  const state = {
+    mode: 'photo',         // 'photo' | 'video'
+    facing: 'environment', // 'environment' | 'user'
+    zoom: 1,               // 1x to 200x
+    dualShoot: false,
+    proHDR: true,
+    torch: false,
+    exposure: 0,           // -2.0 to +2.0
+    timer: 0,              // 0, 3, 5, 10
+    quality: '4K'          // '4K' | 'FHD'
+  };
+
+  function buildUI() {
+    if (document.getElementById('mahaFullCamOverlay')) return;
+    const div = document.createElement('div');
+    div.id = 'mahaFullCamOverlay';
+    div.style.display = 'none';
+    div.innerHTML = `
+      <!-- Main Full-Screen Camera Video (Zero Grid Lines, Zero Animations) -->
+      <video id="mahaCamMainVideo" autoplay playsinline muted></video>
+      <!-- Dual Shoot Secondary PiP Video -->
+      <video id="mahaCamDualVideo" autoplay playsinline muted></video>
+
+      <!-- TOP ON-DISPLAY SETTINGS BAR (Visible in both Photo & Video) -->
+      <div style="position:absolute;top:max(10px,env(safe-area-inset-top));left:10px;right:10px;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;">
+        <button type="button" id="mfcCloseBtn" class="maha-hud-bar text-white text-xs font-bold px-3 py-2 rounded-full">✕ Back</button>
+
+        <div class="maha-hud-bar rounded-full px-2 py-1 flex items-center gap-1 text-[11px] font-semibold text-white flex-wrap">
+          <button type="button" id="mfcHdrBtn" class="px-2.5 py-1 rounded-full bg-amber-500 text-black font-bold">PRO HDR: ON</button>
+          <button type="button" id="mfcDualBtn" class="px-2.5 py-1 rounded-full bg-white/10 text-white">DUAL: OFF</button>
+          <button type="button" id="mfcTorchBtn" class="px-2.5 py-1 rounded-full bg-white/10 text-white">⚡ OFF</button>
+          <button type="button" id="mfcTimerBtn" class="px-2.5 py-1 rounded-full bg-white/10 text-white">⏱ 0s</button>
+          <button type="button" id="mfcQualBtn" class="px-2.5 py-1 rounded-full bg-white/10 text-emerald-300 font-bold">4K PRO</button>
+        </div>
+      </div>
+
+      <!-- RECORDING TIMER / SAVE STATUS PILL -->
+      <div id="mfcRecBadge" style="display:none;position:absolute;top:62px;left:50%;transform:translateX(-50%);z-index:30;" class="px-3 py-1 rounded-full bg-red-600 text-white text-xs font-bold">
+        ● REC 00:00
+      </div>
+      <div id="mfcSaveNote" style="display:none;position:absolute;top:62px;left:50%;transform:translateX(-50%);z-index:30;" class="maha-hud-bar px-3 py-1 rounded-full text-emerald-300 text-xs font-bold">
+        ✓ Saved to Phone Gallery
+      </div>
+
+      <!-- LEFT SIDE ON-DISPLAY EXPOSURE SLIDER -->
+      <div class="maha-hud-bar" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);z-index:30;padding:10px 6px;border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <span style="font-size:10px;color:#fbbf24;font-weight:700;">EV</span>
+        <input id="mfcEvSlider" type="range" min="-2" max="2" step="0.2" value="0" style="writing-mode:vertical-lr;direction:rtl;height:120px;width:18px;accent-color:#fbbf24;">
+        <span id="mfcEvVal" style="font-size:10px;color:#fff;font-weight:700;">0.0</span>
+      </div>
+
+      <!-- BOTTOM ON-DISPLAY CONTROLS (200x ZOOM + MODE + SHUTTER) -->
+      <div style="position:absolute;bottom:max(14px,env(safe-area-inset-bottom));left:10px;right:10px;z-index:30;display:flex;flex-direction:column;gap:10px;align-items:center;">
+
+        <!-- 200x Super Zoom Presets + Slider -->
+        <div class="maha-hud-bar w-full max-w-md rounded-2xl px-3 py-2 flex flex-col gap-1.5">
+          <div class="flex items-center justify-between text-[11px] font-bold text-white">
+            <span>🔍 SUPER ZOOM (1x - 200x)</span>
+            <span id="mfcZoomLabel" class="text-amber-400">1.0x</span>
+          </div>
+          <input id="mfcZoomSlider" type="range" min="1" max="200" step="0.5" value="1" class="w-full accent-amber-400" />
+          <div class="flex items-center justify-between gap-1">
+            <button type="button" data-mfc-z="1" class="flex-1 py-1 rounded-lg bg-amber-500 text-black text-[10px] font-bold">1x</button>
+            <button type="button" data-mfc-z="5" class="flex-1 py-1 rounded-lg bg-white/10 text-white text-[10px] font-bold">5x</button>
+            <button type="button" data-mfc-z="20" class="flex-1 py-1 rounded-lg bg-white/10 text-white text-[10px] font-bold">20x</button>
+            <button type="button" data-mfc-z="50" class="flex-1 py-1 rounded-lg bg-white/10 text-white text-[10px] font-bold">50x</button>
+            <button type="button" data-mfc-z="100" class="flex-1 py-1 rounded-lg bg-white/10 text-white text-[10px] font-bold">100x</button>
+            <button type="button" data-mfc-z="200" class="flex-1 py-1 rounded-lg bg-white/10 text-white text-[10px] font-bold">200x</button>
+          </div>
+        </div>
+
+        <!-- Photo / Video Mode Switch -->
+        <div class="maha-hud-bar rounded-full p-1 flex items-center gap-1 text-xs font-bold">
+          <button type="button" id="mfcModePhoto" class="px-4 py-1.5 rounded-full bg-white text-black">PHOTO</button>
+          <button type="button" id="mfcModeVideo" class="px-4 py-1.5 rounded-full text-white">VIDEO</button>
+        </div>
+
+        <!-- Shutter Row -->
+        <div class="w-full max-w-md flex items-center justify-around">
+          <button type="button" id="mfcLastThumbWrap" class="w-12 h-12 rounded-xl overflow-hidden border border-white/30 bg-black/50 flex items-center justify-center text-[10px] text-slate-200 font-semibold" title="Open Gallery">
+            Gallery
+          </button>
+
+          <button type="button" id="mfcShutterBtn" style="width:72px;height:72px;border-radius:50%;border:4px solid #fff;background:rgba(255,255,255,0.94);display:flex;align-items:center;justify-content:center;" title="Capture / Record"></button>
+
+          <button type="button" id="mfcFlipBtn" class="maha-hud-bar w-12 h-12 rounded-full text-white text-lg flex items-center justify-center" title="Switch Front / Back Camera">🔄</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(div);
+    bindEvents();
+  }
+
+  function bindEvents() {
+    document.getElementById('mfcCloseBtn').onclick = () => close(true);
+
+    document.getElementById('mfcLastThumbWrap').onclick = () => {
+      close(false);
+      if (typeof App !== 'undefined' && App.navigate) App.navigate('gallery');
+    };
+
+    document.getElementById('mfcFlipBtn').onclick = async () => {
+      if (isRecording) return;
+      state.facing = state.facing === 'environment' ? 'user' : 'environment';
+      await startMainCamera();
+      if (state.dualShoot) {
+        stopDualStream();
+        state.dualShoot = false;
+        await toggleDualShoot();
+      }
+    };
+
+    document.getElementById('mfcModePhoto').onclick = () => setMode('photo');
+    document.getElementById('mfcModeVideo').onclick = () => setMode('video');
+
+    document.getElementById('mfcHdrBtn').onclick = () => {
+      state.proHDR = !state.proHDR;
+      const b = document.getElementById('mfcHdrBtn');
+      b.textContent = state.proHDR ? 'PRO HDR: ON' : 'PRO HDR: OFF';
+      b.className = state.proHDR
+        ? 'px-2.5 py-1 rounded-full bg-amber-500 text-black font-bold'
+        : 'px-2.5 py-1 rounded-full bg-white/10 text-white';
+    };
+
+    document.getElementById('mfcDualBtn').onclick = toggleDualShoot;
+    document.getElementById('mfcTorchBtn').onclick = toggleTorch;
+
+    document.getElementById('mfcTimerBtn').onclick = () => {
+      const seq = [0, 3, 5, 10];
+      state.timer = seq[(seq.indexOf(state.timer) + 1) % seq.length];
+      document.getElementById('mfcTimerBtn').textContent = `⏱ ${state.timer}s`;
+    };
+
+    document.getElementById('mfcQualBtn').onclick = async () => {
+      if (isRecording) return;
+      state.quality = state.quality === '4K' ? 'FHD' : '4K';
+      document.getElementById('mfcQualBtn').textContent = state.quality === '4K' ? '4K PRO' : '1080p HD';
+      await startMainCamera();
+    };
+
+    const zSlider = document.getElementById('mfcZoomSlider');
+    zSlider.oninput = (e) => applyZoom(parseFloat(e.target.value));
+    document.querySelectorAll('[data-mfc-z]').forEach((btn) => {
+      btn.onclick = () => applyZoom(parseFloat(btn.dataset.mfcZ));
+    });
+
+    // Pinch-to-zoom on full display camera
+    let pinchStartDist = 0;
+    let pinchStartZoom = 1;
+    const overlay = document.getElementById('mahaFullCamOverlay');
+    overlay.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        pinchStartDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        pinchStartZoom = state.zoom;
+      }
+    }, { passive: true });
+    overlay.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2 && pinchStartDist > 0) {
+        const curDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        const ratio = curDist / pinchStartDist;
+        applyZoom(pinchStartZoom * ratio);
+      }
+    }, { passive: true });
+
+    const evSlider = document.getElementById('mfcEvSlider');
+    evSlider.oninput = (e) => {
+      state.exposure = parseFloat(e.target.value);
+      document.getElementById('mfcEvVal').textContent = state.exposure.toFixed(1);
+      applyLiveFilters();
+    };
+
+    document.getElementById('mfcShutterBtn').onclick = handleShutter;
+  }
+
+  function setMode(m) {
+    if (isRecording) return;
+    state.mode = m;
+    document.getElementById('mfcModePhoto').className = m === 'photo' ? 'px-4 py-1.5 rounded-full bg-white text-black' : 'px-4 py-1.5 rounded-full text-white';
+    document.getElementById('mfcModeVideo').className = m === 'video' ? 'px-4 py-1.5 rounded-full bg-red-600 text-white' : 'px-4 py-1.5 rounded-full text-white';
+    document.getElementById('mfcShutterBtn').style.background = m === 'video' ? '#dc2626' : 'rgba(255,255,255,0.94)';
+  }
+
+  function applyLiveFilters() {
+    const vid = document.getElementById('mahaCamMainVideo');
+    const bright = 1 + state.exposure * 0.18;
+    vid.style.filter = `brightness(${bright.toFixed(2)})`;
+  }
+
+  async function applyZoom(val) {
+    state.zoom = Math.max(1, Math.min(200, val));
+    document.getElementById('mfcZoomSlider').value = state.zoom;
+    document.getElementById('mfcZoomLabel').textContent = `${state.zoom.toFixed(1)}x`;
+
+    document.querySelectorAll('[data-mfc-z]').forEach((b) => {
+      const active = Math.abs(parseFloat(b.dataset.mfcZ) - state.zoom) < 0.6;
+      b.className = active
+        ? 'flex-1 py-1 rounded-lg bg-amber-500 text-black text-[10px] font-bold'
+        : 'flex-1 py-1 rounded-lg bg-white/10 text-white text-[10px] font-bold';
+    });
+
+    let hwZoomApplied = 1;
+    if (mainStream) {
+      const track = mainStream.getVideoTracks()[0];
+      const caps = track && track.getCapabilities ? track.getCapabilities() : null;
+      if (caps && caps.zoom) {
+        hwZoomApplied = Math.min(state.zoom, caps.zoom.max);
+        try { await track.applyConstraints({ advanced: [{ zoom: hwZoomApplied }] }); } catch (_) {}
+      }
+    }
+    const digitalScale = state.zoom / hwZoomApplied;
+    const vid = document.getElementById('mahaCamMainVideo');
+    vid.style.transform = `scale(${digitalScale.toFixed(3)})`;
+  }
+
+  async function toggleTorch() {
+    if (!mainStream) return;
+    const track = mainStream.getVideoTracks()[0];
+    const caps = track && track.getCapabilities ? track.getCapabilities() : null;
+    if (!caps || !caps.torch) {
+      showQuietNote('Flash/Torch is lens par supported nahi hai');
+      return;
+    }
+    state.torch = !state.torch;
+    try {
+      await track.applyConstraints({ advanced: [{ torch: state.torch }] });
+      const b = document.getElementById('mfcTorchBtn');
+      b.textContent = state.torch ? '⚡ ON' : '⚡ OFF';
+      b.className = state.torch
+        ? 'px-2.5 py-1 rounded-full bg-amber-400 text-black font-bold'
+        : 'px-2.5 py-1 rounded-full bg-white/10 text-white';
+    } catch (_) {}
+  }
+
+  async function toggleDualShoot() {
+    const dualVid = document.getElementById('mahaCamDualVideo');
+    const btn = document.getElementById('mfcDualBtn');
+    if (state.dualShoot) {
+      stopDualStream();
+      state.dualShoot = false;
+      dualVid.style.display = 'none';
+      btn.textContent = 'DUAL: OFF';
+      btn.className = 'px-2.5 py-1 rounded-full bg-white/10 text-white';
+      return;
+    }
+    try {
+      const oppFacing = state.facing === 'environment' ? 'user' : 'environment';
+      dualStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: oppFacing }, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+      });
+      dualVid.srcObject = dualStream;
+      dualVid.style.display = 'block';
+      state.dualShoot = true;
+      btn.textContent = 'DUAL: ON';
+      btn.className = 'px-2.5 py-1 rounded-full bg-emerald-500 text-black font-bold';
+    } catch (_) {
+      showQuietNote('Device hardware simultaneous Dual Camera lock karta hai');
+    }
+  }
+
+  function showQuietNote(msg) {
+    const el = document.getElementById('mfcSaveNote');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = 'block';
+    clearTimeout(el._t);
+    el._t = setTimeout(() => { el.style.display = 'none'; }, 1600);
+  }
+
+  async function startMainCamera() {
+    stopMainStream();
+    if (typeof CameraPoseController !== 'undefined' && CameraPoseController.stopCamera) {
+      try { CameraPoseController.stopCamera(); } catch (_) {}
+    }
+    const idealW = state.quality === '4K' ? 3840 : 1920;
+    const idealH = state.quality === '4K' ? 2160 : 1080;
+    try {
+      mainStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: state.facing },
+          width: { ideal: idealW },
+          height: { ideal: idealH },
+          frameRate: { ideal: 60, min: 24 }
+        },
+        audio: true
+      });
+    } catch (_) {
+      mainStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: state.facing } },
+        audio: false
+      });
+    }
+    const vid = document.getElementById('mahaCamMainVideo');
+    vid.srcObject = mainStream;
+    await applyZoom(state.zoom);
+    applyLiveFilters();
+  }
+
+  function stopMainStream() {
+    if (mainStream) {
+      mainStream.getTracks().forEach((t) => t.stop());
+      mainStream = null;
+    }
+  }
+
+  function stopDualStream() {
+    if (dualStream) {
+      dualStream.getTracks().forEach((t) => t.stop());
+      dualStream = null;
+    }
+  }
+
+  async function handleShutter() {
+    if (state.mode === 'video') {
+      if (isRecording) stopVideoRecording();
+      else startVideoRecording();
+      return;
+    }
+    if (state.timer > 0) {
+      for (let t = state.timer; t > 0; t--) {
+        showQuietNote(`⏱ ${t}s`);
+        await new Promise((r) => setTimeout(r, 1000));
+      }
+    }
+    await captureProPhoto();
+  }
+
+  // Silent Auto-Save directly to Phone Gallery (Downloads folder) without any overlay animation
+  function silentDownloadToPhone(href, fileName) {
+    const a = document.createElement('a');
+    a.dataset.silentSave = '1';
+    a.href = href;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  // iPhone-Beatable Computational Photography Pipeline (AWB + Shadow/Highlight Tone + Micro-Sharpness)
+  async function captureProPhoto() {
+    const vid = document.getElementById('mahaCamMainVideo');
+    const dualVid = document.getElementById('mahaCamDualVideo');
+    if (!vid.videoWidth) return;
+
+    const vw = vid.videoWidth;
+    const vh = vid.videoHeight;
+    const c = document.createElement('canvas');
+    c.width = vw;
+    c.height = vh;
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+
+    let hwZoom = 1;
+    const track = mainStream && mainStream.getVideoTracks ? mainStream.getVideoTracks()[0] : null;
+    const settings = track && track.getSettings ? track.getSettings() : null;
+    if (settings && settings.zoom) hwZoom = settings.zoom;
+    const dZoom = Math.max(1, state.zoom / hwZoom);
+    const cropW = vw / dZoom;
+    const cropH = vh / dZoom;
+    const cropX = (vw - cropW) / 2;
+    const cropY = (vh - cropH) / 2;
+
+    const bright = 1 + state.exposure * 0.18;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.filter = state.proHDR
+      ? `brightness(${bright.toFixed(2)}) contrast(1.09) saturate(1.12)`
+      : `brightness(${bright.toFixed(2)})`;
+    ctx.drawImage(vid, cropX, cropY, cropW, cropH, 0, 0, vw, vh);
+    ctx.filter = 'none';
+
+    if (state.proHDR) {
+      const blurC = document.createElement('canvas');
+      blurC.width = vw; blurC.height = vh;
+      const bctx = blurC.getContext('2d', { willReadFrequently: true });
+      bctx.filter = 'blur(1.2px)';
+      bctx.drawImage(c, 0, 0);
+      bctx.filter = 'none';
+
+      const imgData = ctx.getImageData(0, 0, vw, vh);
+      const blurData = bctx.getImageData(0, 0, vw, vh).data;
+      const d = imgData.data;
+
+      // Subtle Auto White Balance (Gray-World)
+      let sr = 0, sg = 0, sb = 0, cnt = 0;
+      for (let i = 0; i < d.length; i += 64) { sr += d[i]; sg += d[i + 1]; sb += d[i + 2]; cnt++; }
+      const avgR = sr / Math.max(1, cnt), avgG = sg / Math.max(1, cnt), avgB = sb / Math.max(1, cnt);
+      const avgGray = (avgR + avgG + avgB) / 3;
+      const gR = Math.max(0.94, Math.min(1.06, 1 + (avgGray / Math.max(1, avgR) - 1) * 0.30));
+      const gG = Math.max(0.94, Math.min(1.06, 1 + (avgGray / Math.max(1, avgG) - 1) * 0.30));
+      const gB = Math.max(0.94, Math.min(1.06, 1 + (avgGray / Math.max(1, avgB) - 1) * 0.30));
+      const gains = [gR, gG, gB];
+
+      for (let i = 0; i < d.length; i += 4) {
+        const lum = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) / 255;
+        const tone = lum < 0.30 ? 1.10 : lum > 0.85 ? 0.98 : 1.02;
+        for (let ch = 0; ch < 3; ch++) {
+          const idx = i + ch;
+          const diff = d[idx] - blurData[idx];
+          let val = d[idx] * gains[ch] * tone + (Math.abs(diff) > 3 ? diff * 0.45 : 0);
+          d[idx] = Math.max(0, Math.min(255, Math.round(val)));
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    // Composite Dual Shoot PiP if ON
+    if (state.dualShoot && dualVid.videoWidth) {
+      const pipW = Math.round(vw * 0.26);
+      const pipH = Math.round(pipW * (dualVid.videoHeight / dualVid.videoWidth));
+      const pad = Math.round(vw * 0.03);
+      ctx.save();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = Math.max(4, Math.round(vw * 0.004));
+      ctx.strokeRect(vw - pipW - pad, pad, pipW, pipH);
+      ctx.drawImage(dualVid, vw - pipW - pad, pad, pipW, pipH);
+      ctx.restore();
+    }
+
+    const fileName = `MahaAI_PRO_${Date.now()}.jpg`;
+    const dataUrl = c.toDataURL('image/jpeg', 0.98);
+
+    // 1. Automatic Save to Phone Gallery
+    silentDownloadToPhone(dataUrl, fileName);
+
+    // 2. Update thumbnail
+    const thumbWrap = document.getElementById('mfcLastThumbWrap');
+    thumbWrap.innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover;" />`;
+    showQuietNote('✓ Photo Saved to Gallery');
+
+    // 3. Save in App Gallery (IndexedDB)
+    if (typeof StudioStorage !== 'undefined') {
+      await StudioStorage.saveMedia({ name: fileName, type: 'photo', dataUrl, album: 'Pro Camera' });
+    }
+  }
+
+  function startVideoRecording() {
+    if (!mainStream) return;
+    recordedChunks = [];
+    let recordStream = mainStream;
+
+    // If Dual Shoot or Digital Zoom > 1 is active, record live composited canvas stream
+    const vid = document.getElementById('mahaCamMainVideo');
+    const dualVid = document.getElementById('mahaCamDualVideo');
+    if (vid.videoWidth && (state.dualShoot || state.zoom > 1.1 || state.exposure !== 0)) {
+      const rc = document.createElement('canvas');
+      rc.width = Math.min(1920, vid.videoWidth);
+      rc.height = Math.min(1080, vid.videoHeight);
+      const rctx = rc.getContext('2d');
+      const drawLoop = () => {
+        if (!isRecording) return;
+        let hwZoom = 1;
+        const tr = mainStream && mainStream.getVideoTracks ? mainStream.getVideoTracks()[0] : null;
+        const st = tr && tr.getSettings ? tr.getSettings() : null;
+        if (st && st.zoom) hwZoom = st.zoom;
+        const dZ = Math.max(1, state.zoom / hwZoom);
+        const cw = vid.videoWidth / dZ, ch = vid.videoHeight / dZ;
+        const cx = (vid.videoWidth - cw) / 2, cy = (vid.videoHeight - ch) / 2;
+        const bright = 1 + state.exposure * 0.18;
+        rctx.filter = `brightness(${bright.toFixed(2)})`;
+        rctx.drawImage(vid, cx, cy, cw, ch, 0, 0, rc.width, rc.height);
+        rctx.filter = 'none';
+        if (state.dualShoot && dualVid.videoWidth) {
+          const pw = Math.round(rc.width * 0.25);
+          const ph = Math.round(pw * (dualVid.videoHeight / dualVid.videoWidth));
+          rctx.strokeStyle = '#fff';
+          rctx.lineWidth = 3;
+          rctx.strokeRect(rc.width - pw - 16, 16, pw, ph);
+          rctx.drawImage(dualVid, rc.width - pw - 16, 16, pw, ph);
+        }
+        dualCanvasRaf = requestAnimationFrame(drawLoop);
+      };
+      const cs = rc.captureStream(30);
+      const audioTracks = mainStream.getAudioTracks();
+      if (audioTracks.length) cs.addTrack(audioTracks[0]);
+      recordStream = cs;
+      isRecording = true;
+      drawLoop();
+    } else {
+      isRecording = true;
+    }
+
+    const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+      ? 'video/webm;codecs=vp9,opus'
+      : 'video/webm';
+    mediaRecorder = new MediaRecorder(recordStream, { mimeType: mime, videoBitsPerSecond: 12000000 });
+    mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+    mediaRecorder.onstop = async () => {
+      cancelAnimationFrame(dualCanvasRaf);
+      const blob = new Blob(recordedChunks, { type: mime });
+      const fileName = `MahaAI_VIDEO_${Date.now()}.webm`;
+      const url = URL.createObjectURL(blob);
+      silentDownloadToPhone(url, fileName);
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      showQuietNote('✓ Video Saved to Gallery');
+      if (typeof StudioStorage !== 'undefined') {
+        await StudioStorage.saveMedia({ name: fileName, type: 'video', blob, album: 'Pro Camera' });
+      }
+    };
+    mediaRecorder.start(250);
+    recSeconds = 0;
+    const badge = document.getElementById('mfcRecBadge');
+    badge.style.display = 'block';
+    document.getElementById('mfcShutterBtn').style.borderRadius = '18px';
+    recTimerId = setInterval(() => {
+      recSeconds++;
+      const mm = String(Math.floor(recSeconds / 60)).padStart(2, '0');
+      const ss = String(recSeconds % 60).padStart(2, '0');
+      badge.textContent = `● REC ${mm}:${ss}`;
+    }, 1000);
+  }
+
+  function stopVideoRecording() {
+    isRecording = false;
+    cancelAnimationFrame(dualCanvasRaf);
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+    clearInterval(recTimerId);
+    const badge = document.getElementById('mfcRecBadge');
+    if (badge) badge.style.display = 'none';
+    const sh = document.getElementById('mfcShutterBtn');
+    if (sh) sh.style.borderRadius = '50%';
+  }
+
+  async function open(closeCb) {
+    onCloseCallback = typeof closeCb === 'function' ? closeCb : null;
+    buildUI();
+    document.getElementById('mahaFullCamOverlay').style.display = 'block';
+    try {
+      await startMainCamera();
+    } catch (err) {
+      showQuietNote('Camera permission denied: ' + (err.message || err));
+    }
+  }
+
+  function close(invokeCb = false) {
+    if (isRecording) stopVideoRecording();
+    stopMainStream();
+    stopDualStream();
+    const el = document.getElementById('mahaFullCamOverlay');
+    if (el) el.style.display = 'none';
+    if (invokeCb && onCloseCallback) {
+      const cb = onCloseCallback;
+      onCloseCallback = null;
+      cb();
+    }
+  }
+
+  // Intercept Source Picker camera button directly too
+  document.addEventListener('click', (e) => {
+    const spBtn = e.target.closest('#spUseCameraBtn');
+    if (spBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const spModal = document.getElementById('sourcePickerModal');
+      if (spModal) spModal.classList.add('hidden');
+      open();
+    }
+  }, true);
+
+  return { open, close };
+})();
+</script>
+
+
+<script>
+// ============================================================================
+// UNIVERSAL FINGER ZOOM & POSITION ENGINE (MahaTouchTransform)
+// 1-Finger Drag Position • 2-Finger Pinch Zoom • 2-Finger Twist Rotate • Double-Tap Reset
+// Works on ALL Photo Frames, Frame Generator, BG Generator, Video Maker/Editor & All Photo Canvases!
+// ============================================================================
+window.MahaTouchTransform = (() => {
+  function bind(el, opts = {}) {
+    if (!el || el.dataset.mahaTouchBound === '1') return;
+    el.dataset.mahaTouchBound = '1';
+    el.style.touchAction = 'none';
+    el.style.cursor = 'grab';
+
+    const panFactor = opts.panFactor || 160;
+    const pointers = new Map();
+    let baseState = null;
+    let startSingle = null;
+    let startPinchDist = 0;
+    let startPinchAngle = 0;
+    let startMid = null;
+    let lastTapTime = 0;
+
+    function getTwo() {
+      const arr = Array.from(pointers.values());
+      return [arr[0], arr[1]];
+    }
+
+    el.addEventListener('pointerdown', (e) => {
+      if (opts.shouldIgnore && opts.shouldIgnore(e)) return;
+      const now = Date.now();
+      if (pointers.size === 0 && now - lastTapTime < 280) {
+        lastTapTime = 0;
+        if (opts.onReset) opts.onReset();
+        return;
+      }
+      if (pointers.size === 0) lastTapTime = now;
+
+      el.setPointerCapture?.(e.pointerId);
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+      const rect = el.getBoundingClientRect();
+      const relX = (e.clientX - rect.left) / Math.max(1, rect.width);
+      const relY = (e.clientY - rect.top) / Math.max(1, rect.height);
+
+      if (pointers.size === 1) {
+        baseState = opts.onDown ? opts.onDown(relX, relY) : { zoom: 1, panX: 0, panY: 0, rotate: 0 };
+        startSingle = { x: e.clientX, y: e.clientY };
+      } else if (pointers.size === 2) {
+        const [p1, p2] = getTwo();
+        const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+        baseState = opts.onDown ? opts.onDown((midX - rect.left) / Math.max(1, rect.width), (midY - rect.top) / Math.max(1, rect.height)) : (baseState || { zoom: 1, panX: 0, panY: 0, rotate: 0 });
+        startPinchDist = Math.max(10, Math.hypot(p2.x - p1.x, p2.y - p1.y));
+        startPinchAngle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * (180 / Math.PI);
+        startMid = { x: midX, y: midY };
+      }
+    });
+
+    el.addEventListener('pointermove', (e) => {
+      if (!pointers.has(e.pointerId) || !baseState) return;
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      const rect = el.getBoundingClientRect();
+
+      if (pointers.size === 1 && startSingle) {
+        const dx = ((e.clientX - startSingle.x) / Math.max(1, rect.width)) * panFactor;
+        const dy = ((e.clientY - startSingle.y) / Math.max(1, rect.height)) * panFactor;
+        if (opts.onUpdate) {
+          opts.onUpdate({
+            zoom: baseState.zoom,
+            panX: baseState.panX + dx,
+            panY: baseState.panY + dy,
+            rotate: baseState.rotate
+          });
+        }
+      } else if (pointers.size >= 2) {
+        const [p1, p2] = getTwo();
+        const curDist = Math.max(10, Math.hypot(p2.x - p1.x, p2.y - p1.y));
+        const curAngle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * (180 / Math.PI);
+        const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+        const dx = ((midX - startMid.x) / Math.max(1, rect.width)) * panFactor;
+        const dy = ((midY - startMid.y) / Math.max(1, rect.height)) * panFactor;
+        const ratio = curDist / startPinchDist;
+        let dAngle = curAngle - startPinchAngle;
+        if (dAngle > 180) dAngle -= 360;
+        if (dAngle < -180) dAngle += 360;
+        if (opts.onUpdate) {
+          opts.onUpdate({
+            zoom: baseState.zoom * ratio,
+            panX: baseState.panX + dx,
+            panY: baseState.panY + dy,
+            rotate: typeof baseState.rotate === 'number' ? baseState.rotate + dAngle : undefined
+          });
+        }
+      }
+    });
+
+    const release = (e) => {
+      pointers.delete(e.pointerId);
+      if (pointers.size === 1) {
+        const rem = Array.from(pointers.values())[0];
+        const rect = el.getBoundingClientRect();
+        baseState = opts.onDown ? opts.onDown((rem.x - rect.left) / Math.max(1, rect.width), (rem.y - rect.top) / Math.max(1, rect.height)) : baseState;
+        startSingle = { x: rem.x, y: rem.y };
+      } else if (pointers.size === 0) {
+        baseState = null;
+        startSingle = null;
+      }
+    };
+    el.addEventListener('pointerup', release);
+    el.addEventListener('pointercancel', release);
+
+    // Desktop Mouse Wheel Zoom support too
+    el.addEventListener('wheel', (e) => {
+      if (opts.shouldIgnore && opts.shouldIgnore(e)) return;
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      const st = opts.onDown ? opts.onDown((e.clientX - rect.left) / Math.max(1, rect.width), (e.clientY - rect.top) / Math.max(1, rect.height)) : { zoom: 1, panX: 0, panY: 0 };
+      const factor = e.deltaY < 0 ? 1.08 : 0.92;
+      if (opts.onUpdate) opts.onUpdate({ ...st, zoom: st.zoom * factor });
+    }, { passive: false });
+  }
+
+  // Bind live Video Clip Zoom & Position on Video Maker & Video Editor canvases
+  function bindVideoCanvas(canvas) {
+    if (!canvas || canvas.dataset.mahaTouchBound === '1') return;
+    bind(canvas, {
+      panFactor: Math.max(360, canvas.width || 640),
+      onDown: () => {
+        let st = { zoom: 1, panX: 0, panY: 0 };
+        if (typeof VideoStudioEngine !== 'undefined' && VideoStudioEngine.adjustActiveClipTransform) {
+          VideoStudioEngine.adjustActiveClipTransform((clip) => {
+            st = { zoom: Number(clip.userZoom || 1), panX: Number(clip.userPanX || 0), panY: Number(clip.userPanY || 0) };
+          });
+        }
+        return st;
+      },
+      onUpdate: (next) => {
+        if (typeof VideoStudioEngine !== 'undefined' && VideoStudioEngine.adjustActiveClipTransform) {
+          VideoStudioEngine.adjustActiveClipTransform((clip) => {
+            clip.userZoom = Math.max(0.35, Math.min(4.0, +next.zoom.toFixed(2)));
+            clip.userPanX = Math.max(-canvas.width, Math.min(canvas.width, Math.round(next.panX)));
+            clip.userPanY = Math.max(-canvas.height, Math.min(canvas.height, Math.round(next.panY)));
+          });
+          VideoStudioEngine.renderPreviewFrame(canvas);
+        }
+      },
+      onReset: () => {
+        if (typeof VideoStudioEngine !== 'undefined' && VideoStudioEngine.adjustActiveClipTransform) {
+          VideoStudioEngine.adjustActiveClipTransform((clip) => {
+            clip.userZoom = 1; clip.userPanX = 0; clip.userPanY = 0;
+          });
+          VideoStudioEngine.renderPreviewFrame(canvas);
+        }
+      }
+    });
+  }
+
+  // Universal Viewport Finger Zoom + Drag for all remaining Photo/Video Preview Canvases
+  function bindViewportZoom(canvas) {
+    if (!canvas || canvas.dataset.mahaTouchBound === '1') return;
+    let vz = 1, vx = 0, vy = 0;
+    const apply = () => {
+      canvas.style.transformOrigin = 'center center';
+      canvas.style.transform = `translate(${vx}px, ${vy}px) scale(${vz.toFixed(3)})`;
+    };
+    bind(canvas, {
+      panFactor: 260,
+      shouldIgnore: () => canvas.classList.contains('cursor-crosshair'),
+      onDown: () => ({ zoom: vz, panX: vx, panY: vy }),
+      onUpdate: (next) => {
+        vz = Math.max(0.5, Math.min(5.0, next.zoom));
+        vx = Math.max(-320, Math.min(320, next.panX));
+        vy = Math.max(-320, Math.min(320, next.panY));
+        apply();
+      },
+      onReset: () => { vz = 1; vx = 0; vy = 0; apply(); }
+    });
+  }
+
+  const VIDEO_CANVASES = ['vmCanvas', 'vidPreviewCanvas'];
+  const VIEWPORT_CANVASES = ['edCanvas', 'bgRemCanvas', 'mkCanvas', 'btCanvas', 'hrCanvas', 'passSheetCanvas', 'colCanvas', 'spCanvas', 'aimMovieCanvas'];
+
+  function scanAndBindAll() {
+    VIDEO_CANVASES.forEach((id) => {
+      const c = document.getElementById(id);
+      if (c) bindVideoCanvas(c);
+    });
+    VIEWPORT_CANVASES.forEach((id) => {
+      const c = document.getElementById(id);
+      if (c) bindViewportZoom(c);
+    });
+  }
+
+  const mo = new MutationObserver(() => scanAndBindAll());
+  window.addEventListener('DOMContentLoaded', () => {
+    scanAndBindAll();
+    const main = document.getElementById('mainContent') || document.body;
+    mo.observe(main, { childList: true, subtree: true });
+  });
+
+  return { bind, bindVideoCanvas, bindViewportZoom, scanAndBindAll };
+})();
+</script>
+
 </body>
 </html>
