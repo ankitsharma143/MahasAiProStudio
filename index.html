@@ -325,15 +325,21 @@ html, body { min-height: 100dvh; }
       transition: none !important;
     }
 
+    /* Strictly centered viewfinder so camera never shifts sideways or crops too close */
     #mahaCamMainVideo {
       position: absolute;
-      inset: 0;
+      left: 50%;
+      top: 50%;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       object-position: center center;
       transform-origin: center center;
+      transform: translate(-50%, -50%);
       background: #000;
+    }
+    #mahaCamMainVideo.fill-screen {
+      object-fit: cover;
     }
 
     #mahaCamDualVideo {
@@ -362,8 +368,8 @@ html, body { min-height: 100dvh; }
       border-top: 2px solid rgba(255,255,255,0.75);
     }
     #mahaCamMainVideo.split-mode {
+      top: 25%;
       height: 50%;
-      bottom: auto;
     }
 
     #mahaCamFxCanvas {
@@ -510,7 +516,6 @@ html, body { min-height: 100dvh; }
       display: none;
     }
 
-    /* Footer Horizontal Scrolling Snapchat / Instagram / Cartoon / FX Strip */
     .mfc-footer-chip {
       display: inline-flex;
       flex-direction: column;
@@ -549,7 +554,6 @@ html, body { min-height: 100dvh; }
       border-color: #fef08a;
     }
 
-    
     #mfcCamMiniWidget {
       position: fixed;
       top: 10px;
@@ -14212,12 +14216,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
 <script>
 // ============================================================================
-// MAHA PRO FULL-DISPLAY CAMERA (v11 — NEXT-LEVEL CREATOR & STUDIO SUITE)
-// • Before/After Live Split-Compare Slider (Original vs Filter/AR/BG in real time)
-// • 3D Motion Face Tilt Parallax (AR masks & crown/ears shift naturally with head tilt)
-// • Live Shutter Flash + Sound Click Feedback + Quick Studio Editor Handoff
-// • Top Floating Minimize Pill so user can jump to Studio/Gallery anytime & resume
-// • 0.01x–200x Ultra-Wide / Telephoto Zoom + Footer Snap/IG/Cartoon/FX Strip
+// MAHA PRO FULL-DISPLAY CAMERA (v12 — TRUE REAL-CAMERA FOV, ALIGNMENT & 0.01x-200x)
+// • True Real-Camera Distance & Center Alignment (FIT Natural Wide Sensor FOV + FILL Toggle)
+// • Hardware Optical Min-Zoom Lock on Startup so objects appear at true natural distance
+// • Fine Sensor Alignment Controls (Straighten Tilt -15°..+15°, Center Shift X/Y, Auto-Level)
+// • 0.01x Ultra-Wide De-Zoom to 200x Super Zoom + Footer Snap/IG/Cartoon/FX Strip
+// • 60fps Zero-Lag Face & Head-Tilt Mask Tracking + Live Split Compare
 // • Instant Post-Capture Preview + Zero-Pixel Zoom (1x–16x) + Auto-Save + Back to Camera
 // ============================================================================
 window.MahaProFullCamera = (() => {
@@ -14242,6 +14246,7 @@ window.MahaProFullCamera = (() => {
   let motionCooldown = 0;
   let speechRec = null;
   let orientHandler = null;
+  let currentDeviceTilt = 0;
 
   let rawFaceNorm = null;
   let smoothFaceNorm = null;
@@ -14380,20 +14385,15 @@ window.MahaProFullCamera = (() => {
 
   function sliderToZoom(pos) {
     const p = Math.max(0, Math.min(1000, pos));
-    if (p <= 300) {
-      return Math.pow(100, p / 300) * 0.01;
-    }
+    if (p <= 300) return Math.pow(100, p / 300) * 0.01;
     return Math.pow(200, (p - 300) / 700);
   }
   function zoomToSlider(z) {
     const clamped = Math.max(0.01, Math.min(200, z));
-    if (clamped <= 1) {
-      return Math.round((Math.log(clamped / 0.01) / Math.log(100)) * 300);
-    }
+    if (clamped <= 1) return Math.round((Math.log(clamped / 0.01) / Math.log(100)) * 300);
     return Math.round(300 + (Math.log(clamped) / Math.log(200)) * 700);
   }
   function formatZoomLabel(z) {
-    if (z < 0.1) return z.toFixed(2) + 'x';
     if (z < 10) return z.toFixed(2) + 'x';
     return z.toFixed(1) + 'x';
   }
@@ -14402,9 +14402,13 @@ window.MahaProFullCamera = (() => {
     mode: 'photo',
     facing: 'environment',
     zoom: 1.0,
+    viewFill: false,       // false = True Real-Camera Full Sensor FOV (no crop/zoom-in); true = Full-screen Fill
+    tiltDeg: 0,            // Manual fine angle straighten (-15 to +15 deg)
+    shiftX: 0,             // Horizontal center trim (-100 to +100 px)
+    shiftY: 0,             // Vertical center trim (-100 to +100 px)
     footerCat: 'masks',
     compareSplitOn: false,
-    compareSplitPos: 0.5, // 0..1 horizontal split (left = before/raw, right = after/FX)
+    compareSplitPos: 0.5,
     shutterSoundOn: true,
     dualModeIdx: 0,
     dualHardwareOk: false,
@@ -14564,7 +14568,6 @@ window.MahaProFullCamera = (() => {
         </div>
       </div>
 
-      <!-- Live Before / After Split Compare Slider -->
       <div id="mfcCompareBar" class="maha-hud-bar flex items-center gap-2 text-[10px] font-extrabold text-white">
         <span class="text-cyan-300 shrink-0">◀ RAW</span>
         <input id="mfcCompareSlider" type="range" min="0" max="100" step="1" value="50" class="flex-1 accent-amber-400" />
@@ -14579,18 +14582,18 @@ window.MahaProFullCamera = (() => {
             <button type="button" id="mfcMinBtn" class="maha-hud-bar text-amber-300 text-[11px] font-extrabold px-2 py-1.5 rounded-full" title="Minimize Camera">⎯</button>
           </div>
           <div id="mfcLiveSpec" class="maha-hud-bar text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-full tracking-wide truncate">
-            PHOTO • 1.00x • ✨AI
+            PHOTO • 1.00x • REAL FOV
           </div>
           <button type="button" id="mfcProToggleBtn" class="maha-hud-bar text-cyan-300 text-[11px] font-extrabold px-2.5 py-1.5 rounded-full border-cyan-400/40 shrink-0">⚙ PRO</button>
         </div>
 
         <div class="maha-hud-bar rounded-2xl p-1" style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;">
+          <button type="button" id="mfcViewFitBtn" class="py-1.5 px-1 rounded-xl bg-emerald-400 text-black text-[10px] font-extrabold truncate" title="Switch True Sensor FOV vs Full Screen Crop">🖼 REAL</button>
           <button type="button" id="mfcAiFixBtn" class="py-1.5 px-1 rounded-xl bg-fuchsia-500 text-white text-[10px] font-extrabold truncate">✨ AI:ON</button>
           <button type="button" id="mfcDualBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">DUAL:OFF</button>
           <button type="button" id="mfcNightBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">🌙 NIGHT</button>
           <button type="button" id="mfcFocusBtn" class="py-1.5 px-1 rounded-xl bg-cyan-500/30 text-cyan-200 text-[10px] font-extrabold truncate">🎯 AF</button>
           <button type="button" id="mfcTorchBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">⚡ OFF</button>
-          <button type="button" id="mfcRatioBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">📐 FULL</button>
         </div>
 
         <div id="mfcManualFocusBar" style="display:none;" class="maha-hud-bar rounded-xl px-3 py-1.5 flex items-center gap-2 text-[10px] font-bold text-cyan-200">
@@ -14601,29 +14604,37 @@ window.MahaProFullCamera = (() => {
 
         <div id="mfcProDrawer" style="display:none;" class="maha-hud-bar rounded-2xl p-2.5 space-y-2 text-[10px] text-white">
           <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;">
+            <button type="button" id="mfcRatioBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📐 FULL</button>
             <button type="button" id="mfcSplitBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">⚖️ Split:OFF</button>
             <button type="button" id="mfcSoundBtn" class="py-1.5 px-1 rounded-xl bg-amber-400 text-black font-extrabold truncate">🔔 Click:ON</button>
             <button type="button" id="mfcDetBtn" class="py-1.5 px-1 rounded-xl bg-emerald-500 text-black font-extrabold truncate">🤖 Track:ON</button>
-            <button type="button" id="mfcBurstBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📸 Burst:OFF</button>
 
+            <button type="button" id="mfcBurstBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📸 Burst:OFF</button>
             <button type="button" id="mfcVoiceBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">🗣️ Voice:OFF</button>
             <button type="button" id="mfcSmileBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">😊 Smile:OFF</button>
             <button type="button" id="mfcHandBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">✋ Hand:OFF</button>
-            <button type="button" id="mfcMotionBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">🏃 Motion:OFF</button>
 
+            <button type="button" id="mfcMotionBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">🏃 Motion:OFF</button>
             <button type="button" id="mfcTpBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📜 Script:OFF</button>
             <button type="button" id="mfcHistBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📊 Hist:OFF</button>
             <button type="button" id="mfcAudioBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">🎚 Audio:OFF</button>
-            <button type="button" id="mfcSpeedBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">⏩ Spd: 1x</button>
 
+            <button type="button" id="mfcSpeedBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">⏩ Spd: 1x</button>
             <button type="button" id="mfcQualBtn" class="py-1.5 px-1 rounded-xl bg-emerald-500/25 text-emerald-200 font-bold truncate">1080p</button>
             <button type="button" id="mfcTimerBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">⏱ 0s</button>
             <button type="button" id="mfcHdrBtn" class="py-1.5 px-1 rounded-xl bg-amber-500 text-black font-extrabold truncate">HDR:ON</button>
-            <button type="button" id="mfcLevelBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📏 Level:OFF</button>
 
+            <button type="button" id="mfcLevelBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📏 Level:OFF</button>
             <button type="button" id="mfcWmBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">🏷️ Stamp:OFF</button>
             <button type="button" id="mfcMicBtn" class="py-1.5 px-1 rounded-xl bg-emerald-500/25 text-emerald-200 font-bold truncate">🎙 Mic:ON</button>
+            <button type="button" id="mfcAutoAlignBtn" class="py-1.5 px-1 rounded-xl bg-cyan-500/25 text-cyan-200 font-bold truncate">🧭 Center 0°</button>
           </div>
+
+          <!-- Fine Camera Alignment & Straighten Controls -->
+          <div class="flex items-center gap-2"><span class="w-16 font-bold text-cyan-200">🧭 Angle</span><input id="mfcTiltSlider" type="range" min="-15" max="15" step="0.5" value="0" class="flex-1 accent-cyan-400" /><span id="mfcTiltVal" class="w-12 text-right font-mono">0.0°</span></div>
+          <div class="flex items-center gap-2"><span class="w-16 font-bold text-cyan-200">↔ Shift X</span><input id="mfcShiftXSlider" type="range" min="-80" max="80" step="2" value="0" class="flex-1 accent-cyan-400" /><span id="mfcShiftXVal" class="w-12 text-right font-mono">0px</span></div>
+          <div class="flex items-center gap-2"><span class="w-16 font-bold text-cyan-200">↕ Shift Y</span><input id="mfcShiftYSlider" type="range" min="-80" max="80" step="2" value="0" class="flex-1 accent-cyan-400" /><span id="mfcShiftYVal" class="w-12 text-right font-mono">0px</span></div>
+
           <div class="flex items-center gap-2"><span class="w-16 font-bold text-amber-200">🌡 WB</span><input id="mfcWbSlider" type="range" min="2800" max="8000" step="100" value="5500" class="flex-1 accent-amber-400" /><span id="mfcWbVal" class="w-12 text-right font-mono">5500K</span></div>
           <div class="flex items-center gap-2"><span class="w-16 font-bold text-cyan-200">🎞 ISO</span><input id="mfcIsoSlider" type="range" min="0" max="3200" step="100" value="0" class="flex-1 accent-cyan-400" /><span id="mfcIsoVal" class="w-12 text-right font-mono">AUTO</span></div>
           <div class="flex items-center gap-2"><span class="w-16 font-bold text-pink-200">✨ Beauty</span><input id="mfcBeautySlider" type="range" min="0" max="100" step="5" value="0" class="flex-1 accent-pink-400" /><span id="mfcBeautyVal" class="w-12 text-right font-mono">0%</span></div>
@@ -14707,10 +14718,7 @@ window.MahaProFullCamera = (() => {
     `).join('');
 
     catWrap.querySelectorAll('[data-fcat]').forEach((btn) => {
-      btn.onclick = () => {
-        state.footerCat = btn.dataset.fcat;
-        renderFooterCarousel();
-      };
+      btn.onclick = () => { state.footerCat = btn.dataset.fcat; renderFooterCarousel(); };
     });
 
     let itemsHtml = '';
@@ -14777,25 +14785,17 @@ window.MahaProFullCamera = (() => {
           state.maskIdx = idx;
           showQuietNote(idx === 0 ? 'Face Mask OFF' : `${SNAP_MASKS[idx].icon} ${SNAP_MASKS[idx].label} Mask Active!`);
         } else if (state.footerCat === 'filters') {
-          state.filterIdx = idx;
-          applyLiveFilters();
-          showQuietNote(`📸 Filter: ${IG_FILTERS[idx].label}`);
+          state.filterIdx = idx; applyLiveFilters(); showQuietNote(`📸 Filter: ${IG_FILTERS[idx].label}`);
         } else if (state.footerCat === 'cartoons') {
-          state.artIdx = idx;
-          applyLiveFilters();
-          showQuietNote(`🎨 Style: ${ART_MODES[idx].label}`);
+          state.artIdx = idx; applyLiveFilters(); showQuietNote(`🎨 Style: ${ART_MODES[idx].label}`);
         } else if (state.footerCat === 'lighting') {
-          state.lightIdx = idx;
-          showQuietNote(`💡 FX: ${LIGHT_FX[idx].label}`);
+          state.lightIdx = idx; showQuietNote(`💡 FX: ${LIGHT_FX[idx].label}`);
         } else if (state.footerCat === 'particles') {
-          state.particleIdx = idx;
-          particles = [];
-          showQuietNote(`✨ Effect: ${PARTICLE_FX[idx].label}`);
+          state.particleIdx = idx; particles = []; showQuietNote(`✨ Effect: ${PARTICLE_FX[idx].label}`);
         } else if (state.footerCat === 'bg') {
           const chosen = BG_EFFECTS[idx];
           if (chosen.id === 'GS_CUSTOM') document.getElementById('mfcChromaImgInput').click();
-          state.bgIdx = idx;
-          showQuietNote(`🫧 BG: ${chosen.label}`);
+          state.bgIdx = idx; showQuietNote(`🫧 BG: ${chosen.label}`);
         }
         renderFooterCarousel();
         updateSpecBadge();
@@ -14816,14 +14816,14 @@ window.MahaProFullCamera = (() => {
     const el = document.getElementById('mfcLiveSpec');
     if (!el) return;
     const modeMap = { photo: state.burstMode ? 'BURST 5x' : 'PHOTO', video: 'VID ' + VID_SPEEDS[state.vidSpeedIdx].label, clone: 'CLONE', booth: 'BOOTH', pano: 'PANO', doc: 'DOC', qr: 'QR' };
-    const parts = [modeMap[state.mode] || 'PHOTO', formatZoomLabel(state.zoom)];
+    const parts = [modeMap[state.mode] || 'PHOTO', formatZoomLabel(state.zoom), state.viewFill ? 'FILL' : 'REAL FOV'];
+    if (Math.abs(state.tiltDeg) > 0.1) parts.push(`${state.tiltDeg.toFixed(1)}°`);
     if (state.compareSplitOn) parts.push('⚖️SPLIT');
     if (state.maskIdx > 0) parts.push(SNAP_MASKS[state.maskIdx].icon + SNAP_MASKS[state.maskIdx].label);
     if (state.filterIdx > 0) parts.push(IG_FILTERS[state.filterIdx].label);
     if (state.artIdx > 0) parts.push(ART_MODES[state.artIdx].label);
     if (state.lightIdx > 0) parts.push(LIGHT_FX[state.lightIdx].label);
     if (state.particleIdx > 0) parts.push(PARTICLE_FX[state.particleIdx].label);
-    if (state.aiPostEnhance && state.mode === 'photo') parts.push('✨AI');
     el.textContent = parts.join(' • ');
   }
 
@@ -14844,6 +14844,20 @@ window.MahaProFullCamera = (() => {
       state.proDrawerOpen = !state.proDrawerOpen;
       document.getElementById('mfcProDrawer').style.display = state.proDrawerOpen ? 'block' : 'none';
       document.getElementById('mfcProToggleBtn').textContent = state.proDrawerOpen ? '✕ PRO' : '⚙ PRO';
+    };
+
+    // Toggle Real Full-Sensor Field-of-View vs Full-Screen Fill
+    document.getElementById('mfcViewFitBtn').onclick = () => {
+      state.viewFill = !state.viewFill;
+      const vid = document.getElementById('mahaCamMainVideo');
+      const b = document.getElementById('mfcViewFitBtn');
+      if (vid) vid.classList.toggle('fill-screen', state.viewFill);
+      b.textContent = state.viewFill ? '🖼 FILL' : '🖼 REAL';
+      b.className = state.viewFill
+        ? 'py-1.5 px-1 rounded-xl bg-amber-400 text-black text-[10px] font-extrabold truncate'
+        : 'py-1.5 px-1 rounded-xl bg-emerald-400 text-black text-[10px] font-extrabold truncate';
+      updateSpecBadge();
+      showQuietNote(state.viewFill ? 'Full-Screen Fill Mode' : '✓ True Real-Camera Distance & Full Frame');
     };
 
     document.getElementById('mfcChromaImgInput').onchange = (e) => {
@@ -14915,7 +14929,7 @@ window.MahaProFullCamera = (() => {
       const rect = mainVid.getBoundingClientRect();
       const x = e.clientX - rect.left, y = e.clientY - rect.top;
       const ring = document.getElementById('mfcTapFocusRing');
-      if (ring) { ring.style.left = x + 'px'; ring.style.top = y + 'px'; ring.style.display = 'block'; clearTimeout(ring._t); ring._t = setTimeout(() => { ring.style.display = 'none'; }, 1100); }
+      if (ring) { ring.style.left = (rect.left + x) + 'px'; ring.style.top = (rect.top + y) + 'px'; ring.style.display = 'block'; clearTimeout(ring._t); ring._t = setTimeout(() => { ring.style.display = 'none'; }, 1100); }
       await applyHardwareFocus(x / Math.max(1, rect.width), y / Math.max(1, rect.height));
     });
 
@@ -14927,7 +14941,6 @@ window.MahaProFullCamera = (() => {
       updateSpecBadge();
     };
 
-    // Pro Drawer Buttons
     document.getElementById('mfcSplitBtn').onclick = () => {
       state.compareSplitOn = !state.compareSplitOn;
       const b = document.getElementById('mfcSplitBtn');
@@ -15034,10 +15047,40 @@ window.MahaProFullCamera = (() => {
       document.getElementById('mfcMicBtn').textContent = state.mic ? '🎙 Mic:ON' : '🔇 Mic:OFF';
       if (mainStream) mainStream.getAudioTracks().forEach((tr) => { tr.enabled = state.mic; });
     };
+
+    // Alignment Sliders & 1-Tap Center 0°
+    document.getElementById('mfcTiltSlider').oninput = (e) => {
+      state.tiltDeg = parseFloat(e.target.value);
+      document.getElementById('mfcTiltVal').textContent = state.tiltDeg.toFixed(1) + '°';
+      applyVideoTransform(); updateSpecBadge();
+    };
+    document.getElementById('mfcShiftXSlider').oninput = (e) => {
+      state.shiftX = parseInt(e.target.value, 10);
+      document.getElementById('mfcShiftXVal').textContent = state.shiftX + 'px';
+      applyVideoTransform();
+    };
+    document.getElementById('mfcShiftYSlider').oninput = (e) => {
+      state.shiftY = parseInt(e.target.value, 10);
+      document.getElementById('mfcShiftYVal').textContent = state.shiftY + 'px';
+      applyVideoTransform();
+    };
+    document.getElementById('mfcAutoAlignBtn').onclick = () => {
+      state.tiltDeg = 0; state.shiftX = 0; state.shiftY = 0;
+      document.getElementById('mfcTiltSlider').value = '0'; document.getElementById('mfcTiltVal').textContent = '0.0°';
+      document.getElementById('mfcShiftXSlider').value = '0'; document.getElementById('mfcShiftXVal').textContent = '0px';
+      document.getElementById('mfcShiftYSlider').value = '0'; document.getElementById('mfcShiftYVal').textContent = '0px';
+      applyVideoTransform(); updateSpecBadge();
+      showQuietNote('🧭 Camera Centered at 0.0°');
+    };
+
     document.getElementById('mfcResetProBtn').onclick = () => {
       state.kelvin = 5500; state.iso = 0; state.beauty = 0; state.brightness = 100; state.exposure = 0; state.micBoost = 1.4;
+      state.tiltDeg = 0; state.shiftX = 0; state.shiftY = 0;
       state.maskIdx = 0; state.filterIdx = 0; state.artIdx = 0; state.lightIdx = 0; state.particleIdx = 0; state.bgIdx = 0; state.voiceFxId = 'NORMAL';
       state.compareSplitOn = false; document.getElementById('mfcCompareBar').style.display = 'none';
+      document.getElementById('mfcTiltSlider').value = '0'; document.getElementById('mfcTiltVal').textContent = '0.0°';
+      document.getElementById('mfcShiftXSlider').value = '0'; document.getElementById('mfcShiftXVal').textContent = '0px';
+      document.getElementById('mfcShiftYSlider').value = '0'; document.getElementById('mfcShiftYVal').textContent = '0px';
       document.getElementById('mfcWbSlider').value = 5500; document.getElementById('mfcWbVal').textContent = '5500K';
       document.getElementById('mfcIsoSlider').value = 0; document.getElementById('mfcIsoVal').textContent = 'AUTO';
       document.getElementById('mfcBeautySlider').value = 0; document.getElementById('mfcBeautyVal').textContent = '0%';
@@ -15317,6 +15360,24 @@ window.MahaProFullCamera = (() => {
     if (dvid) dvid.style.filter = getActiveFilterStr();
   }
 
+  let lastHwZoomApplied = 1;
+  function applyVideoTransform() {
+    const vid = document.getElementById('mahaCamMainVideo');
+    if (!vid) return;
+    let visScale = 1;
+    if (state.zoom < 1) {
+      visScale = 0.36 + 0.64 * Math.pow(state.zoom, 0.32);
+      vid.style.borderRadius = state.zoom < 0.96 ? '22px' : '0px';
+      vid.style.boxShadow = state.zoom < 0.96 ? '0 0 0 2px rgba(56,189,248,0.35)' : 'none';
+    } else {
+      visScale = state.zoom / Math.max(1, lastHwZoomApplied);
+      vid.style.borderRadius = '0px';
+      vid.style.boxShadow = 'none';
+    }
+    const sx = state.mirror ? -visScale : visScale;
+    vid.style.transform = `translate(calc(-50% + ${state.shiftX}px), calc(-50% + ${state.shiftY}px)) rotate(${state.tiltDeg.toFixed(1)}deg) scale(${sx.toFixed(3)}, ${visScale.toFixed(3)})`;
+  }
+
   async function applyZoom(val) {
     state.zoom = Math.max(0.01, Math.min(200, val));
     const zs = document.getElementById('mfcZoomSlider');
@@ -15333,32 +15394,18 @@ window.MahaProFullCamera = (() => {
         : `flex-1 py-0.5 rounded bg-white/10 ${isWide ? 'text-cyan-200' : 'text-white'} text-[9px] font-bold`;
     });
 
-    let hwZoomApplied = 1;
+    lastHwZoomApplied = 1;
     if (mainStream) {
       const track = mainStream.getVideoTracks()[0];
       const caps = track && track.getCapabilities ? track.getCapabilities() : null;
       if (caps && caps.zoom) {
-        hwZoomApplied = Math.max(caps.zoom.min, Math.min(state.zoom, caps.zoom.max));
-        try { await track.applyConstraints({ advanced: [{ zoom: hwZoomApplied }] }); } catch (_) {}
+        // When zoom <= 1, lock hardware lens to minimum (widest FOV) so objects never look too close!
+        lastHwZoomApplied = state.zoom <= 1 ? caps.zoom.min : Math.max(caps.zoom.min, Math.min(state.zoom, caps.zoom.max));
+        try { await track.applyConstraints({ advanced: [{ zoom: lastHwZoomApplied }] }); } catch (_) {}
       }
     }
 
-    const vid = document.getElementById('mahaCamMainVideo');
-    if (vid) {
-      if (state.zoom < 1) {
-        const visualScale = 0.36 + 0.64 * Math.pow(state.zoom, 0.32);
-        const sx = state.mirror ? -visualScale : visualScale;
-        vid.style.transform = `scale(${sx.toFixed(3)}, ${visualScale.toFixed(3)})`;
-        vid.style.borderRadius = state.zoom < 0.96 ? '22px' : '0px';
-        vid.style.boxShadow = state.zoom < 0.96 ? '0 0 0 2px rgba(56,189,248,0.35)' : 'none';
-      } else {
-        const digitalScale = state.zoom / hwZoomApplied;
-        const sx = state.mirror ? -digitalScale : digitalScale;
-        vid.style.transform = `scale(${sx.toFixed(3)}, ${digitalScale.toFixed(3)})`;
-        vid.style.borderRadius = '0px';
-        vid.style.boxShadow = 'none';
-      }
-    }
+    applyVideoTransform();
     updateSpecBadge();
   }
 
@@ -15425,15 +15472,13 @@ window.MahaProFullCamera = (() => {
     if (typeof CameraPoseController !== 'undefined' && CameraPoseController.stopCamera) {
       try { CameraPoseController.stopCamera(); } catch (_) {}
     }
-    const isPortrait = window.innerHeight > window.innerWidth;
-    const longSide = state.quality === '4K' ? 3840 : 1920;
-    const shortSide = state.quality === '4K' ? 2160 : 1080;
-    const reqW = isPortrait ? shortSide : longSide;
-    const reqH = isPortrait ? longSide : shortSide;
+    // Request full native sensor aspect (4:3 wide sensor) without artificial portrait crop so objects appear at true natural distance!
+    const wIdeal = state.quality === '4K' ? 3840 : 1920;
+    const hIdeal = state.quality === '4K' ? 2160 : 1440;
 
     try {
       mainStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: state.facing }, width: { ideal: reqW }, height: { ideal: reqH }, frameRate: { ideal: state.fps, min: 24 } },
+        video: { facingMode: { ideal: state.facing }, width: { ideal: wIdeal }, height: { ideal: hIdeal }, frameRate: { ideal: state.fps, min: 24 } },
         audio: true
       });
     } catch (_) {
@@ -15441,8 +15486,19 @@ window.MahaProFullCamera = (() => {
     }
     mainStream.getAudioTracks().forEach((tr) => { tr.enabled = state.mic; });
     const vid = document.getElementById('mahaCamMainVideo');
+    vid.classList.toggle('fill-screen', state.viewFill);
     vid.srcObject = mainStream;
     await new Promise((res) => { if (vid.readyState >= 1) res(); else vid.onloadedmetadata = () => res(); });
+
+    // Force hardware zoom to widest optical minimum on startup so objects are never zoomed-in too close
+    const track = mainStream.getVideoTracks()[0];
+    if (track && track.getCapabilities) {
+      const caps = track.getCapabilities();
+      if (caps && caps.zoom) {
+        try { await track.applyConstraints({ advanced: [{ zoom: caps.zoom.min }] }); } catch (_) {}
+      }
+    }
+
     await applyZoom(state.zoom);
     applyLiveFilters(); updateSpecBadge();
     if (state.audioMeterOn) setupAudioPipeline();
@@ -15451,23 +15507,27 @@ window.MahaProFullCamera = (() => {
   function stopMainStream() { if (mainStream) { mainStream.getTracks().forEach((t) => t.stop()); mainStream = null; } }
   function stopDualStream() { if (dualStream) { dualStream.getTracks().forEach((t) => t.stop()); dualStream = null; } }
 
-  function mapNormBoxToViewport(normBox, vw, vh, cw, ch) {
-    const baseScale = Math.max(cw / vw, ch / vh);
-    const visScale = state.zoom < 1 ? (0.36 + 0.64 * Math.pow(state.zoom, 0.32)) : Math.max(1, state.zoom);
+  // Shared exact video display rectangle (matches object-fit: contain vs cover + zoom + shiftX/Y)
+  function getVideoDisplayRect(vw, vh, cw, ch) {
+    const baseScale = state.viewFill ? Math.max(cw / vw, ch / vh) : Math.min(cw / vw, ch / vh);
+    const visScale = state.zoom < 1 ? (0.36 + 0.64 * Math.pow(state.zoom, 0.32)) : Math.max(1, state.zoom / Math.max(1, lastHwZoomApplied));
     const totalScale = baseScale * visScale;
     const dispW = vw * totalScale;
     const dispH = vh * totalScale;
-    const offX = (cw - dispW) / 2;
-    const offY = (ch - dispH) / 2;
-
-    const bw = (normBox.maxX - normBox.minX) * dispW;
-    const bh = (normBox.maxY - normBox.minY) * dispH;
-    let bx = offX + normBox.minX * dispW;
-    if (state.mirror) bx = cw - bx - bw;
-    return { x: bx, y: offY + normBox.minY * dispH, w: bw, h: bh, roll: normBox.roll || 0 };
+    const offX = (cw - dispW) / 2 + state.shiftX;
+    const offY = (ch - dispH) / 2 + state.shiftY;
+    return { ox: offX, oy: offY, dw: dispW, dh: dispH };
   }
 
-  // 3D Motion Parallax Face Mask Renderer (rotates with head roll & shifts depth smoothly)
+  function mapNormBoxToViewport(normBox, vw, vh, cw, ch) {
+    const { ox, oy, dw, dh } = getVideoDisplayRect(vw, vh, cw, ch);
+    const bw = (normBox.maxX - normBox.minX) * dw;
+    const bh = (normBox.maxY - normBox.minY) * dh;
+    let bx = ox + normBox.minX * dw;
+    if (state.mirror) bx = cw - bx - bw;
+    return { x: bx, y: oy + normBox.minY * dh, w: bw, h: bh, roll: (normBox.roll || 0) + (state.tiltDeg * Math.PI / 180) };
+  }
+
   function drawSnapMask(ctx, box, maskId, mouthOpen = false) {
     if (!box || maskId === 'OFF') return;
     const cx = box.x + box.w * 0.5;
@@ -15736,11 +15796,16 @@ window.MahaProFullCamera = (() => {
       ctx.clearRect(0, 0, cw, ch);
 
       const vw = vid.videoWidth, vh = vid.videoHeight;
-      const sc = Math.max(cw / vw, ch / vh);
-      const dw = vw * sc, dh = vh * sc;
-      const ox = (cw - dw) / 2, oy = (ch - dh) / 2;
+      const { ox, oy, dw, dh } = getVideoDisplayRect(vw, vh, cw, ch);
 
       if (needsFullRedraw) {
+        ctx.save();
+        if (Math.abs(state.tiltDeg) > 0.05) {
+          ctx.translate(cw / 2, ch / 2);
+          ctx.rotate((state.tiltDeg * Math.PI) / 180);
+          ctx.translate(-cw / 2, -ch / 2);
+        }
+
         if (bgId.startsWith('GS_')) {
           const pw = 320, ph = Math.round(pw * (ch / cw));
           if (!fxScratch) fxScratch = document.createElement('canvas');
@@ -15786,7 +15851,6 @@ window.MahaProFullCamera = (() => {
           ctx.restore();
         }
 
-        // Before / After Live Split Compare: left side shows raw unfiltered camera
         if (state.compareSplitOn) {
           const splitX = Math.round(cw * state.compareSplitPos);
           ctx.save();
@@ -15803,6 +15867,7 @@ window.MahaProFullCamera = (() => {
           ctx.fillText('◀▶', splitX, ch * 0.5 + 3);
           ctx.restore();
         }
+        ctx.restore();
       }
 
       if (needsOverlayOnly) drawLightParticleCinemaFx(ctx, cw, ch, now);
@@ -15965,7 +16030,7 @@ window.MahaProFullCamera = (() => {
         if (!smoothFaceNorm) {
           smoothFaceNorm = { ...rawFaceNorm };
         } else {
-          const a = 0.75;
+          const a = 0.78;
           smoothFaceNorm.minX += (rawFaceNorm.minX - smoothFaceNorm.minX) * a;
           smoothFaceNorm.maxX += (rawFaceNorm.maxX - smoothFaceNorm.maxX) * a;
           smoothFaceNorm.minY += (rawFaceNorm.minY - smoothFaceNorm.minY) * a;
@@ -16204,18 +16269,19 @@ window.MahaProFullCamera = (() => {
     const c = document.createElement('canvas'); c.width = outW; c.height = outH;
     const ctx = c.getContext('2d', { willReadFrequently: true });
 
-    let hwZoom = 1;
-    const track = mainStream && mainStream.getVideoTracks ? mainStream.getVideoTracks()[0] : null;
-    const settings = track && track.getSettings ? track.getSettings() : null;
-    if (settings && settings.zoom) hwZoom = settings.zoom;
-
     const isUltraWide = state.zoom < 1;
     const visScale = isUltraWide ? (0.36 + 0.64 * Math.pow(state.zoom, 0.32)) : 1;
-    const dZoom = isUltraWide ? 1 : Math.max(1, state.zoom / hwZoom);
+    const dZoom = isUltraWide ? 1 : Math.max(1, state.zoom / Math.max(1, lastHwZoomApplied));
     const cropW = outW / dZoom, cropH = outH / dZoom;
     const cropX = (vw - cropW) / 2, cropY = (vh - cropH) / 2;
 
     const drawSubject = (targetCtx) => {
+      targetCtx.save();
+      if (Math.abs(state.tiltDeg) > 0.05) {
+        targetCtx.translate(outW / 2, outH / 2);
+        targetCtx.rotate((state.tiltDeg * Math.PI) / 180);
+        targetCtx.translate(-outW / 2, -outH / 2);
+      }
       if (isUltraWide) {
         targetCtx.save();
         targetCtx.filter = `${getActiveFilterStr()} blur(18px) brightness(0.65)`;
@@ -16238,6 +16304,7 @@ window.MahaProFullCamera = (() => {
         targetCtx.drawImage(vid, cropX, cropY, cropW, cropH, 0, 0, outW, outH);
         targetCtx.restore();
       }
+      targetCtx.restore();
       targetCtx.filter = 'none';
     };
 
@@ -16467,9 +16534,6 @@ window.MahaProFullCamera = (() => {
     const sh = document.getElementById('mfcShutterBtn'); if (sh) sh.style.borderRadius = '50%';
   }
 
-  // ============================================================================
-  // INSTANT POST-CAPTURE PREVIEW + ZERO-PIXEL ZOOM (1x–16x) + BACK TO CAMERA
-  // ============================================================================
   let prevState = { scale: 1, panX: 0, panY: 0, fileName: '', dataUrl: '' };
   let pTouchDist = 0, pTouchStartScale = 1, pPanLast = null, pTapLast = 0;
 
@@ -16677,12 +16741,12 @@ window.MahaProFullCamera = (() => {
     try { history.pushState({ modal: 'fullcam' }, '', '#camera'); } catch (_) {}
 
     orientHandler = (ev) => {
+      if (ev.gamma != null) currentDeviceTilt = Math.max(-45, Math.min(45, ev.gamma));
       if (!state.levelerOn) return;
       const bar = document.getElementById('mfcLevelerBar');
-      if (!bar || ev.gamma == null) return;
-      const tilt = Math.max(-45, Math.min(45, ev.gamma));
-      bar.style.transform = `translate(-50%, -50%) rotate(${(-tilt).toFixed(1)}deg)`;
-      bar.classList.toggle('level-ok', Math.abs(tilt) < 2.5);
+      if (!bar) return;
+      bar.style.transform = `translate(-50%, -50%) rotate(${(-currentDeviceTilt).toFixed(1)}deg)`;
+      bar.classList.toggle('level-ok', Math.abs(currentDeviceTilt) < 2.5);
     };
     window.addEventListener('deviceorientation', orientHandler);
 
