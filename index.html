@@ -43,7 +43,7 @@ html, body {
   background: var(--bg-base);
   color: var(--text-primary);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
   min-height: 100vh;
 }
 
@@ -354,6 +354,59 @@ html, body { min-height: 100dvh; }
       -webkit-backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.14);
     }
+
+  
+    /* === FIXED TOP VIDEO PREVIEW FOR VIDEO MAKER & VIDEO EDITOR === */
+    body.video-fixed-mode .video-preview-pinned {
+      position: fixed !important;
+      top: 56px !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 35 !important;
+      background: rgba(7, 8, 13, 0.98) !important;
+      border-radius: 0 0 18px 18px !important;
+      border-bottom: 1px solid rgba(99, 102, 241, 0.35) !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
+      padding: 8px 10px !important;
+      margin: 0 !important;
+    }
+    body.video-fixed-mode .video-preview-pinned .vid-canvas-box {
+      max-height: 31dvh !important;
+      min-height: 155px !important;
+      height: 29dvh !important;
+    }
+    body.video-fixed-mode .video-preview-pinned canvas {
+      max-height: 28dvh !important;
+      width: auto !important;
+      max-width: 100% !important;
+    }
+    body.video-fixed-mode .video-scroll-spacer {
+      height: calc(29dvh + 74px) !important;
+    }
+    @media (min-width: 1024px) {
+      body.video-fixed-mode .video-preview-pinned {
+        position: sticky !important;
+        top: 12px !important;
+        left: auto !important;
+        right: auto !important;
+        border-radius: 16px !important;
+        padding: 12px !important;
+      }
+      body.video-fixed-mode .video-preview-pinned .vid-canvas-box {
+        max-height: 440px !important;
+        min-height: 260px !important;
+        height: auto !important;
+      }
+      body.video-fixed-mode .video-preview-pinned canvas {
+        max-height: 420px !important;
+      }
+      body.video-fixed-mode .video-scroll-spacer {
+        display: none !important;
+      }
+    }
+    /* Hide scrollbar on compact camera settings strip */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
   </style>
 </head>
@@ -7651,8 +7704,9 @@ const StudioViews = (() => {
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
           <!-- Preview + Transport -->
           <div class="lg:col-span-8 space-y-3">
-            <div class="sticky-preview-stage studio-card rounded-2xl p-3 space-y-2.5">
-              <div class="bg-black rounded-xl overflow-hidden aspect-video flex items-center justify-center">
+            <div class="video-scroll-spacer lg:hidden"></div>
+            <div class="video-preview-pinned sticky-preview-stage studio-card rounded-2xl p-3 space-y-2">
+              <div class="vid-canvas-box bg-black rounded-xl overflow-hidden aspect-video flex items-center justify-center">
                 <canvas id="vidPreviewCanvas" width="720" height="405" class="w-full h-full object-contain"></canvas>
               </div>
               <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
@@ -8290,8 +8344,9 @@ const StudioViews = (() => {
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
           <!-- Left: Live Preview + Timeline -->
           <div class="lg:col-span-8 space-y-3">
-            <div class="sticky-preview-stage studio-card rounded-2xl p-3 space-y-2.5">
-              <div class="bg-black rounded-xl overflow-hidden flex items-center justify-center max-h-[440px] min-h-[260px]">
+            <div class="video-scroll-spacer lg:hidden"></div>
+            <div class="video-preview-pinned sticky-preview-stage studio-card rounded-2xl p-3 space-y-2">
+              <div class="vid-canvas-box bg-black rounded-xl overflow-hidden flex items-center justify-center max-h-[440px] min-h-[260px]">
                 <canvas id="vmCanvas" width="${canvasDims[0]}" height="${canvasDims[1]}" class="max-w-full max-h-[420px] object-contain"></canvas>
               </div>
               <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
@@ -9383,32 +9438,70 @@ const App = (() => {
   let isHandlingPopState = false;
 
   function goBackInApp() {
-    const openModal = ['exportHudOverlay', 'sourcePickerModal', 'exportModal', 'renameModal', 'confirmModal', 'mediaPreviewModal']
+    // 1. If Full-Display Pro Camera is open, close it and return to previous screen!
+    const fullCamEl = document.getElementById('mahaFullCamOverlay');
+    if (fullCamEl && fullCamEl.style.display !== 'none') {
+      if (window.MahaProFullCamera) window.MahaProFullCamera.close(false);
+      if (state.route === 'camera') {
+        if (routeHistory.length > 1) routeHistory.pop();
+        const prev = routeHistory[routeHistory.length - 1] || 'dashboard';
+        isHandlingPopState = true;
+        navigate(prev);
+        isHandlingPopState = false;
+      }
+      try { history.pushState({ route: state.route, guard: true }, '', '#' + state.route); } catch (_) {}
+      return;
+    }
+
+    // 2. If Mobile Drawer is open, close it first
+    const mobDrawer = document.getElementById('mobileDrawer');
+    if (mobDrawer && !mobDrawer.classList.contains('hidden')) {
+      mobDrawer.classList.add('hidden');
+      state.mobileMenuOpen = false;
+      try { history.pushState({ route: state.route, guard: true }, '', '#' + state.route); } catch (_) {}
+      return;
+    }
+
+    // 3. If any modal / overlay is open, close it first
+    const openModal = ['universalFormatModal', 'exportHudOverlay', 'sourcePickerModal', 'exportModal', 'renameModal', 'confirmModal', 'mediaPreviewModal']
       .map(id => document.getElementById(id))
       .find(el => el && !el.classList.contains('hidden'));
     if (openModal) {
       openModal.classList.add('hidden');
-      try { history.pushState({ route: state.route }, '', '#' + state.route); } catch (_) {}
+      try { history.pushState({ route: state.route, guard: true }, '', '#' + state.route); } catch (_) {}
       return;
     }
-    if (state.route !== 'dashboard') {
-      if (routeHistory.length > 1) routeHistory.pop();
+
+    // 4. Step back to the exact previous screen in routeHistory
+    if (routeHistory.length > 1) {
+      routeHistory.pop();
       const prev = routeHistory[routeHistory.length - 1] || 'dashboard';
       isHandlingPopState = true;
       navigate(prev);
       isHandlingPopState = false;
-      try { history.pushState({ route: prev }, '', '#' + prev); } catch (_) {}
+      try { history.pushState({ route: prev, guard: true }, '', '#' + prev); } catch (_) {}
       return;
     }
-    // On Dashboard -> Ask Exit Yes / No!
+
+    if (state.route !== 'dashboard') {
+      routeHistory.length = 0;
+      routeHistory.push('dashboard');
+      isHandlingPopState = true;
+      navigate('dashboard');
+      isHandlingPopState = false;
+      try { history.pushState({ route: 'dashboard', guard: true }, '', '#dashboard'); } catch (_) {}
+      return;
+    }
+
+    // 5. Already on Dashboard -> Ask Exit confirmation (never exit accidentally!)
     openConfirmModal(
-      'Exit AI PRO STUDIO?',
-      'Kya aap AI PRO STUDIO se bahar nikalna (Exit) chahte hain?',
+      'Exit Maha AI STUDIO?',
+      'Kya aap app se bahar nikalna (Exit) chahte hain?',
       () => {
         window.__allowAppExit = true;
         try { window.close(); } catch (_) {}
-        try { history.go(-2); } catch (_) {}
-        showToast('Exiting AI PRO STUDIO...', 'info');
+        try { history.go(-history.length); } catch (_) {}
+        showToast('Exiting Maha AI STUDIO...', 'info');
       }
     );
     const okB = document.getElementById('cfmOkBtn');
@@ -9420,14 +9513,11 @@ const App = (() => {
 
   function navigate(route) {
     if (!isHandlingPopState && route && route !== state.route) {
-      if (route === 'dashboard') {
-        routeHistory.length = 0;
-        routeHistory.push('dashboard');
-      } else {
+      if (routeHistory[routeHistory.length - 1] !== route) {
         routeHistory.push(route);
-        if (routeHistory.length > 30) routeHistory.shift();
+        if (routeHistory.length > 40) routeHistory.shift();
       }
-      try { history.pushState({ route }, '', '#' + route); } catch (_) {}
+      try { history.pushState({ route, depth: routeHistory.length }, '', '#' + route); } catch (_) {}
     }
     if (state.route === 'camera' || state.route === 'photoshoot') {
       CameraPoseController.stopCamera();
@@ -9438,6 +9528,7 @@ const App = (() => {
     closeMediaPreview();
     state.route = route;
     state.mobileMenuOpen = false;
+    document.body.classList.toggle('video-fixed-mode', route === 'video-maker' || route === 'video-editor' || route === 'cinematic-video');
     if (route === 'gallery' || route === 'dashboard' || route === 'projects') {
       refreshStorage().then(() => renderApp()).catch(() => renderApp());
     } else {
@@ -13833,10 +13924,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
 <script>
 // ============================================================================
-// MAHA PRO FULL-DISPLAY CAMERA
-// Full Screen • Photo & Video On-Display Settings • 200x Zoom • Dual Shoot
-// iPhone-Level Pro HDR Pipeline • Automatic Phone Gallery Save
-// Zero Grid Lines • Zero Animations
+// MAHA PRO FULL-DISPLAY CAMERA (v3)
+// Full Screen • ALL Photo & Video Settings Clearly Visible On-Display
+// 200x Zoom • Dual Shoot • iPhone-Level Pro HDR • Automatic Phone Gallery Save
+// Zero Grid Lines • Zero Animations • Proper Hardware Back Support
 // ============================================================================
 window.MahaProFullCamera = (() => {
   let mainStream = null;
@@ -13849,6 +13940,15 @@ window.MahaProFullCamera = (() => {
   let onCloseCallback = null;
   let dualCanvasRaf = null;
 
+  const TONES = [
+    { id: 'iphone', label: 'iPhone Pro', filter: 'contrast(1.09) saturate(1.13)' },
+    { id: 'vivid',  label: 'Vivid',      filter: 'contrast(1.16) saturate(1.30)' },
+    { id: 'natural',label: 'Natural',    filter: 'contrast(1.02) saturate(1.02)' },
+    { id: 'warm',   label: 'Golden',     filter: 'contrast(1.08) saturate(1.18) sepia(0.14)' },
+    { id: 'bw',     label: 'Mono B&W',   filter: 'grayscale(1) contrast(1.22)' }
+  ];
+  const RATIOS = ['FULL', '4:3', '16:9', '1:1'];
+
   const state = {
     mode: 'photo',         // 'photo' | 'video'
     facing: 'environment', // 'environment' | 'user'
@@ -13858,11 +13958,17 @@ window.MahaProFullCamera = (() => {
     torch: false,
     exposure: 0,           // -2.0 to +2.0
     timer: 0,              // 0, 3, 5, 10
-    quality: '4K'          // '4K' | 'FHD'
+    quality: '4K',         // '4K' | 'FHD'
+    fps: 60,               // 60 | 30
+    ratioIdx: 0,           // FULL, 4:3, 16:9, 1:1
+    toneIdx: 0,            // iPhone Pro, Vivid, Natural, Golden, Mono
+    mirror: false,
+    mic: true
   };
 
   function buildUI() {
-    if (document.getElementById('mahaFullCamOverlay')) return;
+    const existing = document.getElementById('mahaFullCamOverlay');
+    if (existing) existing.remove();
     const div = document.createElement('div');
     div.id = 'mahaFullCamOverlay';
     div.style.display = 'none';
@@ -13872,41 +13978,55 @@ window.MahaProFullCamera = (() => {
       <!-- Dual Shoot Secondary PiP Video -->
       <video id="mahaCamDualVideo" autoplay playsinline muted></video>
 
-      <!-- TOP ON-DISPLAY SETTINGS BAR (Visible in both Photo & Video) -->
-      <div style="position:absolute;top:max(10px,env(safe-area-inset-top));left:10px;right:10px;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;">
-        <button type="button" id="mfcCloseBtn" class="maha-hud-bar text-white text-xs font-bold px-3 py-2 rounded-full">✕ Back</button>
+      <!-- TOP HEADER + ALL ON-DISPLAY SETTINGS STRIP (100% Visible in Photo & Video) -->
+      <div style="position:absolute;top:max(8px,env(safe-area-inset-top));left:8px;right:8px;z-index:35;display:flex;flex-direction:column;gap:6px;">
+        <!-- Row 1: Back + Live Status Badge + Quick Flip -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+          <button type="button" id="mfcCloseBtn" class="maha-hud-bar text-white text-xs font-bold px-3 py-1.5 rounded-full">← Back</button>
+          <div id="mfcLiveSpec" class="maha-hud-bar text-amber-300 text-[10px] font-bold px-3 py-1 rounded-full tracking-wide">
+            PHOTO • 4K • 60FPS • PRO HDR
+          </div>
+          <button type="button" id="mfcTopFlipBtn" class="maha-hud-bar text-white text-xs font-bold px-3 py-1.5 rounded-full">🔄 Flip</button>
+        </div>
 
-        <div class="maha-hud-bar rounded-full px-2 py-1 flex items-center gap-1 text-[11px] font-semibold text-white flex-wrap">
-          <button type="button" id="mfcHdrBtn" class="px-2.5 py-1 rounded-full bg-amber-500 text-black font-bold">PRO HDR: ON</button>
-          <button type="button" id="mfcDualBtn" class="px-2.5 py-1 rounded-full bg-white/10 text-white">DUAL: OFF</button>
-          <button type="button" id="mfcTorchBtn" class="px-2.5 py-1 rounded-full bg-white/10 text-white">⚡ OFF</button>
-          <button type="button" id="mfcTimerBtn" class="px-2.5 py-1 rounded-full bg-white/10 text-white">⏱ 0s</button>
-          <button type="button" id="mfcQualBtn" class="px-2.5 py-1 rounded-full bg-white/10 text-emerald-300 font-bold">4K PRO</button>
+        <!-- Row 2: ALL ON-DISPLAY CAMERA & VIDEO SETTINGS (Clean 2-row wrapped grid, nothing hidden) -->
+        <div class="maha-hud-bar rounded-2xl p-1.5" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;">
+          <button type="button" id="mfcHdrBtn" class="py-1.5 px-1 rounded-xl bg-amber-500 text-black text-[10px] font-extrabold truncate">HDR: ON</button>
+          <button type="button" id="mfcDualBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">DUAL: OFF</button>
+          <button type="button" id="mfcTorchBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">⚡ OFF</button>
+          <button type="button" id="mfcTimerBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">⏱ 0s</button>
+          <button type="button" id="mfcQualBtn" class="py-1.5 px-1 rounded-xl bg-emerald-500/25 text-emerald-200 text-[10px] font-extrabold truncate">4K PRO</button>
+
+          <button type="button" id="mfcFpsBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-cyan-200 text-[10px] font-bold truncate">60 FPS</button>
+          <button type="button" id="mfcRatioBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">📐 FULL</button>
+          <button type="button" id="mfcToneBtn" class="py-1.5 px-1 rounded-xl bg-indigo-500/35 text-indigo-100 text-[10px] font-bold truncate">🎨 iPhone</button>
+          <button type="button" id="mfcMirrorBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">🪞 OFF</button>
+          <button type="button" id="mfcMicBtn" class="py-1.5 px-1 rounded-xl bg-emerald-500/25 text-emerald-200 text-[10px] font-bold truncate">🎙 ON</button>
         </div>
       </div>
 
       <!-- RECORDING TIMER / SAVE STATUS PILL -->
-      <div id="mfcRecBadge" style="display:none;position:absolute;top:62px;left:50%;transform:translateX(-50%);z-index:30;" class="px-3 py-1 rounded-full bg-red-600 text-white text-xs font-bold">
+      <div id="mfcRecBadge" style="display:none;position:absolute;top:126px;left:50%;transform:translateX(-50%);z-index:35;" class="px-3 py-1 rounded-full bg-red-600 text-white text-xs font-bold">
         ● REC 00:00
       </div>
-      <div id="mfcSaveNote" style="display:none;position:absolute;top:62px;left:50%;transform:translateX(-50%);z-index:30;" class="maha-hud-bar px-3 py-1 rounded-full text-emerald-300 text-xs font-bold">
+      <div id="mfcSaveNote" style="display:none;position:absolute;top:126px;left:50%;transform:translateX(-50%);z-index:35;" class="maha-hud-bar px-3 py-1 rounded-full text-emerald-300 text-xs font-bold">
         ✓ Saved to Phone Gallery
       </div>
 
       <!-- LEFT SIDE ON-DISPLAY EXPOSURE SLIDER -->
-      <div class="maha-hud-bar" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);z-index:30;padding:10px 6px;border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:6px;">
-        <span style="font-size:10px;color:#fbbf24;font-weight:700;">EV</span>
-        <input id="mfcEvSlider" type="range" min="-2" max="2" step="0.2" value="0" style="writing-mode:vertical-lr;direction:rtl;height:120px;width:18px;accent-color:#fbbf24;">
-        <span id="mfcEvVal" style="font-size:10px;color:#fff;font-weight:700;">0.0</span>
+      <div class="maha-hud-bar" style="position:absolute;left:8px;top:52%;transform:translateY(-50%);z-index:30;padding:8px 5px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:5px;">
+        <span style="font-size:9px;color:#fbbf24;font-weight:800;">EV</span>
+        <input id="mfcEvSlider" type="range" min="-2" max="2" step="0.2" value="0" style="writing-mode:vertical-lr;direction:rtl;height:110px;width:16px;accent-color:#fbbf24;">
+        <span id="mfcEvVal" style="font-size:9px;color:#fff;font-weight:700;">0.0</span>
       </div>
 
       <!-- BOTTOM ON-DISPLAY CONTROLS (200x ZOOM + MODE + SHUTTER) -->
-      <div style="position:absolute;bottom:max(14px,env(safe-area-inset-bottom));left:10px;right:10px;z-index:30;display:flex;flex-direction:column;gap:10px;align-items:center;">
+      <div style="position:absolute;bottom:max(10px,env(safe-area-inset-bottom));left:8px;right:8px;z-index:35;display:flex;flex-direction:column;gap:8px;align-items:center;">
 
         <!-- 200x Super Zoom Presets + Slider -->
-        <div class="maha-hud-bar w-full max-w-md rounded-2xl px-3 py-2 flex flex-col gap-1.5">
+        <div class="maha-hud-bar w-full max-w-md rounded-2xl px-3 py-1.5 flex flex-col gap-1">
           <div class="flex items-center justify-between text-[11px] font-bold text-white">
-            <span>🔍 SUPER ZOOM (1x - 200x)</span>
+            <span>🔍 SUPER ZOOM (1x – 200x)</span>
             <span id="mfcZoomLabel" class="text-amber-400">1.0x</span>
           </div>
           <input id="mfcZoomSlider" type="range" min="1" max="200" step="0.5" value="1" class="w-full accent-amber-400" />
@@ -13922,8 +14042,8 @@ window.MahaProFullCamera = (() => {
 
         <!-- Photo / Video Mode Switch -->
         <div class="maha-hud-bar rounded-full p-1 flex items-center gap-1 text-xs font-bold">
-          <button type="button" id="mfcModePhoto" class="px-4 py-1.5 rounded-full bg-white text-black">PHOTO</button>
-          <button type="button" id="mfcModeVideo" class="px-4 py-1.5 rounded-full text-white">VIDEO</button>
+          <button type="button" id="mfcModePhoto" class="px-5 py-1 rounded-full bg-white text-black">PHOTO</button>
+          <button type="button" id="mfcModeVideo" class="px-5 py-1 rounded-full text-white">VIDEO</button>
         </div>
 
         <!-- Shutter Row -->
@@ -13932,7 +14052,7 @@ window.MahaProFullCamera = (() => {
             Gallery
           </button>
 
-          <button type="button" id="mfcShutterBtn" style="width:72px;height:72px;border-radius:50%;border:4px solid #fff;background:rgba(255,255,255,0.94);display:flex;align-items:center;justify-content:center;" title="Capture / Record"></button>
+          <button type="button" id="mfcShutterBtn" style="width:68px;height:68px;border-radius:50%;border:4px solid #fff;background:rgba(255,255,255,0.94);display:flex;align-items:center;justify-content:center;" title="Capture / Record"></button>
 
           <button type="button" id="mfcFlipBtn" class="maha-hud-bar w-12 h-12 rounded-full text-white text-lg flex items-center justify-center" title="Switch Front / Back Camera">🔄</button>
         </div>
@@ -13942,15 +14062,26 @@ window.MahaProFullCamera = (() => {
     bindEvents();
   }
 
+  function updateSpecBadge() {
+    const el = document.getElementById('mfcLiveSpec');
+    if (!el) return;
+    const m = state.mode === 'video' ? 'VIDEO' : 'PHOTO';
+    const r = RATIOS[state.ratioIdx];
+    const hdr = state.proHDR ? 'PRO HDR' : 'STD';
+    el.textContent = `${m} • ${state.quality} • ${state.fps}FPS • ${r} • ${hdr}`;
+  }
+
   function bindEvents() {
-    document.getElementById('mfcCloseBtn').onclick = () => close(true);
+    document.getElementById('mfcCloseBtn').onclick = () => {
+      close(true);
+    };
 
     document.getElementById('mfcLastThumbWrap').onclick = () => {
       close(false);
       if (typeof App !== 'undefined' && App.navigate) App.navigate('gallery');
     };
 
-    document.getElementById('mfcFlipBtn').onclick = async () => {
+    const doFlip = async () => {
       if (isRecording) return;
       state.facing = state.facing === 'environment' ? 'user' : 'environment';
       await startMainCamera();
@@ -13960,6 +14091,8 @@ window.MahaProFullCamera = (() => {
         await toggleDualShoot();
       }
     };
+    document.getElementById('mfcFlipBtn').onclick = doFlip;
+    document.getElementById('mfcTopFlipBtn').onclick = doFlip;
 
     document.getElementById('mfcModePhoto').onclick = () => setMode('photo');
     document.getElementById('mfcModeVideo').onclick = () => setMode('video');
@@ -13967,10 +14100,11 @@ window.MahaProFullCamera = (() => {
     document.getElementById('mfcHdrBtn').onclick = () => {
       state.proHDR = !state.proHDR;
       const b = document.getElementById('mfcHdrBtn');
-      b.textContent = state.proHDR ? 'PRO HDR: ON' : 'PRO HDR: OFF';
+      b.textContent = state.proHDR ? 'HDR: ON' : 'HDR: OFF';
       b.className = state.proHDR
-        ? 'px-2.5 py-1 rounded-full bg-amber-500 text-black font-bold'
-        : 'px-2.5 py-1 rounded-full bg-white/10 text-white';
+        ? 'py-1.5 px-1 rounded-xl bg-amber-500 text-black text-[10px] font-extrabold truncate'
+        : 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
+      updateSpecBadge();
     };
 
     document.getElementById('mfcDualBtn').onclick = toggleDualShoot;
@@ -13986,7 +14120,51 @@ window.MahaProFullCamera = (() => {
       if (isRecording) return;
       state.quality = state.quality === '4K' ? 'FHD' : '4K';
       document.getElementById('mfcQualBtn').textContent = state.quality === '4K' ? '4K PRO' : '1080p HD';
+      updateSpecBadge();
       await startMainCamera();
+    };
+
+    document.getElementById('mfcFpsBtn').onclick = async () => {
+      if (isRecording) return;
+      state.fps = state.fps === 60 ? 30 : 60;
+      document.getElementById('mfcFpsBtn').textContent = `${state.fps} FPS`;
+      updateSpecBadge();
+      await startMainCamera();
+    };
+
+    document.getElementById('mfcRatioBtn').onclick = () => {
+      state.ratioIdx = (state.ratioIdx + 1) % RATIOS.length;
+      document.getElementById('mfcRatioBtn').textContent = `📐 ${RATIOS[state.ratioIdx]}`;
+      updateSpecBadge();
+    };
+
+    document.getElementById('mfcToneBtn').onclick = () => {
+      state.toneIdx = (state.toneIdx + 1) % TONES.length;
+      const t = TONES[state.toneIdx];
+      document.getElementById('mfcToneBtn').textContent = `🎨 ${t.label.split(' ')[0]}`;
+      applyLiveFilters();
+    };
+
+    document.getElementById('mfcMirrorBtn').onclick = () => {
+      state.mirror = !state.mirror;
+      const b = document.getElementById('mfcMirrorBtn');
+      b.textContent = state.mirror ? '🪞 ON' : '🪞 OFF';
+      b.className = state.mirror
+        ? 'py-1.5 px-1 rounded-xl bg-amber-400 text-black text-[10px] font-extrabold truncate'
+        : 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
+      applyZoom(state.zoom);
+    };
+
+    document.getElementById('mfcMicBtn').onclick = () => {
+      state.mic = !state.mic;
+      const b = document.getElementById('mfcMicBtn');
+      b.textContent = state.mic ? '🎙 ON' : '🔇 OFF';
+      b.className = state.mic
+        ? 'py-1.5 px-1 rounded-xl bg-emerald-500/25 text-emerald-200 text-[10px] font-bold truncate'
+        : 'py-1.5 px-1 rounded-xl bg-rose-500/35 text-rose-200 text-[10px] font-bold truncate';
+      if (mainStream) {
+        mainStream.getAudioTracks().forEach((tr) => { tr.enabled = state.mic; });
+      }
     };
 
     const zSlider = document.getElementById('mfcZoomSlider');
@@ -13995,7 +14173,7 @@ window.MahaProFullCamera = (() => {
       btn.onclick = () => applyZoom(parseFloat(btn.dataset.mfcZ));
     });
 
-    // Pinch-to-zoom on full display camera
+    // Two-finger Pinch-to-Zoom directly on Full Display Camera
     let pinchStartDist = 0;
     let pinchStartZoom = 1;
     const overlay = document.getElementById('mahaFullCamOverlay');
@@ -14014,8 +14192,7 @@ window.MahaProFullCamera = (() => {
           e.touches[0].clientX - e.touches[1].clientX,
           e.touches[0].clientY - e.touches[1].clientY
         );
-        const ratio = curDist / pinchStartDist;
-        applyZoom(pinchStartZoom * ratio);
+        applyZoom(pinchStartZoom * (curDist / pinchStartDist));
       }
     }, { passive: true });
 
@@ -14032,21 +14209,29 @@ window.MahaProFullCamera = (() => {
   function setMode(m) {
     if (isRecording) return;
     state.mode = m;
-    document.getElementById('mfcModePhoto').className = m === 'photo' ? 'px-4 py-1.5 rounded-full bg-white text-black' : 'px-4 py-1.5 rounded-full text-white';
-    document.getElementById('mfcModeVideo').className = m === 'video' ? 'px-4 py-1.5 rounded-full bg-red-600 text-white' : 'px-4 py-1.5 rounded-full text-white';
+    document.getElementById('mfcModePhoto').className = m === 'photo' ? 'px-5 py-1 rounded-full bg-white text-black' : 'px-5 py-1 rounded-full text-white';
+    document.getElementById('mfcModeVideo').className = m === 'video' ? 'px-5 py-1 rounded-full bg-red-600 text-white' : 'px-5 py-1 rounded-full text-white';
     document.getElementById('mfcShutterBtn').style.background = m === 'video' ? '#dc2626' : 'rgba(255,255,255,0.94)';
+    updateSpecBadge();
+  }
+
+  function getActiveFilterStr() {
+    const bright = 1 + state.exposure * 0.18;
+    const tone = TONES[state.toneIdx] || TONES[0];
+    return `brightness(${bright.toFixed(2)}) ${tone.filter}`;
   }
 
   function applyLiveFilters() {
     const vid = document.getElementById('mahaCamMainVideo');
-    const bright = 1 + state.exposure * 0.18;
-    vid.style.filter = `brightness(${bright.toFixed(2)})`;
+    if (vid) vid.style.filter = getActiveFilterStr();
   }
 
   async function applyZoom(val) {
     state.zoom = Math.max(1, Math.min(200, val));
-    document.getElementById('mfcZoomSlider').value = state.zoom;
-    document.getElementById('mfcZoomLabel').textContent = `${state.zoom.toFixed(1)}x`;
+    const zs = document.getElementById('mfcZoomSlider');
+    const zl = document.getElementById('mfcZoomLabel');
+    if (zs) zs.value = state.zoom;
+    if (zl) zl.textContent = `${state.zoom.toFixed(1)}x`;
 
     document.querySelectorAll('[data-mfc-z]').forEach((b) => {
       const active = Math.abs(parseFloat(b.dataset.mfcZ) - state.zoom) < 0.6;
@@ -14066,7 +14251,10 @@ window.MahaProFullCamera = (() => {
     }
     const digitalScale = state.zoom / hwZoomApplied;
     const vid = document.getElementById('mahaCamMainVideo');
-    vid.style.transform = `scale(${digitalScale.toFixed(3)})`;
+    if (vid) {
+      const sx = state.mirror ? -digitalScale : digitalScale;
+      vid.style.transform = `scale(${sx.toFixed(3)}, ${digitalScale.toFixed(3)})`;
+    }
   }
 
   async function toggleTorch() {
@@ -14083,8 +14271,8 @@ window.MahaProFullCamera = (() => {
       const b = document.getElementById('mfcTorchBtn');
       b.textContent = state.torch ? '⚡ ON' : '⚡ OFF';
       b.className = state.torch
-        ? 'px-2.5 py-1 rounded-full bg-amber-400 text-black font-bold'
-        : 'px-2.5 py-1 rounded-full bg-white/10 text-white';
+        ? 'py-1.5 px-1 rounded-xl bg-amber-400 text-black text-[10px] font-extrabold truncate'
+        : 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
     } catch (_) {}
   }
 
@@ -14096,7 +14284,7 @@ window.MahaProFullCamera = (() => {
       state.dualShoot = false;
       dualVid.style.display = 'none';
       btn.textContent = 'DUAL: OFF';
-      btn.className = 'px-2.5 py-1 rounded-full bg-white/10 text-white';
+      btn.className = 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
       return;
     }
     try {
@@ -14109,7 +14297,7 @@ window.MahaProFullCamera = (() => {
       dualVid.style.display = 'block';
       state.dualShoot = true;
       btn.textContent = 'DUAL: ON';
-      btn.className = 'px-2.5 py-1 rounded-full bg-emerald-500 text-black font-bold';
+      btn.className = 'py-1.5 px-1 rounded-xl bg-emerald-500 text-black text-[10px] font-extrabold truncate';
     } catch (_) {
       showQuietNote('Device hardware simultaneous Dual Camera lock karta hai');
     }
@@ -14137,7 +14325,7 @@ window.MahaProFullCamera = (() => {
           facingMode: { ideal: state.facing },
           width: { ideal: idealW },
           height: { ideal: idealH },
-          frameRate: { ideal: 60, min: 24 }
+          frameRate: { ideal: state.fps, min: 24 }
         },
         audio: true
       });
@@ -14147,10 +14335,12 @@ window.MahaProFullCamera = (() => {
         audio: false
       });
     }
+    mainStream.getAudioTracks().forEach((tr) => { tr.enabled = state.mic; });
     const vid = document.getElementById('mahaCamMainVideo');
     vid.srcObject = mainStream;
     await applyZoom(state.zoom);
     applyLiveFilters();
+    updateSpecBadge();
   }
 
   function stopMainStream() {
@@ -14182,7 +14372,6 @@ window.MahaProFullCamera = (() => {
     await captureProPhoto();
   }
 
-  // Silent Auto-Save directly to Phone Gallery (Downloads folder) without any overlay animation
   function silentDownloadToPhone(href, fileName) {
     const a = document.createElement('a');
     a.dataset.silentSave = '1';
@@ -14193,17 +14382,29 @@ window.MahaProFullCamera = (() => {
     a.remove();
   }
 
-  // iPhone-Beatable Computational Photography Pipeline (AWB + Shadow/Highlight Tone + Micro-Sharpness)
   async function captureProPhoto() {
     const vid = document.getElementById('mahaCamMainVideo');
     const dualVid = document.getElementById('mahaCamDualVideo');
-    if (!vid.videoWidth) return;
+    if (!vid || !vid.videoWidth) return;
 
     const vw = vid.videoWidth;
     const vh = vid.videoHeight;
+
+    // Apply aspect ratio crop
+    const ratioName = RATIOS[state.ratioIdx];
+    let outW = vw, outH = vh;
+    if (ratioName === '1:1') { const s = Math.min(vw, vh); outW = s; outH = s; }
+    else if (ratioName === '4:3') {
+      if (vw / vh > 4 / 3) { outW = Math.round(vh * 4 / 3); outH = vh; }
+      else { outW = vw; outH = Math.round(vw * 3 / 4); }
+    } else if (ratioName === '16:9') {
+      if (vw / vh > 16 / 9) { outW = Math.round(vh * 16 / 9); outH = vh; }
+      else { outW = vw; outH = Math.round(vw * 9 / 16); }
+    }
+
     const c = document.createElement('canvas');
-    c.width = vw;
-    c.height = vh;
+    c.width = outW;
+    c.height = outH;
     const ctx = c.getContext('2d', { willReadFrequently: true });
 
     let hwZoom = 1;
@@ -14211,33 +14412,35 @@ window.MahaProFullCamera = (() => {
     const settings = track && track.getSettings ? track.getSettings() : null;
     if (settings && settings.zoom) hwZoom = settings.zoom;
     const dZoom = Math.max(1, state.zoom / hwZoom);
-    const cropW = vw / dZoom;
-    const cropH = vh / dZoom;
+    const cropW = outW / dZoom;
+    const cropH = outH / dZoom;
     const cropX = (vw - cropW) / 2;
     const cropY = (vh - cropH) / 2;
 
-    const bright = 1 + state.exposure * 0.18;
+    ctx.save();
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    ctx.filter = state.proHDR
-      ? `brightness(${bright.toFixed(2)}) contrast(1.09) saturate(1.12)`
-      : `brightness(${bright.toFixed(2)})`;
-    ctx.drawImage(vid, cropX, cropY, cropW, cropH, 0, 0, vw, vh);
+    ctx.filter = getActiveFilterStr();
+    if (state.mirror) {
+      ctx.translate(outW, 0);
+      ctx.scale(-1, 1);
+    }
+    ctx.drawImage(vid, cropX, cropY, cropW, cropH, 0, 0, outW, outH);
+    ctx.restore();
     ctx.filter = 'none';
 
     if (state.proHDR) {
       const blurC = document.createElement('canvas');
-      blurC.width = vw; blurC.height = vh;
+      blurC.width = outW; blurC.height = outH;
       const bctx = blurC.getContext('2d', { willReadFrequently: true });
       bctx.filter = 'blur(1.2px)';
       bctx.drawImage(c, 0, 0);
       bctx.filter = 'none';
 
-      const imgData = ctx.getImageData(0, 0, vw, vh);
-      const blurData = bctx.getImageData(0, 0, vw, vh).data;
+      const imgData = ctx.getImageData(0, 0, outW, outH);
+      const blurData = bctx.getImageData(0, 0, outW, outH).data;
       const d = imgData.data;
 
-      // Subtle Auto White Balance (Gray-World)
       let sr = 0, sg = 0, sb = 0, cnt = 0;
       for (let i = 0; i < d.length; i += 64) { sr += d[i]; sg += d[i + 1]; sb += d[i + 2]; cnt++; }
       const avgR = sr / Math.max(1, cnt), avgG = sg / Math.max(1, cnt), avgB = sb / Math.max(1, cnt);
@@ -14260,16 +14463,15 @@ window.MahaProFullCamera = (() => {
       ctx.putImageData(imgData, 0, 0);
     }
 
-    // Composite Dual Shoot PiP if ON
-    if (state.dualShoot && dualVid.videoWidth) {
-      const pipW = Math.round(vw * 0.26);
+    if (state.dualShoot && dualVid && dualVid.videoWidth) {
+      const pipW = Math.round(outW * 0.26);
       const pipH = Math.round(pipW * (dualVid.videoHeight / dualVid.videoWidth));
-      const pad = Math.round(vw * 0.03);
+      const pad = Math.round(outW * 0.03);
       ctx.save();
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = Math.max(4, Math.round(vw * 0.004));
-      ctx.strokeRect(vw - pipW - pad, pad, pipW, pipH);
-      ctx.drawImage(dualVid, vw - pipW - pad, pad, pipW, pipH);
+      ctx.lineWidth = Math.max(4, Math.round(outW * 0.004));
+      ctx.strokeRect(outW - pipW - pad, pad, pipW, pipH);
+      ctx.drawImage(dualVid, outW - pipW - pad, pad, pipW, pipH);
       ctx.restore();
     }
 
@@ -14279,9 +14481,9 @@ window.MahaProFullCamera = (() => {
     // 1. Automatic Save to Phone Gallery
     silentDownloadToPhone(dataUrl, fileName);
 
-    // 2. Update thumbnail
+    // 2. Update mini preview thumbnail
     const thumbWrap = document.getElementById('mfcLastThumbWrap');
-    thumbWrap.innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover;" />`;
+    if (thumbWrap) thumbWrap.innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover;" />`;
     showQuietNote('✓ Photo Saved to Gallery');
 
     // 3. Save in App Gallery (IndexedDB)
@@ -14295,14 +14497,14 @@ window.MahaProFullCamera = (() => {
     recordedChunks = [];
     let recordStream = mainStream;
 
-    // If Dual Shoot or Digital Zoom > 1 is active, record live composited canvas stream
     const vid = document.getElementById('mahaCamMainVideo');
     const dualVid = document.getElementById('mahaCamDualVideo');
-    if (vid.videoWidth && (state.dualShoot || state.zoom > 1.1 || state.exposure !== 0)) {
+    if (vid && vid.videoWidth) {
       const rc = document.createElement('canvas');
       rc.width = Math.min(1920, vid.videoWidth);
       rc.height = Math.min(1080, vid.videoHeight);
       const rctx = rc.getContext('2d');
+      isRecording = true;
       const drawLoop = () => {
         if (!isRecording) return;
         let hwZoom = 1;
@@ -14312,11 +14514,13 @@ window.MahaProFullCamera = (() => {
         const dZ = Math.max(1, state.zoom / hwZoom);
         const cw = vid.videoWidth / dZ, ch = vid.videoHeight / dZ;
         const cx = (vid.videoWidth - cw) / 2, cy = (vid.videoHeight - ch) / 2;
-        const bright = 1 + state.exposure * 0.18;
-        rctx.filter = `brightness(${bright.toFixed(2)})`;
+        rctx.save();
+        rctx.filter = getActiveFilterStr();
+        if (state.mirror) { rctx.translate(rc.width, 0); rctx.scale(-1, 1); }
         rctx.drawImage(vid, cx, cy, cw, ch, 0, 0, rc.width, rc.height);
+        rctx.restore();
         rctx.filter = 'none';
-        if (state.dualShoot && dualVid.videoWidth) {
+        if (state.dualShoot && dualVid && dualVid.videoWidth) {
           const pw = Math.round(rc.width * 0.25);
           const ph = Math.round(pw * (dualVid.videoHeight / dualVid.videoWidth));
           rctx.strokeStyle = '#fff';
@@ -14326,11 +14530,10 @@ window.MahaProFullCamera = (() => {
         }
         dualCanvasRaf = requestAnimationFrame(drawLoop);
       };
-      const cs = rc.captureStream(30);
+      const cs = rc.captureStream(state.fps === 60 ? 60 : 30);
       const audioTracks = mainStream.getAudioTracks();
-      if (audioTracks.length) cs.addTrack(audioTracks[0]);
+      if (audioTracks.length && state.mic) cs.addTrack(audioTracks[0]);
       recordStream = cs;
-      isRecording = true;
       drawLoop();
     } else {
       isRecording = true;
@@ -14381,6 +14584,7 @@ window.MahaProFullCamera = (() => {
     onCloseCallback = typeof closeCb === 'function' ? closeCb : null;
     buildUI();
     document.getElementById('mahaFullCamOverlay').style.display = 'block';
+    try { history.pushState({ modal: 'fullcam' }, '', '#camera'); } catch (_) {}
     try {
       await startMainCamera();
     } catch (err) {
@@ -14401,7 +14605,6 @@ window.MahaProFullCamera = (() => {
     }
   }
 
-  // Intercept Source Picker camera button directly too
   document.addEventListener('click', (e) => {
     const spBtn = e.target.closest('#spUseCameraBtn');
     if (spBtn) {
