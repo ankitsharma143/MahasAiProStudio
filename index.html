@@ -549,6 +549,34 @@ html, body { min-height: 100dvh; }
       border-color: #fef08a;
     }
 
+    
+    #mfcCamMiniWidget {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 9997;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 16px;
+      background: rgba(10, 14, 28, 0.92);
+      border: 1.5px solid rgba(251, 191, 36, 0.65);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.7);
+      cursor: pointer;
+    }
+    #mfcCompareBar {
+      position: fixed;
+      left: 50%;
+      bottom: 132px;
+      transform: translateX(-50%);
+      width: min(92vw, 380px);
+      z-index: 25;
+      display: none;
+      padding: 6px 10px;
+      border-radius: 14px;
+    }
+
     #mfcInstantPreviewModal {
       position: fixed;
       inset: 0;
@@ -14184,13 +14212,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
 <script>
 // ============================================================================
-// MAHA PRO FULL-DISPLAY CAMERA (v10 — 0.01x–200x ZOOM + FOOTER SNAP/IG/FX STUDIO)
-// • 0.01x Ultra-Wide De-Zoom (Paas ki cheez ko door dikhaye) to 200x Super Telephoto Zoom
-// • All Snapchat Animal Masks, Instagram Filters, Cartoons, FX Lighting, Particles, Cinema & Audio FX
-//   organized in an instant Footer Category + Horizontal Scrolling Strip (1-tap live apply)
-// • Centered Viewfinder + 60fps Zero-Lag Face Tracking & Mirror-Aligned Coordinate Mapping
+// MAHA PRO FULL-DISPLAY CAMERA (v11 — NEXT-LEVEL CREATOR & STUDIO SUITE)
+// • Before/After Live Split-Compare Slider (Original vs Filter/AR/BG in real time)
+// • 3D Motion Face Tilt Parallax (AR masks & crown/ears shift naturally with head tilt)
+// • Live Shutter Flash + Sound Click Feedback + Quick Studio Editor Handoff
+// • Top Floating Minimize Pill so user can jump to Studio/Gallery anytime & resume
+// • 0.01x–200x Ultra-Wide / Telephoto Zoom + Footer Snap/IG/Cartoon/FX Strip
 // • Instant Post-Capture Preview + Zero-Pixel Zoom (1x–16x) + Auto-Save + Back to Camera
-// • Post-Capture AI Enhancer (Eye Brighten & Catchlight + Smile & Lip Glow + HD Clarity)
 // ============================================================================
 window.MahaProFullCamera = (() => {
   let mainStream = null;
@@ -14215,11 +14243,9 @@ window.MahaProFullCamera = (() => {
   let speechRec = null;
   let orientHandler = null;
 
-  // Smoothed real-time face tracking box (normalized 0..1 in raw video coordinates)
-  let rawFaceNorm = null;   // { minX, maxX, minY, maxY, smiling, mouthOpen }
+  let rawFaceNorm = null;
   let smoothFaceNorm = null;
 
-  // Audio Pipeline
   let audioCtx = null;
   let audioAnalyser = null;
   let audioGainNode = null;
@@ -14234,7 +14260,6 @@ window.MahaProFullCamera = (() => {
   let musicSourceNode = null;
   let musicObjectUrl = null;
 
-  // Teleprompter, Motion, Panorama, QR, Clone, GreenScreen
   let tpRaf = null;
   let tpPlaying = false;
   let tpSpeed = 1.0;
@@ -14252,7 +14277,6 @@ window.MahaProFullCamera = (() => {
   let particles = [];
   let fxScratch = null;
 
-  // Instagram + Pro Color Filters
   const IG_FILTERS = [
     { id: 'normal',   icon: '📷', label: 'Normal',    filter: 'contrast(1.00) saturate(1.00)' },
     { id: 'iphone',   icon: '✨', label: 'iPhone Pro',filter: 'contrast(1.06) saturate(1.12)' },
@@ -14267,7 +14291,6 @@ window.MahaProFullCamera = (() => {
     { id: 'noir',     icon: '🎬', label: 'B&W Noir',  filter: 'grayscale(1) contrast(1.35)' }
   ];
 
-  // Snapchat Live Animal & AR Face Masks
   const SNAP_MASKS = [
     { id: 'OFF',    icon: '🚫', label: 'None' },
     { id: 'CAT',    icon: '🐱', label: 'Cat' },
@@ -14284,7 +14307,6 @@ window.MahaProFullCamera = (() => {
     { id: 'NEON',   icon: '⚡', label: 'Cyber Visor' }
   ];
 
-  // Live Cartoons & Face Warp
   const ART_MODES = [
     { id: 'OFF',     icon: '🚫', label: 'Normal' },
     { id: 'CARTOON', icon: '🧸', label: '3D Cartoon' },
@@ -14295,11 +14317,10 @@ window.MahaProFullCamera = (() => {
     { id: 'ALIEN',   icon: '👽', label: 'Big Eyes' }
   ];
 
-  // Dynamic FX Lighting & Cinema
   const LIGHT_FX = [
     { id: 'OFF',    icon: '🚫', label: 'No Light' },
     { id: 'PARTY',  icon: '🪩', label: 'DJ Party' },
-    { id: 'CYBER',  icon: 'neon', label: 'Neon Split', emoji: '🌈' },
+    { id: 'CYBER',  emoji: '🌈', label: 'Neon Split' },
     { id: 'FLARE',  icon: '☀️', label: 'Sun Flare' },
     { id: 'PRISM',  icon: '🔮', label: 'Prism Leak' },
     { id: 'VHS',    icon: '📼', label: '90s VHS' },
@@ -14307,7 +14328,6 @@ window.MahaProFullCamera = (() => {
     { id: 'CINEMA', icon: '🎞️', label: '2.35 Cinema' }
   ];
 
-  // Animated Live Particles
   const PARTICLE_FX = [
     { id: 'OFF',      icon: '🚫', label: 'None' },
     { id: 'SNOW',     icon: '❄️', label: 'Snowfall' },
@@ -14318,7 +14338,6 @@ window.MahaProFullCamera = (() => {
     { id: 'CONFETTI', icon: '🎉', label: 'Confetti' }
   ];
 
-  // Live Portrait Bokeh & Green Screen Backgrounds
   const BG_EFFECTS = [
     { id: 'OFF',     icon: '🚫', label: 'Real BG' },
     { id: 'BOKEH',   icon: '🫧', label: 'DSLR Bokeh' },
@@ -14329,7 +14348,6 @@ window.MahaProFullCamera = (() => {
     { id: 'GS_CUSTOM',icon:'🖼️', label: 'Green→Photo' }
   ];
 
-  // Audio Voice Changer & Reels Music
   const AUDIO_EFFECTS = [
     { id: 'NORMAL',   icon: '🎙️', label: 'Normal Mic' },
     { id: 'CHIPMUNK', icon: '🐿️', label: 'Chipmunk' },
@@ -14360,17 +14378,12 @@ window.MahaProFullCamera = (() => {
     { label: '4x',   rate: 4,   fps: 10 }
   ];
 
-  // Zoom mapping: slider 0..1000 maps non-linearly from 0.01x (Ultra-Wide Far) -> 1.0x -> 200.0x (Super Telephoto)
   function sliderToZoom(pos) {
     const p = Math.max(0, Math.min(1000, pos));
     if (p <= 300) {
-      // 0 -> 0.01x, 300 -> 1.00x (exponential curve for smooth ultra-wide control)
-      const t = p / 300;
-      return Math.pow(100, t) * 0.01;
+      return Math.pow(100, p / 300) * 0.01;
     }
-    // 300 -> 1.00x, 1000 -> 200.0x
-    const t = (p - 300) / 700;
-    return Math.pow(200, t);
+    return Math.pow(200, (p - 300) / 700);
   }
   function zoomToSlider(z) {
     const clamped = Math.max(0.01, Math.min(200, z));
@@ -14388,9 +14401,11 @@ window.MahaProFullCamera = (() => {
   const state = {
     mode: 'photo',
     facing: 'environment',
-    zoom: 1.0,             // 0.01x to 200x
-    footerCat: 'masks',    // Active category in footer strip
-    footerStripOpen: true,
+    zoom: 1.0,
+    footerCat: 'masks',
+    compareSplitOn: false,
+    compareSplitPos: 0.5, // 0..1 horizontal split (left = before/raw, right = after/FX)
+    shutterSoundOn: true,
     dualModeIdx: 0,
     dualHardwareOk: false,
     proHDR: true,
@@ -14437,6 +14452,54 @@ window.MahaProFullCamera = (() => {
     mic: true
   };
 
+  function playShutterClickAndFlash() {
+    try {
+      const fl = document.createElement('div');
+      fl.style.cssText = 'position:fixed;inset:0;background:#fff;opacity:0.85;z-index:9999;pointer-events:none;';
+      document.body.appendChild(fl);
+      setTimeout(() => fl.remove(), 95);
+    } catch (_) {}
+
+    if (!state.shutterSoundOn) return;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!audioCtx) audioCtx = new AC();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.35, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+      const o = audioCtx.createOscillator();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(1250, now);
+      o.frequency.exponentialRampToValueAtTime(340, now + 0.055);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(now); o.stop(now + 0.065);
+    } catch (_) {}
+  }
+
+  function ensureMiniWidget() {
+    let w = document.getElementById('mfcCamMiniWidget');
+    if (w) return w;
+    w = document.createElement('div');
+    w.id = 'mfcCamMiniWidget';
+    w.innerHTML = `
+      <span style="width:9px;height:9px;border-radius:99px;background:#34d399;display:inline-block;"></span>
+      <span style="font-size:11px;font-weight:800;color:#fff;">📷 Camera Active</span>
+      <span style="font-size:10px;font-weight:700;color:#fbbf24;">Tap to Open</span>
+    `;
+    w.onclick = () => {
+      w.style.display = 'none';
+      const camOv = document.getElementById('mahaFullCamOverlay');
+      if (camOv) camOv.style.display = 'block';
+      const vid = document.getElementById('mahaCamMainVideo');
+      if (vid && vid.play) vid.play().catch(() => {});
+    };
+    document.body.appendChild(w);
+    return w;
+  }
+
   function buildUI() {
     const existing = document.getElementById('mahaFullCamOverlay');
     if (existing) existing.remove();
@@ -14447,16 +14510,11 @@ window.MahaProFullCamera = (() => {
       <input type="file" id="mfcMusicInput" accept="audio/*" style="display:none;" />
       <input type="file" id="mfcChromaImgInput" accept="image/*" style="display:none;" />
 
-      <!-- Centered Full-Screen Camera Video -->
       <video id="mahaCamMainVideo" autoplay playsinline muted></video>
-      <!-- Live Portrait / Cartoon / Chroma / Lighting / Particles FX Canvas -->
       <canvas id="mahaCamFxCanvas"></canvas>
-      <!-- Dual Shoot Secondary Video -->
       <video id="mahaCamDualVideo" autoplay playsinline muted></video>
-      <!-- Real-Time 60fps Face, Smile, Hand & Snapchat Animal Masks Canvas -->
       <canvas id="mahaCamDetectCanvas"></canvas>
 
-      <!-- Double Role (Clone Mode) Guide -->
       <div id="mfcCloneGuide">
         <img id="mfcCloneLeftPreview" alt="" />
         <div id="mfcCloneDivider"></div>
@@ -14506,17 +14564,26 @@ window.MahaProFullCamera = (() => {
         </div>
       </div>
 
-      <!-- TOP COMPACT BAR (Clean view so center face/subject stays wide open) -->
+      <!-- Live Before / After Split Compare Slider -->
+      <div id="mfcCompareBar" class="maha-hud-bar flex items-center gap-2 text-[10px] font-extrabold text-white">
+        <span class="text-cyan-300 shrink-0">◀ RAW</span>
+        <input id="mfcCompareSlider" type="range" min="0" max="100" step="1" value="50" class="flex-1 accent-amber-400" />
+        <span class="text-amber-300 shrink-0">FX ▶</span>
+      </div>
+
+      <!-- TOP COMPACT BAR -->
       <div style="position:absolute;top:max(8px,env(safe-area-inset-top));left:8px;right:8px;z-index:35;display:flex;flex-direction:column;gap:5px;">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
-          <button type="button" id="mfcCloseBtn" class="maha-hud-bar text-white text-[11px] font-bold px-2.5 py-1.5 rounded-full shrink-0">← Back</button>
+          <div class="flex items-center gap-1 shrink-0">
+            <button type="button" id="mfcCloseBtn" class="maha-hud-bar text-white text-[11px] font-bold px-2.5 py-1.5 rounded-full">← Back</button>
+            <button type="button" id="mfcMinBtn" class="maha-hud-bar text-amber-300 text-[11px] font-extrabold px-2 py-1.5 rounded-full" title="Minimize Camera">⎯</button>
+          </div>
           <div id="mfcLiveSpec" class="maha-hud-bar text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-full tracking-wide truncate">
             PHOTO • 1.00x • ✨AI
           </div>
           <button type="button" id="mfcProToggleBtn" class="maha-hud-bar text-cyan-300 text-[11px] font-extrabold px-2.5 py-1.5 rounded-full border-cyan-400/40 shrink-0">⚙ PRO</button>
         </div>
 
-        <!-- Compact Quick Hardware Row -->
         <div class="maha-hud-bar rounded-2xl p-1" style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;">
           <button type="button" id="mfcAiFixBtn" class="py-1.5 px-1 rounded-xl bg-fuchsia-500 text-white text-[10px] font-extrabold truncate">✨ AI:ON</button>
           <button type="button" id="mfcDualBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">DUAL:OFF</button>
@@ -14532,26 +14599,28 @@ window.MahaProFullCamera = (() => {
           <span>∞ FAR</span>
         </div>
 
-        <!-- PRO DSLR & CREATOR DRAWER -->
         <div id="mfcProDrawer" style="display:none;" class="maha-hud-bar rounded-2xl p-2.5 space-y-2 text-[10px] text-white">
           <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;">
+            <button type="button" id="mfcSplitBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">⚖️ Split:OFF</button>
+            <button type="button" id="mfcSoundBtn" class="py-1.5 px-1 rounded-xl bg-amber-400 text-black font-extrabold truncate">🔔 Click:ON</button>
             <button type="button" id="mfcDetBtn" class="py-1.5 px-1 rounded-xl bg-emerald-500 text-black font-extrabold truncate">🤖 Track:ON</button>
             <button type="button" id="mfcBurstBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📸 Burst:OFF</button>
+
             <button type="button" id="mfcVoiceBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">🗣️ Voice:OFF</button>
             <button type="button" id="mfcSmileBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">😊 Smile:OFF</button>
-
             <button type="button" id="mfcHandBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">✋ Hand:OFF</button>
             <button type="button" id="mfcMotionBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">🏃 Motion:OFF</button>
+
             <button type="button" id="mfcTpBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📜 Script:OFF</button>
             <button type="button" id="mfcHistBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📊 Hist:OFF</button>
-
             <button type="button" id="mfcAudioBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">🎚 Audio:OFF</button>
             <button type="button" id="mfcSpeedBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">⏩ Spd: 1x</button>
+
             <button type="button" id="mfcQualBtn" class="py-1.5 px-1 rounded-xl bg-emerald-500/25 text-emerald-200 font-bold truncate">1080p</button>
             <button type="button" id="mfcTimerBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">⏱ 0s</button>
-
             <button type="button" id="mfcHdrBtn" class="py-1.5 px-1 rounded-xl bg-amber-500 text-black font-extrabold truncate">HDR:ON</button>
             <button type="button" id="mfcLevelBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📏 Level:OFF</button>
+
             <button type="button" id="mfcWmBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">🏷️ Stamp:OFF</button>
             <button type="button" id="mfcMicBtn" class="py-1.5 px-1 rounded-xl bg-emerald-500/25 text-emerald-200 font-bold truncate">🎙 Mic:ON</button>
           </div>
@@ -14563,31 +14632,26 @@ window.MahaProFullCamera = (() => {
         </div>
       </div>
 
-      <!-- STATUS / RECORDING + PAUSE / SAVE PILLS -->
       <div id="mfcRecRow" style="display:none;position:absolute;top:114px;left:50%;transform:translateX(-50%);z-index:36;gap:6px;align-items:center;">
         <div id="mfcRecBadge" class="px-3 py-1 rounded-full bg-red-600 text-white text-xs font-bold whitespace-nowrap">● REC 00:00</div>
         <button type="button" id="mfcRecPauseBtn" class="maha-hud-bar px-3 py-1 rounded-full text-amber-300 text-xs font-extrabold whitespace-nowrap">⏸ Pause</button>
       </div>
       <div id="mfcSaveNote" style="display:none;position:absolute;top:114px;left:50%;transform:translateX(-50%);z-index:36;" class="maha-hud-bar px-3 py-1 rounded-full text-emerald-300 text-xs font-bold whitespace-nowrap">✓ Ready</div>
 
-      <!-- LEFT BRIGHTNESS & RIGHT EV SLIDERS -->
-      <div class="maha-hud-bar" style="position:absolute;left:6px;top:45%;transform:translateY(-50%);z-index:30;padding:7px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:3px;">
+      <div class="maha-hud-bar" style="position:absolute;left:6px;top:44%;transform:translateY(-50%);z-index:30;padding:7px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:3px;">
         <span style="font-size:10px;color:#fde047;font-weight:800;">☀️</span>
-        <input id="mfcBrightSlider" type="range" min="50" max="180" step="5" value="100" style="writing-mode:vertical-lr;direction:rtl;height:82px;width:15px;accent-color:#fde047;">
+        <input id="mfcBrightSlider" type="range" min="50" max="180" step="5" value="100" style="writing-mode:vertical-lr;direction:rtl;height:78px;width:15px;accent-color:#fde047;">
         <span id="mfcBrightVal" style="font-size:8px;color:#fff;font-weight:700;">100%</span>
       </div>
-      <div class="maha-hud-bar" style="position:absolute;right:6px;top:45%;transform:translateY(-50%);z-index:30;padding:7px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:3px;">
+      <div class="maha-hud-bar" style="position:absolute;right:6px;top:44%;transform:translateY(-50%);z-index:30;padding:7px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:3px;">
         <span style="font-size:9px;color:#fbbf24;font-weight:800;">EV</span>
-        <input id="mfcEvSlider" type="range" min="-2" max="2" step="0.2" value="0" style="writing-mode:vertical-lr;direction:rtl;height:82px;width:15px;accent-color:#fbbf24;">
+        <input id="mfcEvSlider" type="range" min="-2" max="2" step="0.2" value="0" style="writing-mode:vertical-lr;direction:rtl;height:78px;width:15px;accent-color:#fbbf24;">
         <span id="mfcEvVal" style="font-size:8px;color:#fff;font-weight:700;">0.0</span>
       </div>
 
-      <!-- ================================================================== -->
-      <!-- FOOTER: 0.01x–200x ZOOM + SNAPCHAT/IG/CARTOON/FX SCROLL STRIP + SHUTTER -->
-      <!-- ================================================================== -->
+      <!-- FOOTER -->
       <div style="position:absolute;bottom:max(8px,env(safe-area-inset-bottom));left:6px;right:6px;z-index:35;display:flex;flex-direction:column;gap:5px;align-items:center;">
 
-        <!-- 0.01x (Ultra-Wide Far View) to 200x Super Zoom Bar -->
         <div class="maha-hud-bar w-full max-w-md rounded-2xl px-2.5 py-1 flex flex-col gap-1">
           <div class="flex items-center justify-between text-[10px] font-bold text-white">
             <span>🔭 ULTRA WIDE ↔ SUPER ZOOM (0.01x – 200x)</span>
@@ -14605,15 +14669,11 @@ window.MahaProFullCamera = (() => {
           </div>
         </div>
 
-        <!-- FOOTER SNAPCHAT / INSTAGRAM / CARTOONS / FX CATEGORY TABS + HORIZONTAL SCROLLING ITEMS -->
         <div class="maha-hud-bar w-full max-w-md rounded-2xl p-1.5 space-y-1.5">
-          <!-- Category Tabs (Click any category to show its scrollable list below) -->
           <div id="mfcFooterCatTabs" class="flex items-center gap-1 overflow-x-auto no-scrollbar"></div>
-          <!-- Horizontal Scrollable Effect Chips (Click any item to immediately apply on live camera!) -->
           <div id="mfcFooterItemStrip" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
         </div>
 
-        <!-- Camera Modes Row -->
         <div class="maha-hud-bar rounded-full p-0.5 flex items-center gap-0.5 text-[10px] font-bold max-w-full overflow-x-auto no-scrollbar">
           <button type="button" id="mfcModePhoto" class="px-2.5 py-1 rounded-full bg-white text-black whitespace-nowrap">PHOTO</button>
           <button type="button" id="mfcModeVideo" class="px-2.5 py-1 rounded-full text-white whitespace-nowrap">VIDEO</button>
@@ -14624,7 +14684,6 @@ window.MahaProFullCamera = (() => {
           <button type="button" id="mfcModeQr"    class="px-2.5 py-1 rounded-full text-white whitespace-nowrap">🏁 QR</button>
         </div>
 
-        <!-- Shutter Row -->
         <div class="w-full max-w-md flex items-center justify-around">
           <button type="button" id="mfcLastThumbWrap" class="w-11 h-11 rounded-xl overflow-hidden border border-white/30 bg-black/50 flex items-center justify-center text-[10px] text-slate-200 font-semibold" title="Open Gallery">Gallery</button>
           <button type="button" id="mfcShutterBtn" style="width:64px;height:64px;border-radius:50%;border:4px solid #fff;background:rgba(255,255,255,0.94);display:flex;align-items:center;justify-content:center;" title="Capture / Record"></button>
@@ -14633,13 +14692,11 @@ window.MahaProFullCamera = (() => {
       </div>
     `;
     document.body.appendChild(div);
+    ensureMiniWidget();
     renderFooterCarousel();
     bindEvents();
   }
 
-  // ============================================================================
-  // FOOTER CAROUSEL RENDERER (Snapchat AR, IG Filters, Cartoons, FX Lighting, Particles, BG, Audio)
-  // ============================================================================
   function renderFooterCarousel() {
     const catWrap = document.getElementById('mfcFooterCatTabs');
     const strip = document.getElementById('mfcFooterItemStrip');
@@ -14736,9 +14793,7 @@ window.MahaProFullCamera = (() => {
           showQuietNote(`✨ Effect: ${PARTICLE_FX[idx].label}`);
         } else if (state.footerCat === 'bg') {
           const chosen = BG_EFFECTS[idx];
-          if (chosen.id === 'GS_CUSTOM') {
-            document.getElementById('mfcChromaImgInput').click();
-          }
+          if (chosen.id === 'GS_CUSTOM') document.getElementById('mfcChromaImgInput').click();
           state.bgIdx = idx;
           showQuietNote(`🫧 BG: ${chosen.label}`);
         }
@@ -14750,16 +14805,9 @@ window.MahaProFullCamera = (() => {
     strip.querySelectorAll('[data-audid]').forEach((btn) => {
       btn.onclick = () => {
         const aid = btn.dataset.audid;
-        if (aid === 'PICK_MP3') {
-          document.getElementById('mfcMusicInput').click();
-        } else if (aid.startsWith('SFX_')) {
-          playSynthSfx(aid.replace('SFX_', '').toLowerCase());
-        } else {
-          state.voiceFxId = aid;
-          setupAudioPipeline();
-          showQuietNote(`🗣️ Voice FX: ${aid}`);
-          renderFooterCarousel();
-        }
+        if (aid === 'PICK_MP3') document.getElementById('mfcMusicInput').click();
+        else if (aid.startsWith('SFX_')) playSynthSfx(aid.replace('SFX_', '').toLowerCase());
+        else { state.voiceFxId = aid; setupAudioPipeline(); showQuietNote(`🗣️ Voice FX: ${aid}`); renderFooterCarousel(); }
       };
     });
   }
@@ -14769,6 +14817,7 @@ window.MahaProFullCamera = (() => {
     if (!el) return;
     const modeMap = { photo: state.burstMode ? 'BURST 5x' : 'PHOTO', video: 'VID ' + VID_SPEEDS[state.vidSpeedIdx].label, clone: 'CLONE', booth: 'BOOTH', pano: 'PANO', doc: 'DOC', qr: 'QR' };
     const parts = [modeMap[state.mode] || 'PHOTO', formatZoomLabel(state.zoom)];
+    if (state.compareSplitOn) parts.push('⚖️SPLIT');
     if (state.maskIdx > 0) parts.push(SNAP_MASKS[state.maskIdx].icon + SNAP_MASKS[state.maskIdx].label);
     if (state.filterIdx > 0) parts.push(IG_FILTERS[state.filterIdx].label);
     if (state.artIdx > 0) parts.push(ART_MODES[state.artIdx].label);
@@ -14780,6 +14829,12 @@ window.MahaProFullCamera = (() => {
 
   function bindEvents() {
     document.getElementById('mfcCloseBtn').onclick = () => close(true);
+    document.getElementById('mfcMinBtn').onclick = () => {
+      const camOv = document.getElementById('mahaFullCamOverlay');
+      if (camOv) camOv.style.display = 'none';
+      const mini = ensureMiniWidget();
+      mini.style.display = 'flex';
+    };
     document.getElementById('mfcLastThumbWrap').onclick = () => {
       close(false);
       if (typeof App !== 'undefined' && App.navigate) App.navigate('gallery');
@@ -14791,19 +14846,13 @@ window.MahaProFullCamera = (() => {
       document.getElementById('mfcProToggleBtn').textContent = state.proDrawerOpen ? '✕ PRO' : '⚙ PRO';
     };
 
-    // Custom Green Screen BG & MP3 Pickers
     document.getElementById('mfcChromaImgInput').onchange = (e) => {
       const f = e.target.files && e.target.files[0];
       if (!f) return;
       const r = new FileReader();
       r.onload = () => {
         const im = new Image();
-        im.onload = () => {
-          chromaCustomImg = im;
-          state.bgIdx = BG_EFFECTS.findIndex((b) => b.id === 'GS_CUSTOM');
-          renderFooterCarousel();
-          showQuietNote('🖼️ Custom Green Screen BG Ready!');
-        };
+        im.onload = () => { chromaCustomImg = im; state.bgIdx = BG_EFFECTS.findIndex((b) => b.id === 'GS_CUSTOM'); renderFooterCarousel(); showQuietNote('🖼️ Custom Green Screen BG Ready!'); };
         im.src = r.result;
       };
       r.readAsDataURL(f);
@@ -14814,34 +14863,21 @@ window.MahaProFullCamera = (() => {
       if (!f) return;
       if (musicObjectUrl) URL.revokeObjectURL(musicObjectUrl);
       musicObjectUrl = URL.createObjectURL(f);
-      if (!musicAudioEl) {
-        musicAudioEl = new Audio();
-        musicAudioEl.loop = true;
-        musicAudioEl.crossOrigin = 'anonymous';
-      }
-      musicAudioEl.src = musicObjectUrl;
-      state.musicLoaded = true;
-      setupAudioPipeline();
-      musicAudioEl.play().catch(() => {});
-      state.musicPlaying = true;
-      renderFooterCarousel();
-      showQuietNote('🎵 Song Playing & Synced for Video!');
+      if (!musicAudioEl) { musicAudioEl = new Audio(); musicAudioEl.loop = true; musicAudioEl.crossOrigin = 'anonymous'; }
+      musicAudioEl.src = musicObjectUrl; state.musicLoaded = true;
+      setupAudioPipeline(); musicAudioEl.play().catch(() => {}); state.musicPlaying = true;
+      renderFooterCarousel(); showQuietNote('🎵 Song Playing & Synced for Video!');
     };
 
-    // Camera Flip
     document.getElementById('mfcFlipBtn').onclick = async () => {
       state.facing = state.facing === 'environment' ? 'user' : 'environment';
       state.mirror = (state.facing === 'user');
       rawFaceNorm = null; smoothFaceNorm = null;
       await startMainCamera();
-      if (state.dualModeIdx > 0 && state.dualHardwareOk) {
-        stopDualStream();
-        await tryStartDualStream();
-      }
+      if (state.dualModeIdx > 0 && state.dualHardwareOk) { stopDualStream(); await tryStartDualStream(); }
       showQuietNote(state.facing === 'user' ? '🤳 Front Camera' : '📷 Back Camera');
     };
 
-    // Modes
     document.getElementById('mfcModePhoto').onclick = () => setMode('photo');
     document.getElementById('mfcModeVideo').onclick = () => setMode('video');
     document.getElementById('mfcModeClone').onclick = () => setMode('clone');
@@ -14850,7 +14886,6 @@ window.MahaProFullCamera = (() => {
     document.getElementById('mfcModeDoc').onclick   = () => setMode('doc');
     document.getElementById('mfcModeQr').onclick    = () => setMode('qr');
 
-    // Quick Hardware Toggles
     document.getElementById('mfcAiFixBtn').onclick = () => {
       state.aiPostEnhance = !state.aiPostEnhance;
       const b = document.getElementById('mfcAiFixBtn');
@@ -14880,10 +14915,7 @@ window.MahaProFullCamera = (() => {
       const rect = mainVid.getBoundingClientRect();
       const x = e.clientX - rect.left, y = e.clientY - rect.top;
       const ring = document.getElementById('mfcTapFocusRing');
-      if (ring) {
-        ring.style.left = x + 'px'; ring.style.top = y + 'px'; ring.style.display = 'block';
-        clearTimeout(ring._t); ring._t = setTimeout(() => { ring.style.display = 'none'; }, 1100);
-      }
+      if (ring) { ring.style.left = x + 'px'; ring.style.top = y + 'px'; ring.style.display = 'block'; clearTimeout(ring._t); ring._t = setTimeout(() => { ring.style.display = 'none'; }, 1100); }
       await applyHardwareFocus(x / Math.max(1, rect.width), y / Math.max(1, rect.height));
     });
 
@@ -14896,6 +14928,22 @@ window.MahaProFullCamera = (() => {
     };
 
     // Pro Drawer Buttons
+    document.getElementById('mfcSplitBtn').onclick = () => {
+      state.compareSplitOn = !state.compareSplitOn;
+      const b = document.getElementById('mfcSplitBtn');
+      b.textContent = state.compareSplitOn ? '⚖️ Split:ON' : '⚖️ Split:OFF';
+      b.className = state.compareSplitOn ? 'py-1.5 px-1 rounded-xl bg-amber-400 text-black font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
+      document.getElementById('mfcCompareBar').style.display = state.compareSplitOn ? 'flex' : 'none';
+      updateSpecBadge();
+    };
+    document.getElementById('mfcCompareSlider').oninput = (e) => { state.compareSplitPos = parseInt(e.target.value, 10) / 100; };
+
+    document.getElementById('mfcSoundBtn').onclick = () => {
+      state.shutterSoundOn = !state.shutterSoundOn;
+      const b = document.getElementById('mfcSoundBtn');
+      b.textContent = state.shutterSoundOn ? '🔔 Click:ON' : '🔕 Click:OFF';
+      b.className = state.shutterSoundOn ? 'py-1.5 px-1 rounded-xl bg-amber-400 text-black font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
+    };
     document.getElementById('mfcDetBtn').onclick = () => {
       state.detectorOn = !state.detectorOn;
       const b = document.getElementById('mfcDetBtn');
@@ -14989,6 +15037,7 @@ window.MahaProFullCamera = (() => {
     document.getElementById('mfcResetProBtn').onclick = () => {
       state.kelvin = 5500; state.iso = 0; state.beauty = 0; state.brightness = 100; state.exposure = 0; state.micBoost = 1.4;
       state.maskIdx = 0; state.filterIdx = 0; state.artIdx = 0; state.lightIdx = 0; state.particleIdx = 0; state.bgIdx = 0; state.voiceFxId = 'NORMAL';
+      state.compareSplitOn = false; document.getElementById('mfcCompareBar').style.display = 'none';
       document.getElementById('mfcWbSlider').value = 5500; document.getElementById('mfcWbVal').textContent = '5500K';
       document.getElementById('mfcIsoSlider').value = 0; document.getElementById('mfcIsoVal').textContent = 'AUTO';
       document.getElementById('mfcBeautySlider').value = 0; document.getElementById('mfcBeautyVal').textContent = '0%';
@@ -15018,7 +15067,6 @@ window.MahaProFullCamera = (() => {
     document.getElementById('mfcQrCopyBtn').onclick = () => { if (lastQrValue && navigator.clipboard) { navigator.clipboard.writeText(lastQrValue).catch(() => {}); showQuietNote('📋 Copied!'); } };
     document.getElementById('mfcQrClearBtn').onclick = () => { lastQrValue = ''; document.getElementById('mfcQrResultBar').style.display = 'none'; };
 
-    // 0.01x – 200x Zoom Slider + Presets + Pinch
     document.getElementById('mfcZoomSlider').oninput = (e) => applyZoom(sliderToZoom(parseFloat(e.target.value)));
     document.querySelectorAll('[data-mfc-z]').forEach((btn) => { btn.onclick = () => applyZoom(parseFloat(btn.dataset.mfcZ)); });
     let pinchStartDist = 0, pinchStartZoom = 1;
@@ -15269,9 +15317,6 @@ window.MahaProFullCamera = (() => {
     if (dvid) dvid.style.filter = getActiveFilterStr();
   }
 
-  // ============================================================================
-  // 0.01x ULTRA-WIDE DE-ZOOM (NEAR OBJECTS LOOK FAR) ↔ 200x SUPER ZOOM
-  // ============================================================================
   async function applyZoom(val) {
     state.zoom = Math.max(0.01, Math.min(200, val));
     const zs = document.getElementById('mfcZoomSlider');
@@ -15301,8 +15346,6 @@ window.MahaProFullCamera = (() => {
     const vid = document.getElementById('mahaCamMainVideo');
     if (vid) {
       if (state.zoom < 1) {
-        // Ultra-wide optical/perspective shrink: makes close objects appear far away in center frame
-        // Smooth visual scale 0.36x..1.0x so subject stays clear and centered inside wide studio frame
         const visualScale = 0.36 + 0.64 * Math.pow(state.zoom, 0.32);
         const sx = state.mirror ? -visualScale : visualScale;
         vid.style.transform = `scale(${sx.toFixed(3)}, ${visualScale.toFixed(3)})`;
@@ -15408,11 +15451,7 @@ window.MahaProFullCamera = (() => {
   function stopMainStream() { if (mainStream) { mainStream.getTracks().forEach((t) => t.stop()); mainStream = null; } }
   function stopDualStream() { if (dualStream) { dualStream.getTracks().forEach((t) => t.stop()); dualStream = null; } }
 
-  // ============================================================================
-  // EXACT COORDINATE MAPPER (Aligns Face Mask 100% with Centered Video + Zoom + Mirror)
-  // ============================================================================
   function mapNormBoxToViewport(normBox, vw, vh, cw, ch) {
-    // Base cover scale of #mahaCamMainVideo inside viewport (cw x ch)
     const baseScale = Math.max(cw / vw, ch / vh);
     const visScale = state.zoom < 1 ? (0.36 + 0.64 * Math.pow(state.zoom, 0.32)) : Math.max(1, state.zoom);
     const totalScale = baseScale * visScale;
@@ -15424,31 +15463,31 @@ window.MahaProFullCamera = (() => {
     const bw = (normBox.maxX - normBox.minX) * dispW;
     const bh = (normBox.maxY - normBox.minY) * dispH;
     let bx = offX + normBox.minX * dispW;
-    if (state.mirror) {
-      bx = cw - bx - bw;
-    }
-    return { x: bx, y: offY + normBox.minY * dispH, w: bw, h: bh };
+    if (state.mirror) bx = cw - bx - bw;
+    return { x: bx, y: offY + normBox.minY * dispH, w: bw, h: bh, roll: normBox.roll || 0 };
   }
 
-  // ============================================================================
-  // SNAPCHAT-STYLE LIVE ANIMAL & AR MASKS RENDERER
-  // ============================================================================
+  // 3D Motion Parallax Face Mask Renderer (rotates with head roll & shifts depth smoothly)
   function drawSnapMask(ctx, box, maskId, mouthOpen = false) {
     if (!box || maskId === 'OFF') return;
     const cx = box.x + box.w * 0.5;
-    const topY = box.y;
-    const eyeY = box.y + box.h * 0.39;
-    const noseY = box.y + box.h * 0.56;
-    const mouthY = box.y + box.h * 0.74;
+    const cy = box.y + box.h * 0.5;
+    const topY = -box.h * 0.5;
+    const eyeY = -box.h * 0.11;
+    const noseY = box.h * 0.06;
+    const mouthY = box.h * 0.24;
     const w = box.w, h = box.h;
+
     ctx.save();
+    ctx.translate(cx, cy);
+    if (box.roll) ctx.rotate(box.roll);
 
     if (maskId === 'CAT' || maskId === 'TIGER' || maskId === 'FOX') {
       const isTiger = maskId === 'TIGER';
       const isFox = maskId === 'FOX';
       const earCol = isTiger ? '#f97316' : (isFox ? '#ea580c' : '#f8fafc');
       const innerCol = isTiger ? '#1e293b' : (isFox ? '#fef3c7' : '#f9a8d4');
-      [[-1, cx - w * 0.36], [1, cx + w * 0.36]].forEach(([dir, ex]) => {
+      [[-1, -w * 0.36], [1, w * 0.36]].forEach(([dir, ex]) => {
         ctx.fillStyle = earCol; ctx.strokeStyle = '#1e293b'; ctx.lineWidth = Math.max(2, w * 0.015);
         ctx.beginPath();
         ctx.moveTo(ex - dir * w * 0.16, topY + h * 0.08);
@@ -15464,57 +15503,54 @@ window.MahaProFullCamera = (() => {
       });
       ctx.fillStyle = (isTiger || isFox) ? '#111827' : '#fb7185';
       ctx.beginPath();
-      ctx.moveTo(cx - w * 0.08, noseY - h * 0.03);
-      ctx.lineTo(cx + w * 0.08, noseY - h * 0.03);
-      ctx.lineTo(cx, noseY + h * 0.06);
+      ctx.moveTo(-w * 0.08, noseY - h * 0.03);
+      ctx.lineTo(w * 0.08, noseY - h * 0.03);
+      ctx.lineTo(0, noseY + h * 0.06);
       ctx.closePath(); ctx.fill();
       ctx.strokeStyle = isTiger ? '#111827' : '#ffffff';
       ctx.lineWidth = Math.max(2, w * 0.014);
       [-1, 1].forEach((dir) => {
         for (let k = -1; k <= 1; k++) {
-          ctx.beginPath();
-          ctx.moveTo(cx + dir * w * 0.12, noseY + k * h * 0.03);
-          ctx.lineTo(cx + dir * w * 0.48, noseY + k * h * 0.08);
-          ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(dir * w * 0.12, noseY + k * h * 0.03); ctx.lineTo(dir * w * 0.48, noseY + k * h * 0.08); ctx.stroke();
         }
       });
       if (isTiger) {
         ctx.strokeStyle = '#111827'; ctx.lineWidth = Math.max(3, w * 0.025);
         [-0.12, 0, 0.12].forEach((ox) => {
-          ctx.beginPath(); ctx.moveTo(cx + ox * w, topY + h * 0.06); ctx.lineTo(cx + ox * w * 0.7, topY + h * 0.20); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(ox * w, topY + h * 0.06); ctx.lineTo(ox * w * 0.7, topY + h * 0.20); ctx.stroke();
         });
       }
     } else if (maskId === 'MOUSE') {
-      [cx - w * 0.42, cx + w * 0.42].forEach((ex) => {
+      [-w * 0.42, w * 0.42].forEach((ex) => {
         ctx.fillStyle = '#94a3b8'; ctx.beginPath(); ctx.arc(ex, topY - h * 0.02, w * 0.24, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = '#f9a8d4'; ctx.beginPath(); ctx.arc(ex, topY - h * 0.02, w * 0.15, 0, Math.PI * 2); ctx.fill();
       });
-      ctx.fillStyle = '#f472b6'; ctx.beginPath(); ctx.arc(cx, noseY, w * 0.075, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#f472b6'; ctx.beginPath(); ctx.arc(0, noseY, w * 0.075, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = Math.max(2, w * 0.012);
-      [-1, 1].forEach((dir) => { [-1, 1].forEach((k) => { ctx.beginPath(); ctx.moveTo(cx + dir * w * 0.10, noseY); ctx.lineTo(cx + dir * w * 0.42, noseY + k * h * 0.07); ctx.stroke(); }); });
+      [-1, 1].forEach((dir) => { [-1, 1].forEach((k) => { ctx.beginPath(); ctx.moveTo(dir * w * 0.10, noseY); ctx.lineTo(dir * w * 0.42, noseY + k * h * 0.07); ctx.stroke(); }); });
     } else if (maskId === 'BUNNY') {
       [[-0.26, -0.14], [0.26, 0.14]].forEach(([ox, rot]) => {
-        ctx.save(); ctx.translate(cx + ox * w, topY - h * 0.22); ctx.rotate(rot);
+        ctx.save(); ctx.translate(ox * w, topY - h * 0.22); ctx.rotate(rot);
         ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(0, 0, w * 0.12, h * 0.34, 0, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = '#f9a8d4'; ctx.beginPath(); ctx.ellipse(0, 0, w * 0.06, h * 0.24, 0, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
       });
-      ctx.fillStyle = '#fb7185'; ctx.beginPath(); ctx.ellipse(cx, noseY, w * 0.07, h * 0.045, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#fb7185'; ctx.beginPath(); ctx.ellipse(0, noseY, w * 0.07, h * 0.045, 0, 0, Math.PI * 2); ctx.fill();
     } else if (maskId === 'DOG') {
       [[-0.48, 0.25], [0.48, -0.25]].forEach(([ox, rot]) => {
-        ctx.save(); ctx.translate(cx + ox * w, topY + h * 0.26); ctx.rotate(rot);
+        ctx.save(); ctx.translate(ox * w, topY + h * 0.26); ctx.rotate(rot);
         ctx.fillStyle = '#78350f'; ctx.beginPath(); ctx.ellipse(0, 0, w * 0.15, h * 0.30, 0, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
       });
-      ctx.fillStyle = '#1e1b4b'; ctx.beginPath(); ctx.ellipse(cx, noseY, w * 0.11, h * 0.065, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#1e1b4b'; ctx.beginPath(); ctx.ellipse(0, noseY, w * 0.11, h * 0.065, 0, 0, Math.PI * 2); ctx.fill();
       const tLen = mouthOpen ? h * 0.22 : h * 0.13;
-      ctx.fillStyle = '#fb7185'; ctx.beginPath(); ctx.ellipse(cx, mouthY + tLen * 0.4, w * 0.11, tLen, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#fb7185'; ctx.beginPath(); ctx.ellipse(0, mouthY + tLen * 0.4, w * 0.11, tLen, 0, 0, Math.PI * 2); ctx.fill();
     } else if (maskId === 'PANDA') {
-      [cx - w * 0.38, cx + w * 0.38].forEach((ex) => { ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(ex, topY - h * 0.02, w * 0.16, 0, Math.PI * 2); ctx.fill(); });
-      [cx - w * 0.20, cx + w * 0.20].forEach((ex) => { ctx.fillStyle = 'rgba(15,23,42,0.72)'; ctx.beginPath(); ctx.ellipse(ex, eyeY, w * 0.15, h * 0.11, 0, 0, Math.PI * 2); ctx.fill(); });
-      ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.ellipse(cx, noseY, w * 0.09, h * 0.055, 0, 0, Math.PI * 2); ctx.fill();
+      [-w * 0.38, w * 0.38].forEach((ex) => { ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(ex, topY - h * 0.02, w * 0.16, 0, Math.PI * 2); ctx.fill(); });
+      [-w * 0.20, w * 0.20].forEach((ex) => { ctx.fillStyle = 'rgba(15,23,42,0.72)'; ctx.beginPath(); ctx.ellipse(ex, eyeY, w * 0.15, h * 0.11, 0, 0, Math.PI * 2); ctx.fill(); });
+      ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.ellipse(0, noseY, w * 0.09, h * 0.055, 0, 0, Math.PI * 2); ctx.fill();
     } else if (maskId === 'DEVIL') {
-      [[-1, cx - w * 0.30], [1, cx + w * 0.30]].forEach(([dir, hx]) => {
+      [[-1, -w * 0.30], [1, w * 0.30]].forEach(([dir, hx]) => {
         ctx.fillStyle = '#e11d48';
         ctx.beginPath(); ctx.moveTo(hx - dir * w * 0.08, topY + h * 0.04);
         ctx.quadraticCurveTo(hx + dir * w * 0.20, topY - h * 0.18, hx + dir * w * 0.06, topY - h * 0.26);
@@ -15525,30 +15561,27 @@ window.MahaProFullCamera = (() => {
       const gw = w * 0.40, gh = h * 0.16;
       ctx.fillStyle = 'rgba(15, 23, 42, 0.90)'; ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = Math.max(2, w * 0.018);
       ctx.beginPath();
-      ctx.roundRect ? ctx.roundRect(cx - gw - w * 0.04, eyeY - gh * 0.5, gw, gh, 8) : ctx.fillRect(cx - gw - w * 0.04, eyeY - gh * 0.5, gw, gh);
-      ctx.roundRect ? ctx.roundRect(cx + w * 0.04, eyeY - gh * 0.5, gw, gh, 8) : ctx.fillRect(cx + w * 0.04, eyeY - gh * 0.5, gw, gh);
+      ctx.roundRect ? ctx.roundRect(-gw - w * 0.04, eyeY - gh * 0.5, gw, gh, 8) : ctx.fillRect(-gw - w * 0.04, eyeY - gh * 0.5, gw, gh);
+      ctx.roundRect ? ctx.roundRect(w * 0.04, eyeY - gh * 0.5, gw, gh, 8) : ctx.fillRect(w * 0.04, eyeY - gh * 0.5, gw, gh);
       ctx.fill(); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(cx - w * 0.04, eyeY); ctx.lineTo(cx + w * 0.04, eyeY); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-w * 0.04, eyeY); ctx.lineTo(w * 0.04, eyeY); ctx.stroke();
     } else if (maskId === 'CROWN') {
-      const cw = w * 0.68, ch = h * 0.26, cy = topY - ch * 0.45;
+      const cw = w * 0.68, ch = h * 0.26, cyCrown = topY - ch * 0.45;
       ctx.fillStyle = '#fbbf24'; ctx.strokeStyle = '#fef08a'; ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(cx - cw * 0.5, cy + ch); ctx.lineTo(cx - cw * 0.45, cy + ch * 0.2); ctx.lineTo(cx - cw * 0.18, cy + ch * 0.6);
-      ctx.lineTo(cx, cy); ctx.lineTo(cx + cw * 0.18, cy + ch * 0.6); ctx.lineTo(cx + cw * 0.45, cy + ch * 0.2); ctx.lineTo(cx + cw * 0.5, cy + ch);
+      ctx.moveTo(-cw * 0.5, cyCrown + ch); ctx.lineTo(-cw * 0.45, cyCrown + ch * 0.2); ctx.lineTo(-cw * 0.18, cyCrown + ch * 0.6);
+      ctx.lineTo(0, cyCrown); ctx.lineTo(cw * 0.18, cyCrown + ch * 0.6); ctx.lineTo(cw * 0.45, cyCrown + ch * 0.2); ctx.lineTo(cw * 0.5, cyCrown + ch);
       ctx.closePath(); ctx.fill(); ctx.stroke();
     } else if (maskId === 'GLOW') {
       ctx.strokeStyle = '#fde047'; ctx.shadowColor = '#fbbf24'; ctx.shadowBlur = 16; ctx.lineWidth = Math.max(4, w * 0.03);
-      ctx.beginPath(); ctx.ellipse(cx, topY - h * 0.12, w * 0.38, h * 0.08, 0, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(0, topY - h * 0.12, w * 0.38, h * 0.08, 0, 0, Math.PI * 2); ctx.stroke();
     } else if (maskId === 'NEON') {
       ctx.strokeStyle = '#22d3ee'; ctx.shadowColor = '#22d3ee'; ctx.shadowBlur = 14; ctx.lineWidth = Math.max(3, w * 0.025);
-      ctx.strokeRect(box.x + w * 0.08, eyeY - h * 0.09, w * 0.84, h * 0.18);
+      ctx.strokeRect(-w * 0.42, eyeY - h * 0.09, w * 0.84, h * 0.18);
     }
     ctx.restore();
   }
 
-  // ============================================================================
-  // LIVE FX LIGHTING, PARTICLES & CINEMA OVERLAY RENDERER
-  // ============================================================================
   function drawLightParticleCinemaFx(ctx, w, h, nowMs) {
     const lId = LIGHT_FX[state.lightIdx].id;
     if (lId !== 'OFF') {
@@ -15672,7 +15705,6 @@ window.MahaProFullCamera = (() => {
     }
   }
 
-  // Unified Live FX Canvas Loop (Centered, properly aligned to video cover scale)
   function startLiveFxLoop() {
     cancelAnimationFrame(fxRaf);
     const render = (now) => {
@@ -15686,7 +15718,7 @@ window.MahaProFullCamera = (() => {
 
       const artId = ART_MODES[state.artIdx].id;
       const bgId = BG_EFFECTS[state.bgIdx].id;
-      const needsFullRedraw = (bgId !== 'OFF' || artId === 'MIRROR' || artId === 'ALIEN');
+      const needsFullRedraw = (bgId !== 'OFF' || artId === 'MIRROR' || artId === 'ALIEN' || state.compareSplitOn);
       const needsOverlayOnly = (state.lightIdx > 0 || state.particleIdx > 0);
 
       if (!needsFullRedraw && !needsOverlayOnly) {
@@ -15703,13 +15735,12 @@ window.MahaProFullCamera = (() => {
       const ctx = fc.getContext('2d');
       ctx.clearRect(0, 0, cw, ch);
 
-      if (needsFullRedraw) {
-        // Compute centered cover source rectangle matching #mahaCamMainVideo
-        const vw = vid.videoWidth, vh = vid.videoHeight;
-        const sc = Math.max(cw / vw, ch / vh);
-        const dw = vw * sc, dh = vh * sc;
-        const ox = (cw - dw) / 2, oy = (ch - dh) / 2;
+      const vw = vid.videoWidth, vh = vid.videoHeight;
+      const sc = Math.max(cw / vw, ch / vh);
+      const dw = vw * sc, dh = vh * sc;
+      const ox = (cw - dw) / 2, oy = (ch - dh) / 2;
 
+      if (needsFullRedraw) {
         if (bgId.startsWith('GS_')) {
           const pw = 320, ph = Math.round(pw * (ch / cw));
           if (!fxScratch) fxScratch = document.createElement('canvas');
@@ -15754,6 +15785,24 @@ window.MahaProFullCamera = (() => {
           ctx.drawImage(vid, ox, oy, dw, dh);
           ctx.restore();
         }
+
+        // Before / After Live Split Compare: left side shows raw unfiltered camera
+        if (state.compareSplitOn) {
+          const splitX = Math.round(cw * state.compareSplitPos);
+          ctx.save();
+          ctx.beginPath(); ctx.rect(0, 0, splitX, ch); ctx.clip();
+          if (state.mirror) { ctx.translate(cw, 0); ctx.scale(-1, 1); }
+          ctx.drawImage(vid, ox, oy, dw, dh);
+          ctx.restore();
+
+          ctx.save();
+          ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.moveTo(splitX, 0); ctx.lineTo(splitX, ch); ctx.stroke();
+          ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(splitX, ch * 0.5, 11, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#000'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
+          ctx.fillText('◀▶', splitX, ch * 0.5 + 3);
+          ctx.restore();
+        }
       }
 
       if (needsOverlayOnly) drawLightParticleCinemaFx(ctx, cw, ch, now);
@@ -15785,11 +15834,6 @@ window.MahaProFullCamera = (() => {
     drawCh(rB, 'rgba(248,113,113,0.9)'); drawCh(gB, 'rgba(52,211,153,0.9)'); drawCh(bB, 'rgba(96,165,250,0.9)');
   }
 
-  // ============================================================================
-  // 60FPS ZERO-LAG FACE TRACKING & SNAPCHAT MASK OVERLAY LOOP
-  // Decouples 60fps smooth rendering from ~25fps face inference so masks follow
-  // fast head movement instantaneously with zero lag!
-  // ============================================================================
   async function startDetectLoop() {
     if ('FaceDetector' in window) {
       try { faceDetectorApi = new window.FaceDetector({ fastMode: true, maxDetectedFaces: 2 }); } catch (_) {}
@@ -15832,8 +15876,7 @@ window.MahaProFullCamera = (() => {
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, cw, ch);
 
-      // Run fast face & motion inference every ~36ms (~28fps)
-      if (ts - lastFaceInferTime >= 36) {
+      if (ts - lastFaceInferTime >= 34) {
         lastFaceInferTime = ts;
 
         if (state.handShutter || state.motionAuto) {
@@ -15880,6 +15923,11 @@ window.MahaProFullCamera = (() => {
                   if (p.x < minX) minX = p.x; if (p.x > maxX) maxX = p.x;
                   if (p.y < minY) minY = p.y; if (p.y > maxY) maxY = p.y;
                 }
+                let roll = 0;
+                if (pts[33] && pts[263]) {
+                  roll = Math.atan2((pts[263].y - pts[33].y) * vh, (pts[263].x - pts[33].x) * vw);
+                  if (state.mirror) roll = -roll;
+                }
                 let smiling = false, mouthOpen = false;
                 if (res.faceBlendshapes && res.faceBlendshapes[0]) {
                   const cats = res.faceBlendshapes[0].categories || [];
@@ -15889,7 +15937,7 @@ window.MahaProFullCamera = (() => {
                   if ((sL + sR) / 2 > 0.55) smiling = true;
                   if (jaw > 0.25 || smiling) mouthOpen = true;
                 }
-                found = { minX, maxX, minY, maxY, smiling, mouthOpen };
+                found = { minX, maxX, minY, maxY, roll, smiling, mouthOpen };
               }
             } catch (_) {}
           } else if (faceDetectorApi) {
@@ -15897,7 +15945,7 @@ window.MahaProFullCamera = (() => {
               const faces = await faceDetectorApi.detect(vid);
               if (faces && faces.length) {
                 const b = faces[0].boundingBox;
-                found = { minX: b.x / vw, maxX: (b.x + b.width) / vw, minY: b.y / vh, maxY: (b.y + b.height) / vh, smiling: false, mouthOpen: false };
+                found = { minX: b.x / vw, maxX: (b.x + b.width) / vw, minY: b.y / vh, maxY: (b.y + b.height) / vh, roll: 0, smiling: false, mouthOpen: false };
               }
             } catch (_) {}
           }
@@ -15905,7 +15953,6 @@ window.MahaProFullCamera = (() => {
         }
       }
 
-      // Draw hand wave guide if active
       if (state.handShutter) {
         const zx = cw - 104, zy = 132, zw = 84, zh = 84;
         ctx.strokeStyle = 'rgba(52,211,153,0.85)'; ctx.setLineDash([6, 4]); ctx.lineWidth = 2;
@@ -15914,16 +15961,16 @@ window.MahaProFullCamera = (() => {
         ctx.fillText('✋ WAVE HERE', zx + 5, zy + zh + 13);
       }
 
-      // 60fps responsive interpolation (alpha = 0.72 -> snappy real-time tracking, zero jitter)
       if (rawFaceNorm) {
         if (!smoothFaceNorm) {
           smoothFaceNorm = { ...rawFaceNorm };
         } else {
-          const a = 0.72;
+          const a = 0.75;
           smoothFaceNorm.minX += (rawFaceNorm.minX - smoothFaceNorm.minX) * a;
           smoothFaceNorm.maxX += (rawFaceNorm.maxX - smoothFaceNorm.maxX) * a;
           smoothFaceNorm.minY += (rawFaceNorm.minY - smoothFaceNorm.minY) * a;
           smoothFaceNorm.maxY += (rawFaceNorm.maxY - smoothFaceNorm.maxY) * a;
+          smoothFaceNorm.roll = (smoothFaceNorm.roll || 0) + ((rawFaceNorm.roll || 0) - (smoothFaceNorm.roll || 0)) * a;
           smoothFaceNorm.smiling = rawFaceNorm.smiling;
           smoothFaceNorm.mouthOpen = rawFaceNorm.mouthOpen;
         }
@@ -15951,7 +15998,6 @@ window.MahaProFullCamera = (() => {
     detectRaf = requestAnimationFrame(step);
   }
 
-  // POST-CAPTURE AI PHOTO ENHANCER (Eye Brighten + Catchlight + Smile Glow + Clarity)
   async function runPostCaptureAiEnhance(canvas) {
     const w = canvas.width, h = canvas.height;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -16021,10 +16067,10 @@ window.MahaProFullCamera = (() => {
     return Boolean(facePts);
   }
 
-  // DOUBLE ROLE (CLONE MODE)
   async function handleCloneCapture() {
     const vid = document.getElementById('mahaCamMainVideo');
     if (!vid || !vid.videoWidth) return;
+    playShutterClickAndFlash();
     const snap = renderCurrentFrameToCanvas(vid);
     if (!cloneFirstHalfCanvas) {
       cloneFirstHalfCanvas = snap;
@@ -16050,7 +16096,6 @@ window.MahaProFullCamera = (() => {
     }
   }
 
-  // LIVE PHOTO BOOTH (4-Shot Automatic 2x2 Collage)
   async function handlePhotoBoothCapture() {
     if (isBoothRunning) return;
     const vid = document.getElementById('mahaCamMainVideo');
@@ -16059,6 +16104,7 @@ window.MahaProFullCamera = (() => {
     const shots = [];
     for (let i = 1; i <= 4; i++) {
       for (let t = 2; t > 0; t--) { showQuietNote(`🎞️ Pose ${i}/4 in ${t}...`); await new Promise((r) => setTimeout(r, 850)); }
+      playShutterClickAndFlash();
       showQuietNote(`📸 Shot ${i}/4!`);
       shots.push(renderCurrentFrameToCanvas(vid));
       await new Promise((r) => setTimeout(r, 350));
@@ -16077,7 +16123,6 @@ window.MahaProFullCamera = (() => {
     await openInstantPhotoPreview(out, `MahaAI_BOOTH_${Date.now()}.png`, 'Photo Booth', false);
   }
 
-  // Panorama
   function handlePanoramaToggle() {
     const vid = document.getElementById('mahaCamMainVideo');
     const st = document.getElementById('mfcPanoStatus'); const fill = document.getElementById('mfcPanoFill');
@@ -16123,9 +16168,10 @@ window.MahaProFullCamera = (() => {
     if (state.mode === 'video') { if (isRecording) stopVideoRecording(); else startVideoRecording(); return; }
     if (state.timer > 0) { for (let t = state.timer; t > 0; t--) { showQuietNote(`⏱ ${t}s`); await new Promise((r) => setTimeout(r, 1000)); } }
     if (state.burstMode && state.mode === 'photo') {
-      for (let k = 1; k <= 5; k++) { showQuietNote(`📸 Burst ${k}/5`); await captureProPhoto(true); await new Promise((r) => setTimeout(r, 200)); }
+      for (let k = 1; k <= 5; k++) { playShutterClickAndFlash(); showQuietNote(`📸 Burst ${k}/5`); await captureProPhoto(true); await new Promise((r) => setTimeout(r, 200)); }
       showQuietNote('✓ 5 Burst Photos Saved!'); return;
     }
+    playShutterClickAndFlash();
     await captureProPhoto(false);
   }
 
@@ -16144,7 +16190,6 @@ window.MahaProFullCamera = (() => {
     return c;
   }
 
-  // Renders current frame with 0.01x–200x Zoom, Mirror, Portrait/Chroma/Art, Snap Mask & Lighting/Particles
   function renderCurrentFrameToCanvas(vid) {
     const vw = vid.videoWidth, vh = vid.videoHeight;
     const ratioName = RATIOS[state.ratioIdx];
@@ -16164,7 +16209,6 @@ window.MahaProFullCamera = (() => {
     const settings = track && track.getSettings ? track.getSettings() : null;
     if (settings && settings.zoom) hwZoom = settings.zoom;
 
-    // 0.01x Ultra-Wide De-Zoom vs Telephoto Zoom
     const isUltraWide = state.zoom < 1;
     const visScale = isUltraWide ? (0.36 + 0.64 * Math.pow(state.zoom, 0.32)) : 1;
     const dZoom = isUltraWide ? 1 : Math.max(1, state.zoom / hwZoom);
@@ -16173,7 +16217,6 @@ window.MahaProFullCamera = (() => {
 
     const drawSubject = (targetCtx) => {
       if (isUltraWide) {
-        // Fill outer ultra-wide studio surround + place crisp centered far-view subject
         targetCtx.save();
         targetCtx.filter = `${getActiveFilterStr()} blur(18px) brightness(0.65)`;
         if (state.mirror) { targetCtx.translate(outW, 0); targetCtx.scale(-1, 1); }
@@ -16238,7 +16281,6 @@ window.MahaProFullCamera = (() => {
       }
     }
 
-    // Bake Snapchat Animal / AR Mask accurately aligned with Zoom & Mirror
     const faceRef = smoothFaceNorm || rawFaceNorm;
     if (state.maskIdx > 0 && faceRef && state.mode !== 'doc') {
       const box = mapNormBoxToViewport(faceRef, vw, vh, outW, outH);
@@ -16443,7 +16485,10 @@ window.MahaProFullCamera = (() => {
           <div id="mfcPrevStatus" class="text-xs font-extrabold text-emerald-300 truncate">✓ Auto-Saved to Gallery</div>
           <div id="mfcPrevRes" class="text-[10px] text-slate-300 font-mono truncate">Ultra-HD • Zero-Pixel Zoom</div>
         </div>
-        <button type="button" id="mfcPrevSaveBtn" class="px-3.5 py-1.5 rounded-full bg-amber-400 text-black text-xs font-extrabold">⬇ Save</button>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button type="button" id="mfcPrevEditBtn" class="px-2.5 py-1.5 rounded-full bg-indigo-500 text-white text-xs font-extrabold">✏️ Edit</button>
+          <button type="button" id="mfcPrevSaveBtn" class="px-3 py-1.5 rounded-full bg-amber-400 text-black text-xs font-extrabold">⬇ Save</button>
+        </div>
       </div>
 
       <div id="mfcPreviewStage">
@@ -16498,6 +16543,16 @@ window.MahaProFullCamera = (() => {
       if (camOv) camOv.style.display = 'block';
       const vid = document.getElementById('mahaCamMainVideo');
       if (vid && vid.play) vid.play().catch(() => {});
+    };
+
+    document.getElementById('mfcPrevEditBtn').onclick = () => {
+      if (!prevState.dataUrl) return;
+      const dUrl = prevState.dataUrl;
+      close(false);
+      if (typeof PhotoEngine !== 'undefined' && PhotoEngine.loadDataUrl) {
+        if (typeof App !== 'undefined' && App.navigate) App.navigate('photo-editor');
+        setTimeout(() => PhotoEngine.loadDataUrl(dUrl, prevState.fileName || 'Captured.png'), 120);
+      }
     };
 
     document.getElementById('mfcPrevSaveBtn').onclick = () => {
@@ -16617,6 +16672,8 @@ window.MahaProFullCamera = (() => {
     rawFaceNorm = null; smoothFaceNorm = null;
     buildUI();
     document.getElementById('mahaFullCamOverlay').style.display = 'block';
+    const mini = document.getElementById('mfcCamMiniWidget');
+    if (mini) mini.style.display = 'none';
     try { history.pushState({ modal: 'fullcam' }, '', '#camera'); } catch (_) {}
 
     orientHandler = (ev) => {
@@ -16651,6 +16708,8 @@ window.MahaProFullCamera = (() => {
     if (el) el.style.display = 'none';
     const prevM = document.getElementById('mfcInstantPreviewModal');
     if (prevM) prevM.style.display = 'none';
+    const mini = document.getElementById('mfcCamMiniWidget');
+    if (mini) mini.style.display = 'none';
     if (invokeCb && onCloseCallback) { const cb = onCloseCallback; onCloseCallback = null; cb(); }
   }
 
