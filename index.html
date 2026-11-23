@@ -336,16 +336,167 @@ html, body { min-height: 100dvh; }
 
     #mahaCamDualVideo {
       position: absolute;
-      top: 72px;
-      right: 14px;
+      top: 132px;
+      right: 12px;
       width: 112px;
-      height: 158px;
+      height: 156px;
       object-fit: cover;
       border-radius: 14px;
-      border: 2px solid rgba(255, 255, 255, 0.88);
+      border: 2px solid rgba(255, 255, 255, 0.9);
       background: #000;
-      z-index: 20;
+      z-index: 22;
       display: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.65);
+    }
+    #mahaCamDualVideo.split-mode {
+      top: 50%;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 50%;
+      border-radius: 0;
+      border: none;
+      border-top: 2px solid rgba(255,255,255,0.75);
+    }
+    #mahaCamMainVideo.split-mode {
+      height: 50%;
+      bottom: auto;
+    }
+    #mahaCamDetectCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 18;
+    }
+    
+    #mahaCamPortraitCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 10;
+      display: none;
+      pointer-events: none;
+    }
+    #mfcLevelerBar {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 110px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.55);
+      transform: translate(-50%, -50%);
+      z-index: 19;
+      pointer-events: none;
+      display: none;
+    }
+    #mfcLevelerBar.level-ok {
+      background: #34d399;
+      box-shadow: 0 0 8px #34d399;
+    }
+    
+    #mfcHistCanvas {
+      position: absolute;
+      top: 136px;
+      left: 10px;
+      width: 116px;
+      height: 52px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.58);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      z-index: 28;
+      display: none;
+      pointer-events: none;
+    }
+    #mfcAudioMeterWrap {
+      position: absolute;
+      top: 194px;
+      left: 10px;
+      z-index: 28;
+      display: none;
+      padding: 4px 8px;
+      border-radius: 10px;
+      align-items: center;
+      gap: 6px;
+    }
+    #mfcTeleprompter {
+      position: absolute;
+      top: 148px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(86vw, 380px);
+      z-index: 32;
+      display: none;
+      border-radius: 16px;
+      padding: 8px 10px;
+      background: rgba(0, 0, 0, 0.62);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      backdrop-filter: blur(8px);
+    }
+    #mfcTpScrollBox {
+      height: 82px;
+      overflow-y: auto;
+      line-height: 1.45;
+      color: #fef08a;
+      font-weight: 700;
+      text-align: center;
+      padding: 6px 4px;
+      outline: none;
+    }
+    #mfcQrBox {
+      position: absolute;
+      left: 50%;
+      top: 48%;
+      transform: translate(-50%, -50%);
+      width: 220px;
+      height: 220px;
+      border: 3px solid #34d399;
+      border-radius: 22px;
+      box-shadow: 0 0 0 2000px rgba(0,0,0,0.42);
+      z-index: 24;
+      display: none;
+      pointer-events: none;
+    }
+    #mfcQrResultBar {
+      position: absolute;
+      left: 50%;
+      top: calc(48% + 126px);
+      transform: translateX(-50%);
+      width: min(90vw, 360px);
+      z-index: 36;
+      display: none;
+    }
+    #mfcPanoGuide {
+      position: absolute;
+      left: 50%;
+      top: 48%;
+      transform: translate(-50%, -50%);
+      width: min(90vw, 360px);
+      z-index: 26;
+      display: none;
+      pointer-events: none;
+    }
+
+    #mfcProDrawer {
+      max-height: 36dvh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #mfcTapFocusRing {
+      position: absolute;
+      width: 68px;
+      height: 68px;
+      border: 2px solid #fbbf24;
+      border-radius: 14px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 25;
+      display: none;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.5), inset 0 0 10px rgba(251,191,36,0.28);
     }
 
     .maha-hud-bar {
@@ -429,9 +580,14 @@ html, body { min-height: 100dvh; }
         <div class="text-[10px] text-rose-400 font-medium">A Brand of India!</div>
       </div>
     </div>
-    <button id="mobileMenuBtn" class="btn-secondary px-2.5 py-1.5 rounded-lg text-xs flex items-center gap-1.5">
-      <i data-lucide="menu" class="w-4 h-4"></i><span>Modules</span>
-    </button>
+    <div class="flex items-center gap-1.5">
+      <button type="button" id="mobilePwaInstallBtn" class="btn-primary px-2.5 py-1.5 rounded-lg text-[11px] font-bold flex items-center gap-1 shadow-md">
+        <span>⬇</span><span>Install App</span>
+      </button>
+      <button id="mobileMenuBtn" class="btn-secondary px-2.5 py-1.5 rounded-lg text-xs flex items-center gap-1.5">
+        <i data-lucide="menu" class="w-4 h-4"></i><span>Modules</span>
+      </button>
+    </div>
   </header>
 
   <!-- Mobile Slide-Over Drawer -->
@@ -13924,10 +14080,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
 <script>
 // ============================================================================
-// MAHA PRO FULL-DISPLAY CAMERA (v3)
-// Full Screen • ALL Photo & Video Settings Clearly Visible On-Display
-// 200x Zoom • Dual Shoot • iPhone-Level Pro HDR • Automatic Phone Gallery Save
-// Zero Grid Lines • Zero Animations • Proper Hardware Back Support
+// MAHA PRO FULL-DISPLAY CAMERA (v7 — ULTIMATE DSLR, CREATOR & AI PRO SUITE)
+// • True Real-Time Orientation (Zero Tilt / Zero Stretch / Natural Front & Back Mirror)
+// • Post-Capture AI Photo Enhancer (Eye Brighten & Catchlight + Smile & Lip Glow + Skin/Clarity)
+// • Pro Video Creator: Pause/Resume Single-File Recording, Live Teleprompter, Audio VU Meter & Mic Boost
+// • AI & AR Modes: Live AR Face Props (Shades/Glow/Crown/Neon), Hand-Gesture Shutter (✋), AI Motion Auto-Capture
+// • Pro DSLR: Focus (AF/MF + Tap Ring), Live RGB Histogram, WB (2800K–8000K), ISO, Horizon Leveler, Pro HDR, Night Mode
+// • Smart Modes: Live Portrait Bokeh/BG Replace, Burst 5x, Slow-Mo/Time-Lapse, Live Beauty, Voice & Smile Shutter
+// • Pro Utilities: Panorama Wide-Angle Stitcher, Built-in QR & Barcode Scanner, Doc Scanner, Custom Stamp
+// • Dual Camera Mode (OFF / PiP / SPLIT — Front + Back Photo & Video + Smart Fallback), 200x Super Zoom
 // ============================================================================
 window.MahaProFullCamera = (() => {
   let mainStream = null;
@@ -13935,33 +14096,107 @@ window.MahaProFullCamera = (() => {
   let mediaRecorder = null;
   let recordedChunks = [];
   let isRecording = false;
+  let isPaused = false;
   let recTimerId = null;
   let recSeconds = 0;
   let onCloseCallback = null;
   let dualCanvasRaf = null;
+  let detectRaf = null;
+  let portraitRaf = null;
+  let lastDetectTime = 0;
+  let lastHistTime = 0;
+  let faceDetectorApi = null;
+  let mpFaceLandmarker = null;
+  let mpSegmenter = null;
+  let smileCooldown = 0;
+  let handCooldown = 0;
+  let motionCooldown = 0;
+  let speechRec = null;
+  let orientHandler = null;
+  let lastFaceData = null; // { boxes: [], landmarks: null, smiling: false }
+
+  // Audio Meter & Mic Boost nodes
+  let audioCtx = null;
+  let audioAnalyser = null;
+  let audioGainNode = null;
+  let audioDestNode = null;
+  let audioMeterRaf = null;
+
+  // Teleprompter state
+  let tpRaf = null;
+  let tpPlaying = false;
+  let tpSpeed = 1.0;
+
+  // Motion & Hand detection scratch canvas
+  let prevMotionFrame = null;
+  let motionScratch = null;
+
+  // Panorama state
+  let isPanoCapturing = false;
+  let panoTimerId = null;
+  let panoSlices = [];
+
+  // QR Scanner state
+  let qrDetector = null;
+  let lastQrValue = '';
+  let lastQrCheck = 0;
 
   const TONES = [
-    { id: 'iphone', label: 'iPhone Pro', filter: 'contrast(1.09) saturate(1.13)' },
-    { id: 'vivid',  label: 'Vivid',      filter: 'contrast(1.16) saturate(1.30)' },
-    { id: 'natural',label: 'Natural',    filter: 'contrast(1.02) saturate(1.02)' },
-    { id: 'warm',   label: 'Golden',     filter: 'contrast(1.08) saturate(1.18) sepia(0.14)' },
-    { id: 'bw',     label: 'Mono B&W',   filter: 'grayscale(1) contrast(1.22)' }
+    { id: 'iphone',  label: 'iPhone Pro', filter: 'contrast(1.06) saturate(1.10)' },
+    { id: 'natural', label: 'Natural',    filter: 'contrast(1.00) saturate(1.00)' },
+    { id: 'vivid',   label: 'Vivid',      filter: 'contrast(1.14) saturate(1.26)' },
+    { id: 'warm',    label: 'Golden',     filter: 'contrast(1.06) saturate(1.16) sepia(0.12)' },
+    { id: 'bw',      label: 'Mono B&W',   filter: 'grayscale(1) contrast(1.20)' }
   ];
   const RATIOS = ['FULL', '4:3', '16:9', '1:1'];
+  const DUAL_MODES = ['OFF', 'PiP', 'SPLIT'];
+  const BG_MODES = ['OFF', 'BOKEH', 'STUDIO', 'NATURE'];
+  const AR_MODES = ['OFF', 'SHADES', 'GLOW', 'CROWN', 'NEON'];
+  const VID_SPEEDS = [
+    { label: '1x',   rate: 1,   fps: 30, name: 'Normal' },
+    { label: '0.5x', rate: 0.5, fps: 60, name: 'Slow-Mo' },
+    { label: '4x',   rate: 4,   fps: 10, name: 'Time-Lapse' }
+  ];
 
   const state = {
-    mode: 'photo',         // 'photo' | 'video'
+    mode: 'photo',         // 'photo' | 'video' | 'pano' | 'doc' | 'qr'
     facing: 'environment', // 'environment' | 'user'
     zoom: 1,               // 1x to 200x
-    dualShoot: false,
+    dualModeIdx: 0,        // 0=OFF, 1=PiP, 2=SPLIT
+    dualHardwareOk: false,
     proHDR: true,
+    aiPostEnhance: true,   // Post-Capture AI Eye + Smile + Skin/Clarity Enhancer
+    nightMode: false,
+    focusMode: 'AF',       // 'AF' | 'MF'
+    focusDist: 0.5,
+    detectorOn: true,
+    smileShutter: false,
+    voiceShutter: false,
+    handShutter: false,
+    motionAuto: false,
+    burstMode: false,
+    vidSpeedIdx: 0,
+    bgModeIdx: 0,
+    arModeIdx: 0,
+    bokehBlur: 10,
+    kelvin: 5500,
+    iso: 0,
+    beauty: 0,
+    micBoost: 1.4,
+    audioMeterOn: false,
+    histOn: false,
+    tpOn: false,
+    levelerOn: false,
+    watermarkOn: false,
+    proDrawerOpen: false,
     torch: false,
-    exposure: 0,           // -2.0 to +2.0
-    timer: 0,              // 0, 3, 5, 10
-    quality: '4K',         // '4K' | 'FHD'
-    fps: 60,               // 60 | 30
-    ratioIdx: 0,           // FULL, 4:3, 16:9, 1:1
-    toneIdx: 0,            // iPhone Pro, Vivid, Natural, Golden, Mono
+    brightness: 100,
+    exposure: 0,
+    timer: 0,
+    quality: 'FHD',
+    fps: 30,
+    ratioIdx: 0,
+    toneIdx: 0,
     mirror: false,
     mic: true
   };
@@ -13973,55 +14208,187 @@ window.MahaProFullCamera = (() => {
     div.id = 'mahaFullCamOverlay';
     div.style.display = 'none';
     div.innerHTML = `
-      <!-- Main Full-Screen Camera Video (Zero Grid Lines, Zero Animations) -->
+      <!-- Main Full-Screen Camera Video (True Real-Time Orientation, Zero Tilt) -->
       <video id="mahaCamMainVideo" autoplay playsinline muted></video>
-      <!-- Dual Shoot Secondary PiP Video -->
+      <!-- Live AI Portrait / Bokeh / BG Replace Canvas -->
+      <canvas id="mahaCamPortraitCanvas"></canvas>
+      <!-- Dual Shoot Secondary Video (PiP or Split-Screen) -->
       <video id="mahaCamDualVideo" autoplay playsinline muted></video>
+      <!-- Real-Time AI Face, Smile, Hand & AR Props Overlay -->
+      <canvas id="mahaCamDetectCanvas"></canvas>
+      <!-- Subtle Horizon Leveler -->
+      <div id="mfcLevelerBar"></div>
+      <!-- Tap-to-Focus Reticle -->
+      <div id="mfcTapFocusRing"></div>
 
-      <!-- TOP HEADER + ALL ON-DISPLAY SETTINGS STRIP (100% Visible in Photo & Video) -->
-      <div style="position:absolute;top:max(8px,env(safe-area-inset-top));left:8px;right:8px;z-index:35;display:flex;flex-direction:column;gap:6px;">
-        <!-- Row 1: Back + Live Status Badge + Quick Flip -->
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
-          <button type="button" id="mfcCloseBtn" class="maha-hud-bar text-white text-xs font-bold px-3 py-1.5 rounded-full">← Back</button>
-          <div id="mfcLiveSpec" class="maha-hud-bar text-amber-300 text-[10px] font-bold px-3 py-1 rounded-full tracking-wide">
-            PHOTO • 4K • 60FPS • PRO HDR
+      <!-- Real-Time RGB Histogram -->
+      <canvas id="mfcHistCanvas" width="116" height="52"></canvas>
+
+      <!-- Live Audio Level Meter -->
+      <div id="mfcAudioMeterWrap" class="maha-hud-bar">
+        <span style="font-size:10px;color:#34d399;font-weight:800;">🎙</span>
+        <div style="width:76px;height:7px;background:rgba(255,255,255,0.16);border-radius:99px;overflow:hidden;">
+          <div id="mfcAudioMeterFill" style="width:0%;height:100%;background:linear-gradient(90deg,#10b981,#fbbf24,#f43f5e);"></div>
+        </div>
+      </div>
+
+      <!-- Live Teleprompter Overlay -->
+      <div id="mfcTeleprompter">
+        <div class="flex items-center justify-between gap-2 text-[10px] text-slate-200 mb-1">
+          <span class="font-bold text-amber-300">📜 TELEPROMPTER</span>
+          <div class="flex items-center gap-1.5">
+            <button type="button" id="mfcTpPlayBtn" class="px-2 py-0.5 rounded bg-emerald-500 text-black font-extrabold">▶ Scroll</button>
+            <input id="mfcTpSpeed" type="range" min="0.4" max="3" step="0.2" value="1" class="w-16 accent-amber-400" title="Scroll Speed" />
+            <button type="button" id="mfcTpCloseBtn" class="px-1.5 py-0.5 rounded bg-white/15 text-white">✕</button>
           </div>
-          <button type="button" id="mfcTopFlipBtn" class="maha-hud-bar text-white text-xs font-bold px-3 py-1.5 rounded-full">🔄 Flip</button>
+        </div>
+        <div id="mfcTpScrollBox" contenteditable="true" style="font-size:15px;">Namaste dosto! Aaj hum Maha AI STUDIO ke Ultra-Pro Camera se shoot kar rahe hain. Yahan apna script type ya paste karein aur bina atke video record karein...</div>
+      </div>
+
+      <!-- QR / Barcode Scanner Guide & Result -->
+      <div id="mfcQrBox"></div>
+      <div id="mfcQrResultBar" class="maha-hud-bar rounded-2xl p-3 text-xs text-white space-y-2">
+        <div class="text-[10px] font-bold text-emerald-300 uppercase">🏁 Scanned QR / Barcode</div>
+        <div id="mfcQrText" class="font-mono text-xs break-all text-amber-200"></div>
+        <div class="flex gap-2">
+          <button type="button" id="mfcQrCopyBtn" class="flex-1 py-1.5 rounded-xl bg-white/15 font-bold">📋 Copy</button>
+          <a id="mfcQrOpenBtn" href="#" target="_blank" rel="noopener" class="hidden flex-1 py-1.5 rounded-xl bg-emerald-500 text-black text-center font-bold">🔗 Open Link</a>
+          <button type="button" id="mfcQrClearBtn" class="px-3 py-1.5 rounded-xl bg-rose-500/40 font-bold">✕</button>
+        </div>
+      </div>
+
+      <!-- Panorama Sweep Guide -->
+      <div id="mfcPanoGuide" class="maha-hud-bar rounded-2xl p-2.5 text-center space-y-1.5">
+        <div id="mfcPanoStatus" class="text-[11px] font-bold text-amber-300">🌄 Tap Shutter &amp; Move Slowly Left → Right</div>
+        <div class="w-full h-2 rounded-full bg-white/15 overflow-hidden">
+          <div id="mfcPanoFill" style="width:0%;height:100%;background:linear-gradient(90deg,#38bdf8,#34d399,#fbbf24);"></div>
+        </div>
+      </div>
+
+      <!-- TOP HEADER + ALL ON-DISPLAY SETTINGS -->
+      <div style="position:absolute;top:max(8px,env(safe-area-inset-top));left:8px;right:8px;z-index:35;display:flex;flex-direction:column;gap:5px;">
+        <!-- Row 1: Back + Live Spec Badge + Pro Tools Drawer Toggle -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:5px;">
+          <button type="button" id="mfcCloseBtn" class="maha-hud-bar text-white text-xs font-bold px-3 py-1.5 rounded-full">← Back</button>
+          <div id="mfcLiveSpec" class="maha-hud-bar text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-full tracking-wide truncate">
+            PHOTO • 1080p • AF • ✨AI
+          </div>
+          <button type="button" id="mfcProToggleBtn" class="maha-hud-bar text-cyan-300 text-xs font-extrabold px-3 py-1.5 rounded-full border-cyan-400/40">⚙ PRO</button>
         </div>
 
-        <!-- Row 2: ALL ON-DISPLAY CAMERA & VIDEO SETTINGS (Clean 2-row wrapped grid, nothing hidden) -->
-        <div class="maha-hud-bar rounded-2xl p-1.5" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;">
-          <button type="button" id="mfcHdrBtn" class="py-1.5 px-1 rounded-xl bg-amber-500 text-black text-[10px] font-extrabold truncate">HDR: ON</button>
-          <button type="button" id="mfcDualBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">DUAL: OFF</button>
+        <!-- Row 2: PRIMARY ON-DISPLAY SETTINGS (2-row 6-column grid) -->
+        <div class="maha-hud-bar rounded-2xl p-1.5" style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;">
+          <button type="button" id="mfcAiFixBtn" class="py-1.5 px-1 rounded-xl bg-fuchsia-500 text-white text-[10px] font-extrabold truncate">✨ AI:ON</button>
+          <button type="button" id="mfcNightBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">🌙 NIGHT</button>
+          <button type="button" id="mfcFocusBtn" class="py-1.5 px-1 rounded-xl bg-cyan-500/30 text-cyan-200 text-[10px] font-extrabold truncate">🎯 AF</button>
+          <button type="button" id="mfcDualBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">DUAL:OFF</button>
+          <button type="button" id="mfcBokehBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">🫧 BG:OFF</button>
+          <button type="button" id="mfcArBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">🕶 AR:OFF</button>
+
+          <button type="button" id="mfcDetBtn" class="py-1.5 px-1 rounded-xl bg-emerald-500 text-black text-[10px] font-extrabold truncate">🤖 DET</button>
           <button type="button" id="mfcTorchBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">⚡ OFF</button>
+          <button type="button" id="mfcQualBtn" class="py-1.5 px-1 rounded-xl bg-emerald-500/25 text-emerald-200 text-[10px] font-bold truncate">1080p</button>
           <button type="button" id="mfcTimerBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">⏱ 0s</button>
-          <button type="button" id="mfcQualBtn" class="py-1.5 px-1 rounded-xl bg-emerald-500/25 text-emerald-200 text-[10px] font-extrabold truncate">4K PRO</button>
-
-          <button type="button" id="mfcFpsBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-cyan-200 text-[10px] font-bold truncate">60 FPS</button>
           <button type="button" id="mfcRatioBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">📐 FULL</button>
-          <button type="button" id="mfcToneBtn" class="py-1.5 px-1 rounded-xl bg-indigo-500/35 text-indigo-100 text-[10px] font-bold truncate">🎨 iPhone</button>
-          <button type="button" id="mfcMirrorBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate">🪞 OFF</button>
-          <button type="button" id="mfcMicBtn" class="py-1.5 px-1 rounded-xl bg-emerald-500/25 text-emerald-200 text-[10px] font-bold truncate">🎙 ON</button>
+          <button type="button" id="mfcToneBtn" class="py-1.5 px-1 rounded-xl bg-indigo-500/35 text-indigo-100 text-[10px] font-bold truncate">🎨 Pro</button>
+        </div>
+
+        <!-- Manual Focus Bar (Shows when Focus Mode = MF) -->
+        <div id="mfcManualFocusBar" style="display:none;" class="maha-hud-bar rounded-xl px-3 py-1.5 flex items-center gap-2 text-[10px] font-bold text-cyan-200">
+          <span>🎯 MACRO</span>
+          <input id="mfcFocusSlider" type="range" min="0" max="1" step="0.02" value="0.5" class="flex-1 accent-cyan-400" />
+          <span>∞ FAR</span>
+        </div>
+
+        <!-- EXPANDABLE PRO DSLR, CREATOR & AI TOOLS DRAWER -->
+        <div id="mfcProDrawer" style="display:none;" class="maha-hud-bar rounded-2xl p-2.5 space-y-2 text-[10px] text-white">
+          <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;">
+            <button type="button" id="mfcBurstBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📸 Burst:OFF</button>
+            <button type="button" id="mfcVoiceBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">🗣️ Voice:OFF</button>
+            <button type="button" id="mfcSmileBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">😊 Smile:OFF</button>
+            <button type="button" id="mfcHandBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">✋ Hand:OFF</button>
+
+            <button type="button" id="mfcMotionBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">🏃 Motion:OFF</button>
+            <button type="button" id="mfcTpBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📜 Script:OFF</button>
+            <button type="button" id="mfcHistBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📊 Hist:OFF</button>
+            <button type="button" id="mfcAudioBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">🎚 Audio:OFF</button>
+
+            <button type="button" id="mfcSpeedBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">⏩ Spd: 1x</button>
+            <button type="button" id="mfcFpsBtn" class="py-1.5 px-1 rounded-xl bg-white/10 text-cyan-200 font-bold truncate">🎬 30 FPS</button>
+            <button type="button" id="mfcHdrBtn" class="py-1.5 px-1 rounded-xl bg-amber-500 text-black font-extrabold truncate">HDR:ON</button>
+            <button type="button" id="mfcLevelBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">📏 Level:OFF</button>
+
+            <button type="button" id="mfcWmBtn" class="py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate">🏷️ Stamp:OFF</button>
+            <button type="button" id="mfcMicBtn" class="py-1.5 px-1 rounded-xl bg-emerald-500/25 text-emerald-200 font-bold truncate">🎙 Mic:ON</button>
+            <button type="button" id="mfcResetProBtn" style="grid-column:span 2;" class="py-1.5 px-1 rounded-xl bg-rose-500/30 text-rose-200 font-bold truncate">↺ Reset Pro Controls</button>
+          </div>
+
+          <!-- White Balance (Kelvin) -->
+          <div class="flex items-center gap-2">
+            <span class="w-16 font-bold text-amber-200">🌡 WB</span>
+            <input id="mfcWbSlider" type="range" min="2800" max="8000" step="100" value="5500" class="flex-1 accent-amber-400" />
+            <span id="mfcWbVal" class="w-12 text-right font-mono">5500K</span>
+          </div>
+
+          <!-- ISO Control -->
+          <div class="flex items-center gap-2">
+            <span class="w-16 font-bold text-cyan-200">🎞 ISO</span>
+            <input id="mfcIsoSlider" type="range" min="0" max="3200" step="100" value="0" class="flex-1 accent-cyan-400" />
+            <span id="mfcIsoVal" class="w-12 text-right font-mono">AUTO</span>
+          </div>
+
+          <!-- Live Beauty / Skin Smoothness -->
+          <div class="flex items-center gap-2">
+            <span class="w-16 font-bold text-pink-200">✨ Beauty</span>
+            <input id="mfcBeautySlider" type="range" min="0" max="100" step="5" value="0" class="flex-1 accent-pink-400" />
+            <span id="mfcBeautyVal" class="w-12 text-right font-mono">0%</span>
+          </div>
+
+          <!-- DSLR Bokeh Blur Strength -->
+          <div class="flex items-center gap-2">
+            <span class="w-16 font-bold text-indigo-200">🫧 Bokeh</span>
+            <input id="mfcBokehSlider" type="range" min="4" max="22" step="1" value="10" class="flex-1 accent-indigo-400" />
+            <span id="mfcBokehVal" class="w-12 text-right font-mono">f/2.0</span>
+          </div>
+
+          <!-- Mic Boost Gain -->
+          <div class="flex items-center gap-2">
+            <span class="w-16 font-bold text-emerald-200">🎙 Boost</span>
+            <input id="mfcMicBoostSlider" type="range" min="0.5" max="3" step="0.1" value="1.4" class="flex-1 accent-emerald-400" />
+            <span id="mfcMicBoostVal" class="w-12 text-right font-mono">1.4x</span>
+          </div>
         </div>
       </div>
 
-      <!-- RECORDING TIMER / SAVE STATUS PILL -->
-      <div id="mfcRecBadge" style="display:none;position:absolute;top:126px;left:50%;transform:translateX(-50%);z-index:35;" class="px-3 py-1 rounded-full bg-red-600 text-white text-xs font-bold">
-        ● REC 00:00
+      <!-- STATUS / RECORDING + PAUSE / SAVE PILLS -->
+      <div id="mfcRecRow" style="display:none;position:absolute;top:132px;left:50%;transform:translateX(-50%);z-index:36;gap:6px;align-items:center;">
+        <div id="mfcRecBadge" class="px-3 py-1 rounded-full bg-red-600 text-white text-xs font-bold whitespace-nowrap">
+          ● REC 00:00
+        </div>
+        <button type="button" id="mfcRecPauseBtn" class="maha-hud-bar px-3 py-1 rounded-full text-amber-300 text-xs font-extrabold whitespace-nowrap">
+          ⏸ Pause
+        </button>
       </div>
-      <div id="mfcSaveNote" style="display:none;position:absolute;top:126px;left:50%;transform:translateX(-50%);z-index:35;" class="maha-hud-bar px-3 py-1 rounded-full text-emerald-300 text-xs font-bold">
+      <div id="mfcSaveNote" style="display:none;position:absolute;top:132px;left:50%;transform:translateX(-50%);z-index:36;" class="maha-hud-bar px-3 py-1 rounded-full text-emerald-300 text-xs font-bold whitespace-nowrap">
         ✓ Saved to Phone Gallery
       </div>
 
-      <!-- LEFT SIDE ON-DISPLAY EXPOSURE SLIDER -->
-      <div class="maha-hud-bar" style="position:absolute;left:8px;top:52%;transform:translateY(-50%);z-index:30;padding:8px 5px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:5px;">
+      <!-- LEFT SIDE ON-DISPLAY BRIGHTNESS SLIDER -->
+      <div class="maha-hud-bar" style="position:absolute;left:8px;top:56%;transform:translateY(-50%);z-index:30;padding:8px 5px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <span style="font-size:10px;color:#fde047;font-weight:800;">☀️</span>
+        <input id="mfcBrightSlider" type="range" min="50" max="180" step="5" value="100" style="writing-mode:vertical-lr;direction:rtl;height:96px;width:16px;accent-color:#fde047;">
+        <span id="mfcBrightVal" style="font-size:9px;color:#fff;font-weight:700;">100%</span>
+      </div>
+
+      <!-- RIGHT SIDE ON-DISPLAY EXPOSURE (EV) SLIDER -->
+      <div class="maha-hud-bar" style="position:absolute;right:8px;top:56%;transform:translateY(-50%);z-index:30;padding:8px 5px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:4px;">
         <span style="font-size:9px;color:#fbbf24;font-weight:800;">EV</span>
-        <input id="mfcEvSlider" type="range" min="-2" max="2" step="0.2" value="0" style="writing-mode:vertical-lr;direction:rtl;height:110px;width:16px;accent-color:#fbbf24;">
+        <input id="mfcEvSlider" type="range" min="-2" max="2" step="0.2" value="0" style="writing-mode:vertical-lr;direction:rtl;height:96px;width:16px;accent-color:#fbbf24;">
         <span id="mfcEvVal" style="font-size:9px;color:#fff;font-weight:700;">0.0</span>
       </div>
 
-      <!-- BOTTOM ON-DISPLAY CONTROLS (200x ZOOM + MODE + SHUTTER) -->
-      <div style="position:absolute;bottom:max(10px,env(safe-area-inset-bottom));left:8px;right:8px;z-index:35;display:flex;flex-direction:column;gap:8px;align-items:center;">
+      <!-- BOTTOM ON-DISPLAY CONTROLS (200x ZOOM + MODES + SHUTTER) -->
+      <div style="position:absolute;bottom:max(10px,env(safe-area-inset-bottom));left:8px;right:8px;z-index:35;display:flex;flex-direction:column;gap:7px;align-items:center;">
 
         <!-- 200x Super Zoom Presets + Slider -->
         <div class="maha-hud-bar w-full max-w-md rounded-2xl px-3 py-1.5 flex flex-col gap-1">
@@ -14040,10 +14407,13 @@ window.MahaProFullCamera = (() => {
           </div>
         </div>
 
-        <!-- Photo / Video Mode Switch -->
-        <div class="maha-hud-bar rounded-full p-1 flex items-center gap-1 text-xs font-bold">
-          <button type="button" id="mfcModePhoto" class="px-5 py-1 rounded-full bg-white text-black">PHOTO</button>
-          <button type="button" id="mfcModeVideo" class="px-5 py-1 rounded-full text-white">VIDEO</button>
+        <!-- 5 Camera Modes: PHOTO | VIDEO | PANO | DOC | QR -->
+        <div class="maha-hud-bar rounded-full p-1 flex items-center gap-0.5 text-[10px] font-bold max-w-full overflow-x-auto no-scrollbar">
+          <button type="button" id="mfcModePhoto" class="px-3 py-1 rounded-full bg-white text-black whitespace-nowrap">PHOTO</button>
+          <button type="button" id="mfcModeVideo" class="px-3 py-1 rounded-full text-white whitespace-nowrap">VIDEO</button>
+          <button type="button" id="mfcModePano"  class="px-3 py-1 rounded-full text-white whitespace-nowrap">🌄 PANO</button>
+          <button type="button" id="mfcModeDoc"   class="px-3 py-1 rounded-full text-white whitespace-nowrap">📄 DOC</button>
+          <button type="button" id="mfcModeQr"    class="px-3 py-1 rounded-full text-white whitespace-nowrap">🏁 QR</button>
         </div>
 
         <!-- Shutter Row -->
@@ -14065,49 +14435,155 @@ window.MahaProFullCamera = (() => {
   function updateSpecBadge() {
     const el = document.getElementById('mfcLiveSpec');
     if (!el) return;
-    const m = state.mode === 'video' ? 'VIDEO' : 'PHOTO';
-    const r = RATIOS[state.ratioIdx];
-    const hdr = state.proHDR ? 'PRO HDR' : 'STD';
-    el.textContent = `${m} • ${state.quality} • ${state.fps}FPS • ${r} • ${hdr}`;
+    const modeMap = { photo: state.burstMode ? 'BURST 5x' : 'PHOTO', video: 'VID ' + VID_SPEEDS[state.vidSpeedIdx].label, pano: 'PANORAMA', doc: 'DOC SCAN', qr: 'QR SCAN' };
+    const parts = [modeMap[state.mode] || 'PHOTO', state.quality === '4K' ? '4K' : '1080p', state.focusMode];
+    if (state.aiPostEnhance && state.mode === 'photo') parts.push('✨AI');
+    if (state.nightMode) parts.push('🌙');
+    if (state.bgModeIdx > 0) parts.push('🫧' + BG_MODES[state.bgModeIdx]);
+    if (state.arModeIdx > 0) parts.push('🕶' + AR_MODES[state.arModeIdx]);
+    if (state.dualModeIdx > 0) parts.push('DUAL:' + DUAL_MODES[state.dualModeIdx]);
+    el.textContent = parts.join(' • ');
   }
 
   function bindEvents() {
-    document.getElementById('mfcCloseBtn').onclick = () => {
-      close(true);
-    };
-
+    document.getElementById('mfcCloseBtn').onclick = () => close(true);
     document.getElementById('mfcLastThumbWrap').onclick = () => {
       close(false);
       if (typeof App !== 'undefined' && App.navigate) App.navigate('gallery');
     };
 
-    const doFlip = async () => {
-      if (isRecording) return;
-      state.facing = state.facing === 'environment' ? 'user' : 'environment';
-      await startMainCamera();
-      if (state.dualShoot) {
-        stopDualStream();
-        state.dualShoot = false;
-        await toggleDualShoot();
-      }
+    document.getElementById('mfcProToggleBtn').onclick = () => {
+      state.proDrawerOpen = !state.proDrawerOpen;
+      const dr = document.getElementById('mfcProDrawer');
+      const btn = document.getElementById('mfcProToggleBtn');
+      if (dr) dr.style.display = state.proDrawerOpen ? 'block' : 'none';
+      if (btn) btn.textContent = state.proDrawerOpen ? '✕ PRO' : '⚙ PRO';
     };
-    document.getElementById('mfcFlipBtn').onclick = doFlip;
-    document.getElementById('mfcTopFlipBtn').onclick = doFlip;
 
+    document.getElementById('mfcFlipBtn').onclick = async () => {
+      state.facing = state.facing === 'environment' ? 'user' : 'environment';
+      state.mirror = (state.facing === 'user');
+      await startMainCamera();
+      if (state.dualModeIdx > 0 && state.dualHardwareOk) {
+        stopDualStream();
+        await tryStartDualStream();
+      }
+      showQuietNote(state.facing === 'user' ? '🤳 Front Camera' : '📷 Back Camera');
+    };
+
+    // Modes
     document.getElementById('mfcModePhoto').onclick = () => setMode('photo');
     document.getElementById('mfcModeVideo').onclick = () => setMode('video');
+    document.getElementById('mfcModePano').onclick  = () => setMode('pano');
+    document.getElementById('mfcModeDoc').onclick   = () => setMode('doc');
+    document.getElementById('mfcModeQr').onclick    = () => setMode('qr');
 
-    document.getElementById('mfcHdrBtn').onclick = () => {
-      state.proHDR = !state.proHDR;
-      const b = document.getElementById('mfcHdrBtn');
-      b.textContent = state.proHDR ? 'HDR: ON' : 'HDR: OFF';
-      b.className = state.proHDR
-        ? 'py-1.5 px-1 rounded-xl bg-amber-500 text-black text-[10px] font-extrabold truncate'
+    // Post-Capture AI Photo Enhancement (Eye + Smile + Skin/Clarity)
+    document.getElementById('mfcAiFixBtn').onclick = () => {
+      state.aiPostEnhance = !state.aiPostEnhance;
+      const b = document.getElementById('mfcAiFixBtn');
+      b.textContent = state.aiPostEnhance ? '✨ AI:ON' : '✨ AI:OFF';
+      b.className = state.aiPostEnhance
+        ? 'py-1.5 px-1 rounded-xl bg-fuchsia-500 text-white text-[10px] font-extrabold truncate'
         : 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
+      updateSpecBadge();
+      showQuietNote(state.aiPostEnhance ? '✨ Post-Capture AI Eye & Smile Enhance ON' : 'AI Auto-Enhance OFF');
+    };
+
+    // Night Mode
+    document.getElementById('mfcNightBtn').onclick = () => {
+      state.nightMode = !state.nightMode;
+      const b = document.getElementById('mfcNightBtn');
+      b.textContent = state.nightMode ? '🌙 ON' : '🌙 NIGHT';
+      b.className = state.nightMode
+        ? 'py-1.5 px-1 rounded-xl bg-indigo-400 text-black text-[10px] font-extrabold truncate'
+        : 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
+      applyLiveFilters();
       updateSpecBadge();
     };
 
-    document.getElementById('mfcDualBtn').onclick = toggleDualShoot;
+    // Focus Mode (AF / MF)
+    document.getElementById('mfcFocusBtn').onclick = async () => {
+      state.focusMode = state.focusMode === 'AF' ? 'MF' : 'AF';
+      const b = document.getElementById('mfcFocusBtn');
+      const mfBar = document.getElementById('mfcManualFocusBar');
+      b.textContent = state.focusMode === 'AF' ? '🎯 AF' : '🎯 MF';
+      b.className = state.focusMode === 'MF'
+        ? 'py-1.5 px-1 rounded-xl bg-cyan-400 text-black text-[10px] font-extrabold truncate'
+        : 'py-1.5 px-1 rounded-xl bg-cyan-500/30 text-cyan-200 text-[10px] font-extrabold truncate';
+      if (mfBar) mfBar.style.display = state.focusMode === 'MF' ? 'flex' : 'none';
+      await applyHardwareFocus();
+      updateSpecBadge();
+    };
+    document.getElementById('mfcFocusSlider').oninput = async (e) => {
+      state.focusDist = parseFloat(e.target.value);
+      await applyHardwareFocus();
+    };
+
+    // Tap-to-Focus
+    const mainVid = document.getElementById('mahaCamMainVideo');
+    mainVid.addEventListener('click', async (e) => {
+      const rect = mainVid.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const ring = document.getElementById('mfcTapFocusRing');
+      if (ring) {
+        ring.style.left = x + 'px';
+        ring.style.top = y + 'px';
+        ring.style.display = 'block';
+        clearTimeout(ring._t);
+        ring._t = setTimeout(() => { ring.style.display = 'none'; }, 1100);
+      }
+      await applyHardwareFocus(x / Math.max(1, rect.width), y / Math.max(1, rect.height));
+    });
+
+    // AI Face Detector
+    document.getElementById('mfcDetBtn').onclick = () => {
+      state.detectorOn = !state.detectorOn;
+      const b = document.getElementById('mfcDetBtn');
+      b.textContent = state.detectorOn ? '🤖 DET' : '🤖 OFF';
+      b.className = state.detectorOn
+        ? 'py-1.5 px-1 rounded-xl bg-emerald-500 text-black text-[10px] font-extrabold truncate'
+        : 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
+      if (!state.detectorOn && state.arModeIdx === 0) {
+        const dc = document.getElementById('mahaCamDetectCanvas');
+        if (dc) dc.getContext('2d').clearRect(0, 0, dc.width, dc.height);
+      }
+      updateSpecBadge();
+    };
+
+    // Live AI Portrait / Bokeh / BG Replace
+    document.getElementById('mfcBokehBtn').onclick = () => {
+      state.bgModeIdx = (state.bgModeIdx + 1) % BG_MODES.length;
+      const modeName = BG_MODES[state.bgModeIdx];
+      const b = document.getElementById('mfcBokehBtn');
+      b.textContent = '🫧 ' + (modeName === 'OFF' ? 'BG:OFF' : modeName);
+      b.className = modeName !== 'OFF'
+        ? 'py-1.5 px-1 rounded-xl bg-indigo-500 text-white text-[10px] font-extrabold truncate'
+        : 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
+      const pc = document.getElementById('mahaCamPortraitCanvas');
+      if (pc) pc.style.display = modeName !== 'OFF' ? 'block' : 'none';
+      if (modeName !== 'OFF') startPortraitLoop();
+      else cancelAnimationFrame(portraitRaf);
+      updateSpecBadge();
+      showQuietNote(modeName === 'OFF' ? 'Portrait BG OFF' : `🫧 Live Portrait: ${modeName}`);
+    };
+
+    // Live AR Face Filters & Props
+    document.getElementById('mfcArBtn').onclick = () => {
+      state.arModeIdx = (state.arModeIdx + 1) % AR_MODES.length;
+      const arName = AR_MODES[state.arModeIdx];
+      const b = document.getElementById('mfcArBtn');
+      b.textContent = '🕶 ' + (arName === 'OFF' ? 'AR:OFF' : arName);
+      b.className = arName !== 'OFF'
+        ? 'py-1.5 px-1 rounded-xl bg-pink-500 text-white text-[10px] font-extrabold truncate'
+        : 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
+      updateSpecBadge();
+      showQuietNote(arName === 'OFF' ? 'AR Filter OFF' : `🕶 Live AR Prop: ${arName}`);
+    };
+
+    // Dual Mode
+    document.getElementById('mfcDualBtn').onclick = cycleDualMode;
     document.getElementById('mfcTorchBtn').onclick = toggleTorch;
 
     document.getElementById('mfcTimerBtn').onclick = () => {
@@ -14115,89 +14591,237 @@ window.MahaProFullCamera = (() => {
       state.timer = seq[(seq.indexOf(state.timer) + 1) % seq.length];
       document.getElementById('mfcTimerBtn').textContent = `⏱ ${state.timer}s`;
     };
-
     document.getElementById('mfcQualBtn').onclick = async () => {
       if (isRecording) return;
       state.quality = state.quality === '4K' ? 'FHD' : '4K';
-      document.getElementById('mfcQualBtn').textContent = state.quality === '4K' ? '4K PRO' : '1080p HD';
+      document.getElementById('mfcQualBtn').textContent = state.quality === '4K' ? '4K PRO' : '1080p';
       updateSpecBadge();
       await startMainCamera();
     };
-
-    document.getElementById('mfcFpsBtn').onclick = async () => {
-      if (isRecording) return;
-      state.fps = state.fps === 60 ? 30 : 60;
-      document.getElementById('mfcFpsBtn').textContent = `${state.fps} FPS`;
-      updateSpecBadge();
-      await startMainCamera();
-    };
-
     document.getElementById('mfcRatioBtn').onclick = () => {
       state.ratioIdx = (state.ratioIdx + 1) % RATIOS.length;
       document.getElementById('mfcRatioBtn').textContent = `📐 ${RATIOS[state.ratioIdx]}`;
       updateSpecBadge();
     };
-
     document.getElementById('mfcToneBtn').onclick = () => {
       state.toneIdx = (state.toneIdx + 1) % TONES.length;
-      const t = TONES[state.toneIdx];
-      document.getElementById('mfcToneBtn').textContent = `🎨 ${t.label.split(' ')[0]}`;
+      document.getElementById('mfcToneBtn').textContent = `🎨 ${TONES[state.toneIdx].label.split(' ')[0]}`;
       applyLiveFilters();
     };
 
-    document.getElementById('mfcMirrorBtn').onclick = () => {
-      state.mirror = !state.mirror;
-      const b = document.getElementById('mfcMirrorBtn');
-      b.textContent = state.mirror ? '🪞 ON' : '🪞 OFF';
-      b.className = state.mirror
-        ? 'py-1.5 px-1 rounded-xl bg-amber-400 text-black text-[10px] font-extrabold truncate'
-        : 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
-      applyZoom(state.zoom);
+    // Pro Drawer Toggles
+    document.getElementById('mfcBurstBtn').onclick = () => {
+      state.burstMode = !state.burstMode;
+      const b = document.getElementById('mfcBurstBtn');
+      b.textContent = state.burstMode ? '📸 Burst:ON' : '📸 Burst:OFF';
+      b.className = state.burstMode ? 'py-1.5 px-1 rounded-xl bg-amber-400 text-black font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
+      updateSpecBadge();
+    };
+
+    document.getElementById('mfcVoiceBtn').onclick = toggleVoiceShutter;
+
+    document.getElementById('mfcSmileBtn').onclick = () => {
+      state.smileShutter = !state.smileShutter;
+      const b = document.getElementById('mfcSmileBtn');
+      b.textContent = state.smileShutter ? '😊 Smile:ON' : '😊 Smile:OFF';
+      b.className = state.smileShutter ? 'py-1.5 px-1 rounded-xl bg-emerald-500 text-black font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
+      if (state.smileShutter && !state.detectorOn) document.getElementById('mfcDetBtn').click();
+    };
+
+    document.getElementById('mfcHandBtn').onclick = () => {
+      state.handShutter = !state.handShutter;
+      const b = document.getElementById('mfcHandBtn');
+      b.textContent = state.handShutter ? '✋ Hand:ON' : '✋ Hand:OFF';
+      b.className = state.handShutter ? 'py-1.5 px-1 rounded-xl bg-emerald-500 text-black font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
+      if (state.handShutter) showQuietNote('✋ Wave hand in top-right box to auto-click (3s)');
+    };
+
+    document.getElementById('mfcMotionBtn').onclick = () => {
+      state.motionAuto = !state.motionAuto;
+      prevMotionFrame = null;
+      const b = document.getElementById('mfcMotionBtn');
+      b.textContent = state.motionAuto ? '🏃 Motion:ON' : '🏃 Motion:OFF';
+      b.className = state.motionAuto ? 'py-1.5 px-1 rounded-xl bg-amber-400 text-black font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
+      if (state.motionAuto) showQuietNote('🏃 AI Motion Auto-Capture Armed!');
+    };
+
+    document.getElementById('mfcTpBtn').onclick = () => {
+      state.tpOn = !state.tpOn;
+      const b = document.getElementById('mfcTpBtn');
+      const box = document.getElementById('mfcTeleprompter');
+      b.textContent = state.tpOn ? '📜 Script:ON' : '📜 Script:OFF';
+      b.className = state.tpOn ? 'py-1.5 px-1 rounded-xl bg-amber-400 text-black font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
+      if (box) box.style.display = state.tpOn ? 'block' : 'none';
+      if (!state.tpOn) { tpPlaying = false; cancelAnimationFrame(tpRaf); }
+    };
+    document.getElementById('mfcTpCloseBtn').onclick = () => document.getElementById('mfcTpBtn').click();
+    document.getElementById('mfcTpPlayBtn').onclick = () => {
+      tpPlaying = !tpPlaying;
+      const btn = document.getElementById('mfcTpPlayBtn');
+      btn.textContent = tpPlaying ? '⏸ Pause' : '▶ Scroll';
+      if (tpPlaying) runTeleprompterLoop();
+      else cancelAnimationFrame(tpRaf);
+    };
+    document.getElementById('mfcTpSpeed').oninput = (e) => { tpSpeed = parseFloat(e.target.value); };
+
+    document.getElementById('mfcHistBtn').onclick = () => {
+      state.histOn = !state.histOn;
+      const b = document.getElementById('mfcHistBtn');
+      const hc = document.getElementById('mfcHistCanvas');
+      b.textContent = state.histOn ? '📊 Hist:ON' : '📊 Hist:OFF';
+      b.className = state.histOn ? 'py-1.5 px-1 rounded-xl bg-cyan-400 text-black font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
+      if (hc) hc.style.display = state.histOn ? 'block' : 'none';
+    };
+
+    document.getElementById('mfcAudioBtn').onclick = () => {
+      state.audioMeterOn = !state.audioMeterOn;
+      const b = document.getElementById('mfcAudioBtn');
+      const aw = document.getElementById('mfcAudioMeterWrap');
+      b.textContent = state.audioMeterOn ? '🎚 Audio:ON' : '🎚 Audio:OFF';
+      b.className = state.audioMeterOn ? 'py-1.5 px-1 rounded-xl bg-emerald-400 text-black font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
+      if (aw) aw.style.display = state.audioMeterOn ? 'flex' : 'none';
+      if (state.audioMeterOn) setupAudioPipeline();
+    };
+
+    document.getElementById('mfcSpeedBtn').onclick = () => {
+      if (isRecording) return;
+      state.vidSpeedIdx = (state.vidSpeedIdx + 1) % VID_SPEEDS.length;
+      const sp = VID_SPEEDS[state.vidSpeedIdx];
+      const b = document.getElementById('mfcSpeedBtn');
+      b.textContent = `⏩ Spd: ${sp.label}`;
+      b.className = state.vidSpeedIdx > 0 ? 'py-1.5 px-1 rounded-xl bg-purple-500 text-white font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
+      updateSpecBadge();
+    };
+
+    document.getElementById('mfcFpsBtn').onclick = async () => {
+      if (isRecording) return;
+      state.fps = state.fps === 60 ? 30 : 60;
+      document.getElementById('mfcFpsBtn').textContent = `🎬 ${state.fps} FPS`;
+      updateSpecBadge();
+      await startMainCamera();
+    };
+
+    document.getElementById('mfcHdrBtn').onclick = () => {
+      state.proHDR = !state.proHDR;
+      const b = document.getElementById('mfcHdrBtn');
+      b.textContent = state.proHDR ? 'HDR:ON' : 'HDR:OFF';
+      b.className = state.proHDR ? 'py-1.5 px-1 rounded-xl bg-amber-500 text-black font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
+    };
+
+    document.getElementById('mfcLevelBtn').onclick = () => {
+      state.levelerOn = !state.levelerOn;
+      const b = document.getElementById('mfcLevelBtn');
+      const bar = document.getElementById('mfcLevelerBar');
+      b.textContent = state.levelerOn ? '📏 Level:ON' : '📏 Level:OFF';
+      b.className = state.levelerOn ? 'py-1.5 px-1 rounded-xl bg-emerald-500 text-black font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
+      if (bar) bar.style.display = state.levelerOn ? 'block' : 'none';
+    };
+
+    document.getElementById('mfcWmBtn').onclick = () => {
+      state.watermarkOn = !state.watermarkOn;
+      const b = document.getElementById('mfcWmBtn');
+      b.textContent = state.watermarkOn ? '🏷️ Stamp:ON' : '🏷️ Stamp:OFF';
+      b.className = state.watermarkOn ? 'py-1.5 px-1 rounded-xl bg-amber-400 text-black font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
     };
 
     document.getElementById('mfcMicBtn').onclick = () => {
       state.mic = !state.mic;
       const b = document.getElementById('mfcMicBtn');
-      b.textContent = state.mic ? '🎙 ON' : '🔇 OFF';
-      b.className = state.mic
-        ? 'py-1.5 px-1 rounded-xl bg-emerald-500/25 text-emerald-200 text-[10px] font-bold truncate'
-        : 'py-1.5 px-1 rounded-xl bg-rose-500/35 text-rose-200 text-[10px] font-bold truncate';
-      if (mainStream) {
-        mainStream.getAudioTracks().forEach((tr) => { tr.enabled = state.mic; });
-      }
+      b.textContent = state.mic ? '🎙 Mic:ON' : '🔇 Mic:OFF';
+      b.className = state.mic ? 'py-1.5 px-1 rounded-xl bg-emerald-500/25 text-emerald-200 font-bold truncate' : 'py-1.5 px-1 rounded-xl bg-rose-500/35 text-rose-200 font-bold truncate';
+      if (mainStream) mainStream.getAudioTracks().forEach((tr) => { tr.enabled = state.mic; });
     };
 
-    const zSlider = document.getElementById('mfcZoomSlider');
-    zSlider.oninput = (e) => applyZoom(parseFloat(e.target.value));
+    document.getElementById('mfcResetProBtn').onclick = () => {
+      state.kelvin = 5500; state.iso = 0; state.beauty = 0; state.brightness = 100; state.exposure = 0; state.micBoost = 1.4;
+      document.getElementById('mfcWbSlider').value = 5500; document.getElementById('mfcWbVal').textContent = '5500K';
+      document.getElementById('mfcIsoSlider').value = 0; document.getElementById('mfcIsoVal').textContent = 'AUTO';
+      document.getElementById('mfcBeautySlider').value = 0; document.getElementById('mfcBeautyVal').textContent = '0%';
+      document.getElementById('mfcBrightSlider').value = 100; document.getElementById('mfcBrightVal').textContent = '100%';
+      document.getElementById('mfcEvSlider').value = 0; document.getElementById('mfcEvVal').textContent = '0.0';
+      document.getElementById('mfcMicBoostSlider').value = 1.4; document.getElementById('mfcMicBoostVal').textContent = '1.4x';
+      if (audioGainNode) audioGainNode.gain.value = 1.4;
+      applyLiveFilters();
+      showQuietNote('✓ Pro Controls Reset');
+    };
+
+    // Pro Sliders
+    document.getElementById('mfcWbSlider').oninput = (e) => {
+      state.kelvin = parseInt(e.target.value, 10);
+      document.getElementById('mfcWbVal').textContent = state.kelvin + 'K';
+      applyLiveFilters();
+    };
+    document.getElementById('mfcIsoSlider').oninput = async (e) => {
+      state.iso = parseInt(e.target.value, 10);
+      document.getElementById('mfcIsoVal').textContent = state.iso === 0 ? 'AUTO' : String(state.iso);
+      if (mainStream && state.iso > 0) {
+        const tr = mainStream.getVideoTracks()[0];
+        const caps = tr && tr.getCapabilities ? tr.getCapabilities() : null;
+        if (caps && caps.iso) {
+          const clamped = Math.max(caps.iso.min, Math.min(caps.iso.max, state.iso));
+          try { await tr.applyConstraints({ advanced: [{ iso: clamped }] }); } catch (_) {}
+        }
+      }
+      applyLiveFilters();
+    };
+    document.getElementById('mfcBeautySlider').oninput = (e) => {
+      state.beauty = parseInt(e.target.value, 10);
+      document.getElementById('mfcBeautyVal').textContent = state.beauty + '%';
+      applyLiveFilters();
+    };
+    document.getElementById('mfcBokehSlider').oninput = (e) => {
+      state.bokehBlur = parseInt(e.target.value, 10);
+      const fStop = (1.4 + ((22 - state.bokehBlur) / 18) * 14.6).toFixed(1);
+      document.getElementById('mfcBokehVal').textContent = 'f/' + fStop;
+    };
+    document.getElementById('mfcMicBoostSlider').oninput = (e) => {
+      state.micBoost = parseFloat(e.target.value);
+      document.getElementById('mfcMicBoostVal').textContent = state.micBoost.toFixed(1) + 'x';
+      if (audioGainNode) audioGainNode.gain.value = state.micBoost;
+    };
+
+    // Recording Pause / Resume Button
+    document.getElementById('mfcRecPauseBtn').onclick = togglePauseVideoRecording;
+
+    // QR Actions
+    document.getElementById('mfcQrCopyBtn').onclick = () => {
+      if (lastQrValue && navigator.clipboard) {
+        navigator.clipboard.writeText(lastQrValue).catch(() => {});
+        showQuietNote('📋 Copied to Clipboard!');
+      }
+    };
+    document.getElementById('mfcQrClearBtn').onclick = () => {
+      lastQrValue = '';
+      document.getElementById('mfcQrResultBar').style.display = 'none';
+    };
+
+    // Zoom + Pinch
+    document.getElementById('mfcZoomSlider').oninput = (e) => applyZoom(parseFloat(e.target.value));
     document.querySelectorAll('[data-mfc-z]').forEach((btn) => {
       btn.onclick = () => applyZoom(parseFloat(btn.dataset.mfcZ));
     });
-
-    // Two-finger Pinch-to-Zoom directly on Full Display Camera
-    let pinchStartDist = 0;
-    let pinchStartZoom = 1;
+    let pinchStartDist = 0, pinchStartZoom = 1;
     const overlay = document.getElementById('mahaFullCamOverlay');
     overlay.addEventListener('touchstart', (e) => {
       if (e.touches.length === 2) {
-        pinchStartDist = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY
-        );
+        pinchStartDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
         pinchStartZoom = state.zoom;
       }
     }, { passive: true });
     overlay.addEventListener('touchmove', (e) => {
       if (e.touches.length === 2 && pinchStartDist > 0) {
-        const curDist = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY
-        );
+        const curDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
         applyZoom(pinchStartZoom * (curDist / pinchStartDist));
       }
     }, { passive: true });
 
-    const evSlider = document.getElementById('mfcEvSlider');
-    evSlider.oninput = (e) => {
+    // Brightness & EV
+    document.getElementById('mfcBrightSlider').oninput = (e) => {
+      state.brightness = parseInt(e.target.value, 10);
+      document.getElementById('mfcBrightVal').textContent = state.brightness + '%';
+      applyLiveFilters();
+    };
+    document.getElementById('mfcEvSlider').oninput = (e) => {
       state.exposure = parseFloat(e.target.value);
       document.getElementById('mfcEvVal').textContent = state.exposure.toFixed(1);
       applyLiveFilters();
@@ -14206,24 +14830,169 @@ window.MahaProFullCamera = (() => {
     document.getElementById('mfcShutterBtn').onclick = handleShutter;
   }
 
+  function runTeleprompterLoop() {
+    cancelAnimationFrame(tpRaf);
+    const box = document.getElementById('mfcTpScrollBox');
+    if (!box || !tpPlaying) return;
+    const step = () => {
+      if (!tpPlaying || !state.tpOn) return;
+      box.scrollTop += tpSpeed * 0.45;
+      if (box.scrollTop + box.clientHeight >= box.scrollHeight - 2) {
+        box.scrollTop = 0;
+      }
+      tpRaf = requestAnimationFrame(step);
+    };
+    tpRaf = requestAnimationFrame(step);
+  }
+
+  function setupAudioPipeline() {
+    if (!mainStream || !mainStream.getAudioTracks().length) return null;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      if (!audioCtx) audioCtx = new AC();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const src = audioCtx.createMediaStreamSource(mainStream);
+      audioGainNode = audioCtx.createGain();
+      audioGainNode.gain.value = state.micBoost;
+      const comp = audioCtx.createDynamicsCompressor();
+      comp.threshold.value = -24;
+      comp.ratio.value = 6;
+      audioAnalyser = audioCtx.createAnalyser();
+      audioAnalyser.fftSize = 128;
+      audioDestNode = audioCtx.createMediaStreamDestination();
+      src.connect(audioGainNode);
+      audioGainNode.connect(comp);
+      comp.connect(audioAnalyser);
+      comp.connect(audioDestNode);
+
+      cancelAnimationFrame(audioMeterRaf);
+      const dataArr = new Uint8Array(audioAnalyser.frequencyBinCount);
+      const meterStep = () => {
+        const overlay = document.getElementById('mahaFullCamOverlay');
+        if (!overlay || overlay.style.display === 'none') return;
+        audioMeterRaf = requestAnimationFrame(meterStep);
+        if (!state.audioMeterOn || !audioAnalyser) return;
+        audioAnalyser.getByteFrequencyData(dataArr);
+        let sum = 0;
+        for (let i = 0; i < dataArr.length; i++) sum += dataArr[i];
+        const pct = Math.min(100, Math.round((sum / dataArr.length) * 1.4));
+        const fill = document.getElementById('mfcAudioMeterFill');
+        if (fill) fill.style.width = pct + '%';
+      };
+      audioMeterRaf = requestAnimationFrame(meterStep);
+      return audioDestNode.stream.getAudioTracks()[0] || null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function toggleVoiceShutter() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const b = document.getElementById('mfcVoiceBtn');
+    if (state.voiceShutter) {
+      state.voiceShutter = false;
+      if (speechRec) { try { speechRec.stop(); } catch (_) {} speechRec = null; }
+      b.textContent = '🗣️ Voice:OFF';
+      b.className = 'py-1.5 px-1 rounded-xl bg-white/10 font-bold truncate';
+      updateSpecBadge();
+      return;
+    }
+    if (!SR) { showQuietNote('Voice Shutter is browser par supported nahi hai'); return; }
+    state.voiceShutter = true;
+    b.textContent = '🗣️ Voice:ON';
+    b.className = 'py-1.5 px-1 rounded-xl bg-emerald-500 text-black font-extrabold truncate';
+    updateSpecBadge();
+    showQuietNote('🗣️ Say "Cheese" or "Click" to capture!');
+    speechRec = new SR();
+    speechRec.continuous = true;
+    speechRec.interimResults = false;
+    speechRec.lang = 'en-IN';
+    speechRec.onresult = (ev) => {
+      const txt = (ev.results[ev.results.length - 1][0].transcript || '').toLowerCase();
+      if (/cheese|click|photo|capture|shoot|khich/.test(txt)) {
+        showQuietNote('🗣️ Voice Triggered!');
+        handleShutter();
+      }
+    };
+    speechRec.onend = () => {
+      if (state.voiceShutter && document.getElementById('mahaFullCamOverlay')?.style.display !== 'none') {
+        try { speechRec.start(); } catch (_) {}
+      }
+    };
+    try { speechRec.start(); } catch (_) {}
+  }
+
+  async function applyHardwareFocus(nx, ny) {
+    if (!mainStream) return;
+    const track = mainStream.getVideoTracks()[0];
+    if (!track || !track.getCapabilities) return;
+    const caps = track.getCapabilities();
+    const adv = {};
+    if (caps.focusMode) {
+      if (state.focusMode === 'MF' && caps.focusMode.includes('manual')) {
+        adv.focusMode = 'manual';
+        if (caps.focusDistance) adv.focusDistance = caps.focusDistance.min + state.focusDist * (caps.focusDistance.max - caps.focusDistance.min);
+      } else if (caps.focusMode.includes('continuous')) {
+        adv.focusMode = 'continuous';
+      }
+    }
+    if (nx != null && ny != null && caps.pointsOfInterest) adv.pointsOfInterest = [{ x: nx, y: ny }];
+    if (Object.keys(adv).length) { try { await track.applyConstraints({ advanced: [adv] }); } catch (_) {} }
+  }
+
   function setMode(m) {
-    if (isRecording) return;
+    if (isRecording || isPanoCapturing) return;
     state.mode = m;
-    document.getElementById('mfcModePhoto').className = m === 'photo' ? 'px-5 py-1 rounded-full bg-white text-black' : 'px-5 py-1 rounded-full text-white';
-    document.getElementById('mfcModeVideo').className = m === 'video' ? 'px-5 py-1 rounded-full bg-red-600 text-white' : 'px-5 py-1 rounded-full text-white';
-    document.getElementById('mfcShutterBtn').style.background = m === 'video' ? '#dc2626' : 'rgba(255,255,255,0.94)';
+    const ids = { photo: 'mfcModePhoto', video: 'mfcModeVideo', pano: 'mfcModePano', doc: 'mfcModeDoc', qr: 'mfcModeQr' };
+    Object.entries(ids).forEach(([k, id]) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (k === m) {
+        el.className = k === 'video' ? 'px-3 py-1 rounded-full bg-red-600 text-white whitespace-nowrap' : (k === 'qr' ? 'px-3 py-1 rounded-full bg-emerald-400 text-black whitespace-nowrap' : 'px-3 py-1 rounded-full bg-white text-black whitespace-nowrap');
+      } else {
+        el.className = 'px-3 py-1 rounded-full text-white whitespace-nowrap';
+      }
+    });
+    const sh = document.getElementById('mfcShutterBtn');
+    sh.style.background = m === 'video' ? '#dc2626' : (m === 'doc' ? '#fbbf24' : (m === 'pano' ? '#38bdf8' : (m === 'qr' ? '#34d399' : 'rgba(255,255,255,0.94)')));
+    document.getElementById('mfcQrBox').style.display = m === 'qr' ? 'block' : 'none';
+    if (m !== 'qr') document.getElementById('mfcQrResultBar').style.display = 'none';
+    document.getElementById('mfcPanoGuide').style.display = m === 'pano' ? 'block' : 'none';
+    if (m === 'qr' && 'BarcodeDetector' in window && !qrDetector) {
+      try { qrDetector = new window.BarcodeDetector({ formats: ['qr_code', 'ean_13', 'ean_8', 'code_128', 'upc_a'] }); } catch (_) {}
+    }
+    applyLiveFilters();
     updateSpecBadge();
   }
 
   function getActiveFilterStr() {
-    const bright = 1 + state.exposure * 0.18;
+    if (state.mode === 'doc') return 'grayscale(1) contrast(1.65) brightness(1.15)';
+    const baseBright = (state.brightness / 100) * (1 + state.exposure * 0.16);
+    const nightBoost = state.nightMode ? 1.38 : 1.0;
+    const isoBoost = state.iso > 0 ? (1 + (state.iso / 3200) * 0.25) : 1.0;
+    const beautyGlow = 1 + (state.beauty / 100) * 0.10;
+    const finalBright = Math.max(0.4, Math.min(2.8, baseBright * nightBoost * isoBoost * beautyGlow));
     const tone = TONES[state.toneIdx] || TONES[0];
-    return `brightness(${bright.toFixed(2)}) ${tone.filter}`;
+
+    let wbFilter = '';
+    if (state.kelvin > 5700) {
+      const w = Math.min(0.35, ((state.kelvin - 5500) / 2500) * 0.30);
+      wbFilter = ` sepia(${w.toFixed(2)}) saturate(${(1 + w * 0.6).toFixed(2)})`;
+    } else if (state.kelvin < 5300) {
+      const c = Math.min(24, Math.round(((5500 - state.kelvin) / 2700) * 24));
+      wbFilter = ` hue-rotate(-${c}deg)`;
+    }
+    const nightExtra = state.nightMode ? ' contrast(1.12) saturate(1.14)' : '';
+    const beautyExtra = state.beauty > 0 ? ` contrast(${(1 - state.beauty * 0.0008).toFixed(2)})` : '';
+    return `brightness(${finalBright.toFixed(2)}) ${tone.filter}${wbFilter}${nightExtra}${beautyExtra}`;
   }
 
   function applyLiveFilters() {
     const vid = document.getElementById('mahaCamMainVideo');
     if (vid) vid.style.filter = getActiveFilterStr();
+    const dvid = document.getElementById('mahaCamDualVideo');
+    if (dvid) dvid.style.filter = getActiveFilterStr();
   }
 
   async function applyZoom(val) {
@@ -14235,9 +15004,7 @@ window.MahaProFullCamera = (() => {
 
     document.querySelectorAll('[data-mfc-z]').forEach((b) => {
       const active = Math.abs(parseFloat(b.dataset.mfcZ) - state.zoom) < 0.6;
-      b.className = active
-        ? 'flex-1 py-1 rounded-lg bg-amber-500 text-black text-[10px] font-bold'
-        : 'flex-1 py-1 rounded-lg bg-white/10 text-white text-[10px] font-bold';
+      b.className = active ? 'flex-1 py-1 rounded-lg bg-amber-500 text-black text-[10px] font-bold' : 'flex-1 py-1 rounded-lg bg-white/10 text-white text-[10px] font-bold';
     });
 
     let hwZoomApplied = 1;
@@ -14261,32 +15028,20 @@ window.MahaProFullCamera = (() => {
     if (!mainStream) return;
     const track = mainStream.getVideoTracks()[0];
     const caps = track && track.getCapabilities ? track.getCapabilities() : null;
-    if (!caps || !caps.torch) {
-      showQuietNote('Flash/Torch is lens par supported nahi hai');
-      return;
-    }
+    if (!caps || !caps.torch) { showQuietNote('Flash/Torch is lens par supported nahi hai'); return; }
     state.torch = !state.torch;
     try {
       await track.applyConstraints({ advanced: [{ torch: state.torch }] });
       const b = document.getElementById('mfcTorchBtn');
       b.textContent = state.torch ? '⚡ ON' : '⚡ OFF';
-      b.className = state.torch
-        ? 'py-1.5 px-1 rounded-xl bg-amber-400 text-black text-[10px] font-extrabold truncate'
-        : 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
+      b.className = state.torch ? 'py-1.5 px-1 rounded-xl bg-amber-400 text-black text-[10px] font-extrabold truncate' : 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
     } catch (_) {}
   }
 
-  async function toggleDualShoot() {
+  async function tryStartDualStream() {
     const dualVid = document.getElementById('mahaCamDualVideo');
-    const btn = document.getElementById('mfcDualBtn');
-    if (state.dualShoot) {
-      stopDualStream();
-      state.dualShoot = false;
-      dualVid.style.display = 'none';
-      btn.textContent = 'DUAL: OFF';
-      btn.className = 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
-      return;
-    }
+    const mainVid = document.getElementById('mahaCamMainVideo');
+    const modeName = DUAL_MODES[state.dualModeIdx];
     try {
       const oppFacing = state.facing === 'environment' ? 'user' : 'environment';
       dualStream = await navigator.mediaDevices.getUserMedia({
@@ -14295,12 +15050,48 @@ window.MahaProFullCamera = (() => {
       });
       dualVid.srcObject = dualStream;
       dualVid.style.display = 'block';
-      state.dualShoot = true;
-      btn.textContent = 'DUAL: ON';
-      btn.className = 'py-1.5 px-1 rounded-xl bg-emerald-500 text-black text-[10px] font-extrabold truncate';
+      dualVid.style.transform = oppFacing === 'user' ? 'scaleX(-1)' : 'none';
+      dualVid.classList.toggle('split-mode', modeName === 'SPLIT');
+      mainVid.classList.toggle('split-mode', modeName === 'SPLIT');
+      state.dualHardwareOk = true;
+      return true;
     } catch (_) {
-      showQuietNote('Device hardware simultaneous Dual Camera lock karta hai');
+      state.dualHardwareOk = false;
+      dualVid.style.display = 'none';
+      mainVid.classList.remove('split-mode');
+      return false;
     }
+  }
+
+  async function cycleDualMode() {
+    state.dualModeIdx = (state.dualModeIdx + 1) % DUAL_MODES.length;
+    const modeName = DUAL_MODES[state.dualModeIdx];
+    const btn = document.getElementById('mfcDualBtn');
+    const dualVid = document.getElementById('mahaCamDualVideo');
+    const mainVid = document.getElementById('mahaCamMainVideo');
+
+    if (modeName === 'OFF') {
+      stopDualStream();
+      state.dualHardwareOk = false;
+      dualVid.style.display = 'none';
+      dualVid.classList.remove('split-mode');
+      mainVid.classList.remove('split-mode');
+      btn.textContent = 'DUAL:OFF';
+      btn.className = 'py-1.5 px-1 rounded-xl bg-white/10 text-white text-[10px] font-bold truncate';
+      updateSpecBadge();
+      return;
+    }
+    btn.textContent = 'DUAL:' + modeName;
+    btn.className = 'py-1.5 px-1 rounded-xl bg-emerald-500 text-black text-[10px] font-extrabold truncate';
+    updateSpecBadge();
+
+    if (state.dualHardwareOk && dualStream) {
+      dualVid.classList.toggle('split-mode', modeName === 'SPLIT');
+      mainVid.classList.toggle('split-mode', modeName === 'SPLIT');
+      return;
+    }
+    const ok = await tryStartDualStream();
+    showQuietNote(ok ? `✓ Live Dual Camera (${modeName}) Active!` : `✓ Smart Dual ${modeName} Active (Auto Back+Front)`);
   }
 
   function showQuietNote(msg) {
@@ -14309,7 +15100,7 @@ window.MahaProFullCamera = (() => {
     el.textContent = msg;
     el.style.display = 'block';
     clearTimeout(el._t);
-    el._t = setTimeout(() => { el.style.display = 'none'; }, 1600);
+    el._t = setTimeout(() => { el.style.display = 'none'; }, 2200);
   }
 
   async function startMainCamera() {
@@ -14317,47 +15108,537 @@ window.MahaProFullCamera = (() => {
     if (typeof CameraPoseController !== 'undefined' && CameraPoseController.stopCamera) {
       try { CameraPoseController.stopCamera(); } catch (_) {}
     }
-    const idealW = state.quality === '4K' ? 3840 : 1920;
-    const idealH = state.quality === '4K' ? 2160 : 1080;
+    const isPortrait = window.innerHeight > window.innerWidth;
+    const longSide = state.quality === '4K' ? 3840 : 1920;
+    const shortSide = state.quality === '4K' ? 2160 : 1080;
+    const reqW = isPortrait ? shortSide : longSide;
+    const reqH = isPortrait ? longSide : shortSide;
+
     try {
       mainStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: { ideal: state.facing },
-          width: { ideal: idealW },
-          height: { ideal: idealH },
-          frameRate: { ideal: state.fps, min: 24 }
-        },
+        video: { facingMode: { ideal: state.facing }, width: { ideal: reqW }, height: { ideal: reqH }, frameRate: { ideal: state.fps, min: 24 } },
         audio: true
       });
     } catch (_) {
-      mainStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: state.facing } },
-        audio: false
-      });
+      mainStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: state.facing } }, audio: false });
     }
     mainStream.getAudioTracks().forEach((tr) => { tr.enabled = state.mic; });
     const vid = document.getElementById('mahaCamMainVideo');
     vid.srcObject = mainStream;
+    await new Promise((res) => {
+      if (vid.readyState >= 1) res();
+      else vid.onloadedmetadata = () => res();
+    });
     await applyZoom(state.zoom);
     applyLiveFilters();
     updateSpecBadge();
+    if (state.audioMeterOn) setupAudioPipeline();
   }
 
-  function stopMainStream() {
-    if (mainStream) {
-      mainStream.getTracks().forEach((t) => t.stop());
-      mainStream = null;
+  function stopMainStream() { if (mainStream) { mainStream.getTracks().forEach((t) => t.stop()); mainStream = null; } }
+  function stopDualStream() { if (dualStream) { dualStream.getTracks().forEach((t) => t.stop()); dualStream = null; } }
+
+  // Draw AR Face Props on a 2D context (used in both Live Overlay & Photo/Video Capture)
+  function drawArProp(ctx, box, arMode) {
+    if (!box || arMode === 'OFF') return;
+    const cx = box.x + box.w * 0.5;
+    const eyeY = box.y + box.h * 0.38;
+    ctx.save();
+    if (arMode === 'SHADES') {
+      const gw = box.w * 0.40, gh = box.h * 0.16;
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = Math.max(2, box.w * 0.018);
+      ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(cx - gw - box.w * 0.04, eyeY - gh * 0.5, gw, gh, 8) : ctx.fillRect(cx - gw - box.w * 0.04, eyeY - gh * 0.5, gw, gh);
+      ctx.roundRect ? ctx.roundRect(cx + box.w * 0.04, eyeY - gh * 0.5, gw, gh, 8) : ctx.fillRect(cx + box.w * 0.04, eyeY - gh * 0.5, gw, gh);
+      ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx - box.w * 0.04, eyeY); ctx.lineTo(cx + box.w * 0.04, eyeY); ctx.stroke();
+    } else if (arMode === 'GLOW') {
+      const rg = ctx.createRadialGradient(cx, box.y + box.h * 0.45, box.w * 0.28, cx, box.y + box.h * 0.45, box.w * 0.85);
+      rg.addColorStop(0, 'rgba(255,255,255,0)');
+      rg.addColorStop(0.65, 'rgba(251,191,36,0.28)');
+      rg.addColorStop(1, 'rgba(236,72,153,0)');
+      ctx.fillStyle = rg;
+      ctx.beginPath(); ctx.arc(cx, box.y + box.h * 0.45, box.w * 0.85, 0, Math.PI * 2); ctx.fill();
+    } else if (arMode === 'CROWN') {
+      const cw = box.w * 0.65, ch = box.h * 0.25, cy = box.y - ch * 0.45;
+      ctx.fillStyle = '#fbbf24';
+      ctx.strokeStyle = '#fef08a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx - cw * 0.5, cy + ch);
+      ctx.lineTo(cx - cw * 0.45, cy + ch * 0.2);
+      ctx.lineTo(cx - cw * 0.18, cy + ch * 0.6);
+      ctx.lineTo(cx, cy);
+      ctx.lineTo(cx + cw * 0.18, cy + ch * 0.6);
+      ctx.lineTo(cx + cw * 0.45, cy + ch * 0.2);
+      ctx.lineTo(cx + cw * 0.5, cy + ch);
+      ctx.closePath();
+      ctx.fill(); ctx.stroke();
+    } else if (arMode === 'NEON') {
+      ctx.strokeStyle = '#22d3ee';
+      ctx.shadowColor = '#22d3ee';
+      ctx.shadowBlur = 14;
+      ctx.lineWidth = Math.max(3, box.w * 0.025);
+      ctx.strokeRect(box.x + box.w * 0.08, eyeY - box.h * 0.09, box.w * 0.84, box.h * 0.18);
     }
+    ctx.restore();
   }
 
-  function stopDualStream() {
-    if (dualStream) {
-      dualStream.getTracks().forEach((t) => t.stop());
-      dualStream = null;
+  // Live RGB Histogram Drawer
+  function updateRgbHistogram(vid) {
+    const hc = document.getElementById('mfcHistCanvas');
+    if (!hc || !state.histOn || !vid || !vid.videoWidth) return;
+    if (!motionScratch) { motionScratch = document.createElement('canvas'); motionScratch.width = 64; motionScratch.height = 48; }
+    const sctx = motionScratch.getContext('2d', { willReadFrequently: true });
+    sctx.drawImage(vid, 0, 0, 64, 48);
+    const data = sctx.getImageData(0, 0, 64, 48).data;
+    const bins = 32;
+    const rB = new Uint16Array(bins), gB = new Uint16Array(bins), bB = new Uint16Array(bins);
+    for (let i = 0; i < data.length; i += 4) {
+      rB[data[i] >> 3]++; gB[data[i + 1] >> 3]++; bB[data[i + 2] >> 3]++;
     }
+    let maxV = 1;
+    for (let i = 0; i < bins; i++) maxV = Math.max(maxV, rB[i], gB[i], bB[i]);
+    const hctx = hc.getContext('2d');
+    hctx.clearRect(0, 0, hc.width, hc.height);
+    const drawCh = (arr, color) => {
+      hctx.strokeStyle = color;
+      hctx.lineWidth = 1.6;
+      hctx.beginPath();
+      for (let i = 0; i < bins; i++) {
+        const x = (i / (bins - 1)) * hc.width;
+        const y = hc.height - (arr[i] / maxV) * (hc.height - 6) - 2;
+        if (i === 0) hctx.moveTo(x, y); else hctx.lineTo(x, y);
+      }
+      hctx.stroke();
+    };
+    drawCh(rB, 'rgba(248,113,113,0.9)');
+    drawCh(gB, 'rgba(52,211,153,0.9)');
+    drawCh(bB, 'rgba(96,165,250,0.9)');
+  }
+
+  // Live AI Portrait / Bokeh / BG Replace Render Loop
+  function startPortraitLoop() {
+    cancelAnimationFrame(portraitRaf);
+    if (!mpSegmenter && typeof AIEngine !== 'undefined' && AIEngine.getImageSegmenter) {
+      AIEngine.getImageSegmenter().then((s) => { mpSegmenter = s; }).catch(() => {});
+    }
+    const drawPortrait = () => {
+      const overlay = document.getElementById('mahaFullCamOverlay');
+      if (!overlay || overlay.style.display === 'none' || state.bgModeIdx === 0) return;
+      portraitRaf = requestAnimationFrame(drawPortrait);
+      const vid = document.getElementById('mahaCamMainVideo');
+      const pc = document.getElementById('mahaCamPortraitCanvas');
+      if (!vid || !pc || !vid.videoWidth) return;
+      const pw = 480, ph = Math.round(pw * (vid.videoHeight / vid.videoWidth));
+      if (pc.width !== pw || pc.height !== ph) { pc.width = pw; pc.height = ph; }
+      const ctx = pc.getContext('2d');
+      const modeName = BG_MODES[state.bgModeIdx];
+
+      ctx.save();
+      if (modeName === 'STUDIO') {
+        const g = ctx.createRadialGradient(pw * 0.5, ph * 0.35, 10, pw * 0.5, ph * 0.5, pw * 0.85);
+        g.addColorStop(0, '#312e81'); g.addColorStop(0.6, '#1e1b4b'); g.addColorStop(1, '#09090b');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, pw, ph);
+      } else if (modeName === 'NATURE') {
+        const g = ctx.createLinearGradient(0, 0, 0, ph);
+        g.addColorStop(0, '#0284c7'); g.addColorStop(0.55, '#15803d'); g.addColorStop(1, '#052e16');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, pw, ph);
+      } else {
+        ctx.filter = `${getActiveFilterStr()} blur(${state.bokehBlur}px)`;
+        if (state.mirror) { ctx.translate(pw, 0); ctx.scale(-1, 1); }
+        ctx.drawImage(vid, 0, 0, pw, ph);
+      }
+      ctx.restore(); ctx.filter = 'none';
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(pw * 0.5, ph * 0.52, pw * 0.34, ph * 0.44, 0, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.filter = getActiveFilterStr();
+      if (state.mirror) { ctx.translate(pw, 0); ctx.scale(-1, 1); }
+      ctx.drawImage(vid, 0, 0, pw, ph);
+      ctx.restore();
+    };
+    portraitRaf = requestAnimationFrame(drawPortrait);
+  }
+
+  // Real-Time AI Loop: Face/Smile Detector + AR Props + Hand Gesture + Motion Auto-Capture + Histogram + QR Scan
+  async function startDetectLoop() {
+    if ('FaceDetector' in window) {
+      try { faceDetectorApi = new window.FaceDetector({ fastMode: true, maxDetectedFaces: 3 }); } catch (_) {}
+    }
+    if (typeof AIEngine !== 'undefined' && AIEngine.getFaceVideoLandmarker) {
+      AIEngine.getFaceVideoLandmarker().then((lm) => { mpFaceLandmarker = lm; }).catch(() => {});
+    }
+
+    const step = async (ts) => {
+      const overlay = document.getElementById('mahaFullCamOverlay');
+      if (!overlay || overlay.style.display === 'none') return;
+      detectRaf = requestAnimationFrame(step);
+
+      const vid = document.getElementById('mahaCamMainVideo');
+      if (!vid || !vid.videoWidth) return;
+
+      // 1. Histogram update (~4 fps)
+      if (state.histOn && ts - lastHistTime > 250) {
+        lastHistTime = ts;
+        updateRgbHistogram(vid);
+      }
+
+      // 2. QR / Barcode Scanner Mode
+      if (state.mode === 'qr' && qrDetector && ts - lastQrCheck > 350) {
+        lastQrCheck = ts;
+        try {
+          const codes = await qrDetector.detect(vid);
+          if (codes && codes.length && codes[0].rawValue && codes[0].rawValue !== lastQrValue) {
+            lastQrValue = codes[0].rawValue;
+            document.getElementById('mfcQrText').textContent = lastQrValue;
+            const openBtn = document.getElementById('mfcQrOpenBtn');
+            if (/^https?:\/\//i.test(lastQrValue)) {
+              openBtn.href = lastQrValue;
+              openBtn.classList.remove('hidden');
+            } else {
+              openBtn.classList.add('hidden');
+            }
+            document.getElementById('mfcQrResultBar').style.display = 'block';
+            showQuietNote('🏁 QR / Barcode Detected!');
+          }
+        } catch (_) {}
+      }
+
+      if (ts - lastDetectTime < 150) return;
+      lastDetectTime = ts;
+
+      const canvas = document.getElementById('mahaCamDetectCanvas');
+      if (!canvas) return;
+      if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+        canvas.width = canvas.clientWidth || window.innerWidth;
+        canvas.height = canvas.clientHeight || window.innerHeight;
+      }
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 3. Hand-Gesture & Motion-Detect check via lightweight 64x48 scratch frame
+      if (state.handShutter || state.motionAuto) {
+        if (!motionScratch) { motionScratch = document.createElement('canvas'); motionScratch.width = 64; motionScratch.height = 48; }
+        const sctx = motionScratch.getContext('2d', { willReadFrequently: true });
+        sctx.drawImage(vid, 0, 0, 64, 48);
+        const cur = sctx.getImageData(0, 0, 64, 48).data;
+
+        if (state.handShutter) {
+          // Draw visual hand-wave target zone in upper-right area
+          const zx = canvas.width - 110, zy = 148, zw = 88, zh = 88;
+          ctx.strokeStyle = 'rgba(52,211,153,0.8)';
+          ctx.setLineDash([6, 4]);
+          ctx.lineWidth = 2;
+          ctx.strokeRect(zx, zy, zw, zh);
+          ctx.setLineDash([]);
+          ctx.fillStyle = '#34d399';
+          ctx.font = 'bold 10px sans-serif';
+          ctx.fillText('✋ WAVE HERE', zx + 6, zy + zh + 13);
+
+          // Check movement inside upper-right quadrant of scratch frame
+          if (prevMotionFrame && Date.now() > handCooldown) {
+            let zoneDiff = 0, zonePx = 0;
+            for (let y = 6; y < 24; y++) {
+              for (let x = (state.mirror ? 4 : 42); x < (state.mirror ? 22 : 60); x++) {
+                const idx = (y * 64 + x) * 4;
+                zoneDiff += Math.abs(cur[idx] - prevMotionFrame[idx]);
+                zonePx++;
+              }
+            }
+            if (zoneDiff / Math.max(1, zonePx) > 28) {
+              handCooldown = Date.now() + 5000;
+              showQuietNote('✋ Hand Gesture! Capturing in 3s...');
+              setTimeout(async () => {
+                for (let t = 3; t > 0; t--) { showQuietNote(`✋ ${t}...`); await new Promise((r) => setTimeout(r, 900)); }
+                handleShutter();
+              }, 100);
+            }
+          }
+        }
+
+        if (state.motionAuto && prevMotionFrame && Date.now() > motionCooldown) {
+          let diff = 0;
+          for (let i = 0; i < cur.length; i += 16) diff += Math.abs(cur[i] - prevMotionFrame[i]);
+          if (diff / (cur.length / 16) > 22) {
+            motionCooldown = Date.now() + 3800;
+            showQuietNote('🏃 Motion Detected — Auto Capturing!');
+            handleShutter();
+          }
+        }
+        prevMotionFrame = new Uint8ClampedArray(cur);
+      }
+
+      // 4. Face & Smile Detection + Live AR Face Props
+      if (!state.detectorOn && state.arModeIdx === 0) return;
+
+      const vw = vid.videoWidth, vh = vid.videoHeight;
+      const cw = canvas.width, ch = canvas.height;
+      const scale = Math.max(cw / vw, ch / vh);
+      const dispW = vw * scale, dispH = vh * scale;
+      const offX = (cw - dispW) / 2, offY = (ch - dispH) / 2;
+
+      let boxes = [];
+      let smiling = false;
+
+      if (mpFaceLandmarker) {
+        try {
+          const res = mpFaceLandmarker.detectForVideo(vid, performance.now());
+          if (res && res.faceLandmarks && res.faceLandmarks.length) {
+            const pts = res.faceLandmarks[0];
+            let minX = 1, maxX = 0, minY = 1, maxY = 0;
+            pts.forEach((p) => {
+              if (p.x < minX) minX = p.x; if (p.x > maxX) maxX = p.x;
+              if (p.y < minY) minY = p.y; if (p.y > maxY) maxY = p.y;
+            });
+            let bx = offX + minX * dispW;
+            const bw = (maxX - minX) * dispW;
+            if (state.mirror) bx = cw - bx - bw;
+            boxes.push({ x: bx, y: offY + minY * dispH, w: bw, h: (maxY - minY) * dispH, norm: { minX, maxX, minY, maxY } });
+          }
+          if (res && res.faceBlendshapes && res.faceBlendshapes[0]) {
+            const cats = res.faceBlendshapes[0].categories || [];
+            const sL = (cats.find((c) => c.categoryName === 'mouthSmileLeft') || {}).score || 0;
+            const sR = (cats.find((c) => c.categoryName === 'mouthSmileRight') || {}).score || 0;
+            if ((sL + sR) / 2 > 0.55) smiling = true;
+          }
+        } catch (_) {}
+      } else if (faceDetectorApi) {
+        try {
+          const faces = await faceDetectorApi.detect(vid);
+          faces.forEach((f) => {
+            const b = f.boundingBox;
+            let bx = offX + b.x * scale;
+            const bw = b.width * scale;
+            if (state.mirror) bx = cw - bx - bw;
+            boxes.push({ x: bx, y: offY + b.y * scale, w: bw, h: b.height * scale, norm: { minX: b.x / vw, maxX: (b.x + b.width) / vw, minY: b.y / vh, maxY: (b.y + b.height) / vh } });
+          });
+        } catch (_) {}
+      }
+
+      lastFaceData = { boxes, smiling };
+      const arName = AR_MODES[state.arModeIdx];
+
+      boxes.forEach((b) => {
+        if (arName !== 'OFF') drawArProp(ctx, b, arName);
+        if (state.detectorOn) {
+          ctx.strokeStyle = smiling ? '#34d399' : '#fbbf24';
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.roundRect ? ctx.roundRect(b.x, b.y, b.w, b.h, 12) : ctx.strokeRect(b.x, b.y, b.w, b.h);
+          ctx.stroke();
+          ctx.fillStyle = smiling ? 'rgba(16,185,129,0.88)' : 'rgba(245,158,11,0.88)';
+          ctx.fillRect(b.x, Math.max(4, b.y - 21), 92, 18);
+          ctx.fillStyle = '#000';
+          ctx.font = 'bold 10px sans-serif';
+          ctx.fillText(smiling ? '😊 SMILE LOCK' : '🎯 FACE LOCK', b.x + 6, Math.max(16, b.y - 8));
+        }
+      });
+
+      if (smiling && state.smileShutter && state.mode === 'photo' && Date.now() > smileCooldown) {
+        smileCooldown = Date.now() + 3500;
+        showQuietNote('😊 Smile Detected — Capturing!');
+        captureProPhoto(false);
+      }
+    };
+    detectRaf = requestAnimationFrame(step);
+  }
+
+  // ============================================================================
+  // POST-CAPTURE AI PHOTO ENHANCER (Eye Brighten & Catchlight + Smile Glow + Skin/Clarity)
+  // ============================================================================
+  async function runPostCaptureAiEnhance(canvas) {
+    const w = canvas.width, h = canvas.height;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    let facePts = null;
+
+    // Try precision MediaPipe FaceLandmarker (guarded with 1.4s timeout so capture stays snappy)
+    if (typeof AIEngine !== 'undefined' && AIEngine.getFaceLandmarker) {
+      try {
+        const fl = await Promise.race([
+          AIEngine.getFaceLandmarker(),
+          new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 1400))
+        ]);
+        const res = fl.detect(canvas);
+        if (res && res.faceLandmarks && res.faceLandmarks[0]) {
+          facePts = res.faceLandmarks[0];
+        }
+      } catch (_) {}
+    }
+
+    // 1. Precision Eye Brightening, Catchlight Sparkle & Smile/Lip Glow
+    if (facePts && facePts.length > 400) {
+      const avgPt = (indices) => {
+        let sx = 0, sy = 0;
+        indices.forEach((i) => { sx += facePts[i].x * w; sy += facePts[i].y * h; });
+        return { x: sx / indices.length, y: sy / indices.length };
+      };
+      // Left & Right Eye centers + radius
+      const lEye = avgPt([33, 133, 159, 145]);
+      const rEye = avgPt([362, 263, 386, 374]);
+      const eyeR = Math.max(8, Math.hypot((facePts[33].x - facePts[133].x) * w, (facePts[33].y - facePts[133].y) * h) * 0.55);
+
+      // Subtle Eye Brighten & Natural Catchlight Sparkle
+      [lEye, rEye].forEach((eye) => {
+        ctx.save();
+        ctx.globalCompositeOperation = 'soft-light';
+        const eg = ctx.createRadialGradient(eye.x, eye.y, 1, eye.x, eye.y, eyeR * 1.15);
+        eg.addColorStop(0, 'rgba(255,255,255,0.52)');
+        eg.addColorStop(0.6, 'rgba(255,255,255,0.18)');
+        eg.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = eg;
+        ctx.beginPath(); ctx.arc(eye.x, eye.y, eyeR * 1.15, 0, Math.PI * 2); ctx.fill();
+
+        // Crisp micro catchlight dot
+        ctx.globalCompositeOperation = 'screen';
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+        ctx.beginPath();
+        ctx.arc(eye.x - eyeR * 0.16, eye.y - eyeR * 0.16, Math.max(1.4, eyeR * 0.11), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // Smile & Lip Glow + Subtle Teeth Brighten
+      const mouthCenter = avgPt([61, 291, 13, 14]);
+      const mouthW = Math.max(16, Math.hypot((facePts[61].x - facePts[291].x) * w, (facePts[61].y - facePts[291].y) * h) * 0.56);
+      const mouthH = Math.max(8, mouthW * 0.42);
+
+      // Natural warm lip tint
+      ctx.save();
+      ctx.globalCompositeOperation = 'soft-light';
+      const lg = ctx.createRadialGradient(mouthCenter.x, mouthCenter.y, 2, mouthCenter.x, mouthCenter.y, mouthW);
+      lg.addColorStop(0, 'rgba(244, 114, 145, 0.36)');
+      lg.addColorStop(0.7, 'rgba(244, 114, 145, 0.16)');
+      lg.addColorStop(1, 'rgba(244, 114, 145, 0)');
+      ctx.fillStyle = lg;
+      ctx.beginPath(); ctx.ellipse(mouthCenter.x, mouthCenter.y, mouthW, mouthH, 0, 0, Math.PI * 2); ctx.fill();
+
+      // Subtle inner smile brightness (teeth & smile highlight)
+      ctx.globalCompositeOperation = 'screen';
+      const sg = ctx.createRadialGradient(mouthCenter.x, mouthCenter.y, 1, mouthCenter.x, mouthCenter.y, mouthW * 0.68);
+      sg.addColorStop(0, 'rgba(255,255,255,0.22)');
+      sg.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = sg;
+      ctx.beginPath(); ctx.ellipse(mouthCenter.x, mouthCenter.y, mouthW * 0.68, mouthH * 0.55, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+
+      // Cheek / Smile warm radiance
+      const lCheek = facePts[50], rCheek = facePts[280];
+      if (lCheek && rCheek) {
+        [lCheek, rCheek].forEach((ck) => {
+          ctx.save();
+          ctx.globalCompositeOperation = 'soft-light';
+          const cg = ctx.createRadialGradient(ck.x * w, ck.y * h, 2, ck.x * w, ck.y * h, eyeR * 2.1);
+          cg.addColorStop(0, 'rgba(255, 182, 165, 0.24)');
+          cg.addColorStop(1, 'rgba(255, 182, 165, 0)');
+          ctx.fillStyle = cg;
+          ctx.beginPath(); ctx.arc(ck.x * w, ck.y * h, eyeR * 2.1, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+        });
+      }
+    }
+
+    // 2. Global Studio AI Clarity, Dynamic Range & Skin Softness Pass
+    const imgData = ctx.getImageData(0, 0, w, h);
+    const d = imgData.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i], g = d[i + 1], b = d[i + 2];
+      const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      // Gentle shadow lift + highlight protection + subtle color vibrance
+      const lift = lum < 0.30 ? 1.08 : lum > 0.85 ? 0.99 : 1.03;
+      const avg = (r + g + b) / 3;
+      const vib = 1.08;
+      d[i]     = Math.min(255, Math.max(0, Math.round((avg + (r - avg) * vib) * lift)));
+      d[i + 1] = Math.min(255, Math.max(0, Math.round((avg + (g - avg) * vib) * lift)));
+      d[i + 2] = Math.min(255, Math.max(0, Math.round((avg + (b - avg) * vib) * lift)));
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return Boolean(facePts);
+  }
+
+  // Panorama Capture & Stitcher
+  function handlePanoramaToggle() {
+    const vid = document.getElementById('mahaCamMainVideo');
+    const st = document.getElementById('mfcPanoStatus');
+    const fill = document.getElementById('mfcPanoFill');
+    if (isPanoCapturing) {
+      finishPanorama();
+      return;
+    }
+    if (!vid || !vid.videoWidth) return;
+    isPanoCapturing = true;
+    panoSlices = [];
+    document.getElementById('mfcShutterBtn').style.borderRadius = '18px';
+    st.textContent = '🌄 Sweep Right Slowly... Tap Shutter to Finish';
+    fill.style.width = '6%';
+
+    const captureSlice = () => {
+      if (!isPanoCapturing || !vid.videoWidth) return;
+      const vw = vid.videoWidth, vh = vid.videoHeight;
+      const sliceW = Math.round(vw * 0.22);
+      const sx = Math.round((vw - sliceW) / 2);
+      const sc = document.createElement('canvas');
+      sc.width = sliceW; sc.height = vh;
+      const sctx = sc.getContext('2d');
+      sctx.filter = getActiveFilterStr();
+      sctx.drawImage(vid, sx, 0, sliceW, vh, 0, 0, sliceW, vh);
+      panoSlices.push(sc);
+      const pct = Math.min(100, Math.round((panoSlices.length / 16) * 100));
+      fill.style.width = pct + '%';
+      st.textContent = `🌄 Stitching Slice ${panoSlices.length}/16...`;
+      if (panoSlices.length >= 16) finishPanorama();
+    };
+    captureSlice();
+    panoTimerId = setInterval(captureSlice, 220);
+  }
+
+  async function finishPanorama() {
+    isPanoCapturing = false;
+    clearInterval(panoTimerId);
+    document.getElementById('mfcShutterBtn').style.borderRadius = '50%';
+    document.getElementById('mfcPanoFill').style.width = '0%';
+    document.getElementById('mfcPanoStatus').textContent = '🌄 Tap Shutter & Move Slowly Left → Right';
+    if (panoSlices.length < 2) { showQuietNote('Move slowly to capture wider panorama'); return; }
+
+    const sh = panoSlices[0].height;
+    const sw = panoSlices[0].width;
+    const stepX = Math.round(sw * 0.72); // 28% smooth overlap
+    const totalW = sw + (panoSlices.length - 1) * stepX;
+    const out = document.createElement('canvas');
+    out.width = totalW; out.height = sh;
+    const ctx = out.getContext('2d');
+    panoSlices.forEach((sl, idx) => {
+      ctx.save();
+      ctx.globalAlpha = idx === 0 ? 1 : 0.92;
+      ctx.drawImage(sl, idx * stepX, 0);
+      ctx.restore();
+    });
+    const fileName = `MahaAI_PANO_${Date.now()}.jpg`;
+    const dataUrl = out.toDataURL('image/jpeg', 0.95);
+    silentDownloadToPhone(dataUrl, fileName);
+    const thumbWrap = document.getElementById('mfcLastThumbWrap');
+    if (thumbWrap) thumbWrap.innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover;" />`;
+    showQuietNote(`✓ Wide Panorama (${panoSlices.length} frames) Saved!`);
+    if (typeof StudioStorage !== 'undefined') {
+      await StudioStorage.saveMedia({ name: fileName, type: 'photo', dataUrl, album: 'Panorama' });
+    }
+    panoSlices = [];
   }
 
   async function handleShutter() {
+    if (state.mode === 'qr') {
+      if (lastQrValue) showQuietNote('🏁 Scanned: ' + lastQrValue.slice(0, 32));
+      else showQuietNote('Point camera at a QR Code or Barcode');
+      return;
+    }
+    if (state.mode === 'pano') {
+      handlePanoramaToggle();
+      return;
+    }
     if (state.mode === 'video') {
       if (isRecording) stopVideoRecording();
       else startVideoRecording();
@@ -14369,7 +15650,16 @@ window.MahaProFullCamera = (() => {
         await new Promise((r) => setTimeout(r, 1000));
       }
     }
-    await captureProPhoto();
+    if (state.burstMode && state.mode === 'photo') {
+      for (let k = 1; k <= 5; k++) {
+        showQuietNote(`📸 Burst ${k}/5`);
+        await captureProPhoto(true);
+        await new Promise((r) => setTimeout(r, 200));
+      }
+      showQuietNote('✓ 5 Burst Photos Saved!');
+      return;
+    }
+    await captureProPhoto(false);
   }
 
   function silentDownloadToPhone(href, fileName) {
@@ -14382,15 +15672,25 @@ window.MahaProFullCamera = (() => {
     a.remove();
   }
 
-  async function captureProPhoto() {
+  function snapshotVideoToCanvas(vid, mirrorFlag) {
+    const vw = vid.videoWidth || 1280, vh = vid.videoHeight || 720;
+    const c = document.createElement('canvas');
+    c.width = vw; c.height = vh;
+    const ctx = c.getContext('2d');
+    ctx.save();
+    ctx.filter = getActiveFilterStr();
+    if (mirrorFlag) { ctx.translate(vw, 0); ctx.scale(-1, 1); }
+    ctx.drawImage(vid, 0, 0, vw, vh);
+    ctx.restore();
+    return c;
+  }
+
+  async function captureProPhoto(isBurstShot = false) {
     const vid = document.getElementById('mahaCamMainVideo');
     const dualVid = document.getElementById('mahaCamDualVideo');
     if (!vid || !vid.videoWidth) return;
 
-    const vw = vid.videoWidth;
-    const vh = vid.videoHeight;
-
-    // Apply aspect ratio crop
+    const vw = vid.videoWidth, vh = vid.videoHeight;
     const ratioName = RATIOS[state.ratioIdx];
     let outW = vw, outH = vh;
     if (ratioName === '1:1') { const s = Math.min(vw, vh); outW = s; outH = s; }
@@ -14403,8 +15703,7 @@ window.MahaProFullCamera = (() => {
     }
 
     const c = document.createElement('canvas');
-    c.width = outW;
-    c.height = outH;
+    c.width = outW; c.height = outH;
     const ctx = c.getContext('2d', { willReadFrequently: true });
 
     let hwZoom = 1;
@@ -14412,101 +15711,166 @@ window.MahaProFullCamera = (() => {
     const settings = track && track.getSettings ? track.getSettings() : null;
     if (settings && settings.zoom) hwZoom = settings.zoom;
     const dZoom = Math.max(1, state.zoom / hwZoom);
-    const cropW = outW / dZoom;
-    const cropH = outH / dZoom;
-    const cropX = (vw - cropW) / 2;
-    const cropY = (vh - cropH) / 2;
+    const cropW = outW / dZoom, cropH = outH / dZoom;
+    const cropX = (vw - cropW) / 2, cropY = (vh - cropH) / 2;
 
-    ctx.save();
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    ctx.filter = getActiveFilterStr();
-    if (state.mirror) {
-      ctx.translate(outW, 0);
-      ctx.scale(-1, 1);
+    // Portrait BG or Standard Frame
+    if (state.bgModeIdx > 0 && state.mode === 'photo') {
+      const bgMode = BG_MODES[state.bgModeIdx];
+      ctx.save();
+      if (bgMode === 'STUDIO') {
+        const g = ctx.createRadialGradient(outW * 0.5, outH * 0.35, 20, outW * 0.5, outH * 0.5, outW * 0.85);
+        g.addColorStop(0, '#312e81'); g.addColorStop(0.6, '#1e1b4b'); g.addColorStop(1, '#09090b');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, outW, outH);
+      } else if (bgMode === 'NATURE') {
+        const g = ctx.createLinearGradient(0, 0, 0, outH);
+        g.addColorStop(0, '#0284c7'); g.addColorStop(0.55, '#15803d'); g.addColorStop(1, '#052e16');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, outW, outH);
+      } else {
+        ctx.filter = `${getActiveFilterStr()} blur(${state.bokehBlur * 1.4}px)`;
+        if (state.mirror) { ctx.translate(outW, 0); ctx.scale(-1, 1); }
+        ctx.drawImage(vid, cropX, cropY, cropW, cropH, 0, 0, outW, outH);
+      }
+      ctx.restore(); ctx.filter = 'none';
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(outW * 0.5, outH * 0.52, outW * 0.36, outH * 0.45, 0, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.filter = getActiveFilterStr();
+      if (state.mirror) { ctx.translate(outW, 0); ctx.scale(-1, 1); }
+      ctx.drawImage(vid, cropX, cropY, cropW, cropH, 0, 0, outW, outH);
+      ctx.restore(); ctx.filter = 'none';
+    } else {
+      ctx.save();
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.filter = getActiveFilterStr();
+      if (state.mirror) { ctx.translate(outW, 0); ctx.scale(-1, 1); }
+      ctx.drawImage(vid, cropX, cropY, cropW, cropH, 0, 0, outW, outH);
+      ctx.restore(); ctx.filter = 'none';
     }
-    ctx.drawImage(vid, cropX, cropY, cropW, cropH, 0, 0, outW, outH);
-    ctx.restore();
-    ctx.filter = 'none';
 
-    if (state.proHDR) {
-      const blurC = document.createElement('canvas');
-      blurC.width = outW; blurC.height = outH;
-      const bctx = blurC.getContext('2d', { willReadFrequently: true });
-      bctx.filter = 'blur(1.2px)';
-      bctx.drawImage(c, 0, 0);
-      bctx.filter = 'none';
+    // Bake Active AR Face Prop into Photo
+    if (state.arModeIdx > 0 && lastFaceData && lastFaceData.boxes.length && state.mode === 'photo') {
+      const n = lastFaceData.boxes[0].norm;
+      if (n) {
+        let bx = n.minX * outW;
+        const bw = (n.maxX - n.minX) * outW;
+        if (state.mirror) bx = outW - bx - bw;
+        drawArProp(ctx, { x: bx, y: n.minY * outH, w: bw, h: (n.maxY - n.minY) * outH }, AR_MODES[state.arModeIdx]);
+      }
+    }
 
+    // Post-Capture AI Photo Enhancer (Eye Brighten, Smile Glow, Skin & Clarity)
+    let aiFaceEnhanced = false;
+    if (state.aiPostEnhance && state.mode === 'photo' && !isBurstShot) {
+      showQuietNote('✨ AI Enhancing Eye, Smile & Clarity...');
+      aiFaceEnhanced = await runPostCaptureAiEnhance(c);
+    } else if ((state.proHDR || state.nightMode) && state.mode !== 'doc') {
       const imgData = ctx.getImageData(0, 0, outW, outH);
-      const blurData = bctx.getImageData(0, 0, outW, outH).data;
       const d = imgData.data;
-
-      let sr = 0, sg = 0, sb = 0, cnt = 0;
-      for (let i = 0; i < d.length; i += 64) { sr += d[i]; sg += d[i + 1]; sb += d[i + 2]; cnt++; }
-      const avgR = sr / Math.max(1, cnt), avgG = sg / Math.max(1, cnt), avgB = sb / Math.max(1, cnt);
-      const avgGray = (avgR + avgG + avgB) / 3;
-      const gR = Math.max(0.94, Math.min(1.06, 1 + (avgGray / Math.max(1, avgR) - 1) * 0.30));
-      const gG = Math.max(0.94, Math.min(1.06, 1 + (avgGray / Math.max(1, avgG) - 1) * 0.30));
-      const gB = Math.max(0.94, Math.min(1.06, 1 + (avgGray / Math.max(1, avgB) - 1) * 0.30));
-      const gains = [gR, gG, gB];
-
+      const shadowLift = state.nightMode ? 1.28 : 1.09;
       for (let i = 0; i < d.length; i += 4) {
         const lum = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) / 255;
-        const tone = lum < 0.30 ? 1.10 : lum > 0.85 ? 0.98 : 1.02;
-        for (let ch = 0; ch < 3; ch++) {
-          const idx = i + ch;
-          const diff = d[idx] - blurData[idx];
-          let val = d[idx] * gains[ch] * tone + (Math.abs(diff) > 3 ? diff * 0.45 : 0);
-          d[idx] = Math.max(0, Math.min(255, Math.round(val)));
-        }
+        const tone = lum < 0.35 ? shadowLift : lum > 0.85 ? 0.98 : 1.03;
+        d[i] = Math.min(255, Math.round(d[i] * tone));
+        d[i + 1] = Math.min(255, Math.round(d[i + 1] * tone));
+        d[i + 2] = Math.min(255, Math.round(d[i + 2] * tone));
       }
       ctx.putImageData(imgData, 0, 0);
     }
 
-    if (state.dualShoot && dualVid && dualVid.videoWidth) {
-      const pipW = Math.round(outW * 0.26);
-      const pipH = Math.round(pipW * (dualVid.videoHeight / dualVid.videoWidth));
-      const pad = Math.round(outW * 0.03);
+    // Dual Camera Photo Compositing
+    const dualModeName = DUAL_MODES[state.dualModeIdx];
+    if (dualModeName !== 'OFF' && !isBurstShot && state.mode === 'photo') {
+      let secondCanvas = null;
+      if (state.dualHardwareOk && dualVid && dualVid.videoWidth) {
+        secondCanvas = snapshotVideoToCanvas(dualVid, state.facing === 'environment');
+      } else {
+        showQuietNote('🔄 Dual Capture: Switching Camera...');
+        const origFacing = state.facing;
+        state.facing = origFacing === 'environment' ? 'user' : 'environment';
+        state.mirror = (state.facing === 'user');
+        await startMainCamera();
+        await new Promise((r) => setTimeout(r, 650));
+        secondCanvas = snapshotVideoToCanvas(vid, state.mirror);
+        state.facing = origFacing;
+        state.mirror = (state.facing === 'user');
+        await startMainCamera();
+      }
+      if (secondCanvas) {
+        if (dualModeName === 'SPLIT') {
+          const halfH = Math.round(outH / 2);
+          ctx.drawImage(secondCanvas, 0, 0, secondCanvas.width, secondCanvas.height, 0, halfH, outW, outH - halfH);
+          ctx.fillStyle = '#ffffff'; ctx.fillRect(0, halfH - 2, outW, 4);
+        } else {
+          const pipW = Math.round(outW * 0.28);
+          const pipH = Math.round(pipW * (secondCanvas.height / secondCanvas.width));
+          const pad = Math.round(outW * 0.03);
+          ctx.save();
+          ctx.strokeStyle = '#ffffff'; ctx.lineWidth = Math.max(4, Math.round(outW * 0.005));
+          ctx.strokeRect(outW - pipW - pad, pad, pipW, pipH);
+          ctx.drawImage(secondCanvas, outW - pipW - pad, pad, pipW, pipH);
+          ctx.restore();
+        }
+      }
+    }
+
+    // Optional Custom Watermark & Date-Time Stamp
+    if (state.watermarkOn) {
+      const stamp = `Shot on Maha AI STUDIO  •  ${new Date().toLocaleString()}`;
+      const fs = Math.max(16, Math.round(outW * 0.022));
       ctx.save();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = Math.max(4, Math.round(outW * 0.004));
-      ctx.strokeRect(outW - pipW - pad, pad, pipW, pipH);
-      ctx.drawImage(dualVid, outW - pipW - pad, pad, pipW, pipH);
+      ctx.font = `bold ${fs}px sans-serif`;
+      const tw = ctx.measureText(stamp).width;
+      ctx.fillStyle = 'rgba(0,0,0,0.52)';
+      ctx.fillRect(16, outH - fs - 26, tw + 24, fs + 16);
+      ctx.fillStyle = '#fde68a';
+      ctx.fillText(stamp, 28, outH - 18);
       ctx.restore();
     }
 
-    const fileName = `MahaAI_PRO_${Date.now()}.jpg`;
-    const dataUrl = c.toDataURL('image/jpeg', 0.98);
+    const prefix = state.mode === 'doc' ? 'MahaAI_DOC' : 'MahaAI_PRO';
+    const fileName = `${prefix}_${Date.now()}.jpg`;
+    const dataUrl = c.toDataURL('image/jpeg', 0.96);
 
-    // 1. Automatic Save to Phone Gallery
     silentDownloadToPhone(dataUrl, fileName);
-
-    // 2. Update mini preview thumbnail
     const thumbWrap = document.getElementById('mfcLastThumbWrap');
     if (thumbWrap) thumbWrap.innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover;" />`;
-    showQuietNote('✓ Photo Saved to Gallery');
+    if (!isBurstShot) {
+      showQuietNote(state.mode === 'doc' ? '✓ Document Scan Saved!' : (state.aiPostEnhance ? (aiFaceEnhanced ? '✨ AI Enhanced (Eye + Smile + HD) Saved!' : '✨ AI HD Enhanced & Saved!') : '✓ Photo Saved to Phone Gallery'));
+    }
 
-    // 3. Save in App Gallery (IndexedDB)
     if (typeof StudioStorage !== 'undefined') {
-      await StudioStorage.saveMedia({ name: fileName, type: 'photo', dataUrl, album: 'Pro Camera' });
+      await StudioStorage.saveMedia({ name: fileName, type: 'photo', dataUrl, album: state.mode === 'doc' ? 'Documents' : 'Pro Camera' });
     }
   }
 
   function startVideoRecording() {
     if (!mainStream) return;
     recordedChunks = [];
-    let recordStream = mainStream;
-
     const vid = document.getElementById('mahaCamMainVideo');
     const dualVid = document.getElementById('mahaCamDualVideo');
-    if (vid && vid.videoWidth) {
-      const rc = document.createElement('canvas');
-      rc.width = Math.min(1920, vid.videoWidth);
-      rc.height = Math.min(1080, vid.videoHeight);
-      const rctx = rc.getContext('2d');
-      isRecording = true;
-      const drawLoop = () => {
-        if (!isRecording) return;
+    const rc = document.createElement('canvas');
+    rc.width = Math.min(1920, vid.videoWidth || 1280);
+    rc.height = Math.min(1920, vid.videoHeight || 720);
+    const rctx = rc.getContext('2d');
+    isRecording = true;
+    isPaused = false;
+
+    const sp = VID_SPEEDS[state.vidSpeedIdx];
+    let lastFrameMs = 0;
+    const minInterval = sp.rate > 1 ? 220 : 0;
+
+    const drawLoop = (now) => {
+      if (!isRecording) return;
+      dualCanvasRaf = requestAnimationFrame(drawLoop);
+      if (isPaused) return;
+      if (minInterval > 0 && now - lastFrameMs < minInterval) return;
+      lastFrameMs = now;
+
+      if (vid && vid.videoWidth) {
         let hwZoom = 1;
         const tr = mainStream && mainStream.getVideoTracks ? mainStream.getVideoTracks()[0] : null;
         const st = tr && tr.getSettings ? tr.getSettings() : null;
@@ -14514,35 +15878,50 @@ window.MahaProFullCamera = (() => {
         const dZ = Math.max(1, state.zoom / hwZoom);
         const cw = vid.videoWidth / dZ, ch = vid.videoHeight / dZ;
         const cx = (vid.videoWidth - cw) / 2, cy = (vid.videoHeight - ch) / 2;
+
         rctx.save();
         rctx.filter = getActiveFilterStr();
         if (state.mirror) { rctx.translate(rc.width, 0); rctx.scale(-1, 1); }
         rctx.drawImage(vid, cx, cy, cw, ch, 0, 0, rc.width, rc.height);
-        rctx.restore();
-        rctx.filter = 'none';
-        if (state.dualShoot && dualVid && dualVid.videoWidth) {
-          const pw = Math.round(rc.width * 0.25);
-          const ph = Math.round(pw * (dualVid.videoHeight / dualVid.videoWidth));
-          rctx.strokeStyle = '#fff';
-          rctx.lineWidth = 3;
-          rctx.strokeRect(rc.width - pw - 16, 16, pw, ph);
-          rctx.drawImage(dualVid, rc.width - pw - 16, 16, pw, ph);
-        }
-        dualCanvasRaf = requestAnimationFrame(drawLoop);
-      };
-      const cs = rc.captureStream(state.fps === 60 ? 60 : 30);
-      const audioTracks = mainStream.getAudioTracks();
-      if (audioTracks.length && state.mic) cs.addTrack(audioTracks[0]);
-      recordStream = cs;
-      drawLoop();
-    } else {
-      isRecording = true;
-    }
+        rctx.restore(); rctx.filter = 'none';
 
-    const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
-      ? 'video/webm;codecs=vp9,opus'
-      : 'video/webm';
-    mediaRecorder = new MediaRecorder(recordStream, { mimeType: mime, videoBitsPerSecond: 12000000 });
+        if (state.arModeIdx > 0 && lastFaceData && lastFaceData.boxes.length && lastFaceData.boxes[0].norm) {
+          const n = lastFaceData.boxes[0].norm;
+          let bx = n.minX * rc.width, bw = (n.maxX - n.minX) * rc.width;
+          if (state.mirror) bx = rc.width - bx - bw;
+          drawArProp(rctx, { x: bx, y: n.minY * rc.height, w: bw, h: (n.maxY - n.minY) * rc.height }, AR_MODES[state.arModeIdx]);
+        }
+
+        const dualModeName = DUAL_MODES[state.dualModeIdx];
+        if (dualModeName !== 'OFF' && state.dualHardwareOk && dualVid && dualVid.videoWidth) {
+          if (dualModeName === 'SPLIT') {
+            const halfH = Math.round(rc.height / 2);
+            rctx.drawImage(dualVid, 0, 0, dualVid.videoWidth, dualVid.videoHeight, 0, halfH, rc.width, rc.height - halfH);
+          } else {
+            const pw = Math.round(rc.width * 0.26), ph = Math.round(pw * (dualVid.videoHeight / dualVid.videoWidth));
+            rctx.strokeStyle = '#fff'; rctx.lineWidth = 3;
+            rctx.strokeRect(rc.width - pw - 16, 16, pw, ph);
+            rctx.drawImage(dualVid, rc.width - pw - 16, 16, pw, ph);
+          }
+        }
+        if (state.watermarkOn) {
+          rctx.fillStyle = 'rgba(0,0,0,0.5)'; rctx.fillRect(14, rc.height - 34, 240, 24);
+          rctx.fillStyle = '#fde68a'; rctx.font = 'bold 14px sans-serif';
+          rctx.fillText('Shot on Maha AI STUDIO', 22, rc.height - 17);
+        }
+      }
+    };
+
+    const cs = rc.captureStream(sp.fps || 30);
+    if (state.mic && sp.rate === 1) {
+      const boostedTrack = setupAudioPipeline();
+      if (boostedTrack) cs.addTrack(boostedTrack);
+      else if (mainStream.getAudioTracks().length) cs.addTrack(mainStream.getAudioTracks()[0]);
+    }
+    dualCanvasRaf = requestAnimationFrame(drawLoop);
+
+    const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus' : 'video/webm';
+    mediaRecorder = new MediaRecorder(cs, { mimeType: mime, videoBitsPerSecond: 10000000 });
     mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
     mediaRecorder.onstop = async () => {
       cancelAnimationFrame(dualCanvasRaf);
@@ -14551,42 +15930,79 @@ window.MahaProFullCamera = (() => {
       const url = URL.createObjectURL(blob);
       silentDownloadToPhone(url, fileName);
       setTimeout(() => URL.revokeObjectURL(url), 5000);
-      showQuietNote('✓ Video Saved to Gallery');
+      showQuietNote('✓ Video Saved to Phone Gallery');
       if (typeof StudioStorage !== 'undefined') {
         await StudioStorage.saveMedia({ name: fileName, type: 'video', blob, album: 'Pro Camera' });
       }
     };
     mediaRecorder.start(250);
     recSeconds = 0;
+    const row = document.getElementById('mfcRecRow');
     const badge = document.getElementById('mfcRecBadge');
-    badge.style.display = 'block';
+    const pBtn = document.getElementById('mfcRecPauseBtn');
+    row.style.display = 'flex';
+    pBtn.textContent = '⏸ Pause';
     document.getElementById('mfcShutterBtn').style.borderRadius = '18px';
     recTimerId = setInterval(() => {
+      if (isPaused) return;
       recSeconds++;
       const mm = String(Math.floor(recSeconds / 60)).padStart(2, '0');
       const ss = String(recSeconds % 60).padStart(2, '0');
-      badge.textContent = `● REC ${mm}:${ss}`;
+      badge.textContent = `● REC ${mm}:${ss} (${sp.label})`;
     }, 1000);
+  }
+
+  function togglePauseVideoRecording() {
+    if (!isRecording || !mediaRecorder) return;
+    isPaused = !isPaused;
+    const badge = document.getElementById('mfcRecBadge');
+    const pBtn = document.getElementById('mfcRecPauseBtn');
+    try {
+      if (isPaused && mediaRecorder.state === 'recording' && mediaRecorder.pause) mediaRecorder.pause();
+      else if (!isPaused && mediaRecorder.state === 'paused' && mediaRecorder.resume) mediaRecorder.resume();
+    } catch (_) {}
+    pBtn.textContent = isPaused ? '▶ Resume' : '⏸ Pause';
+    if (isPaused) {
+      badge.className = 'px-3 py-1 rounded-full bg-amber-500 text-black text-xs font-bold whitespace-nowrap';
+      badge.textContent = badge.textContent.replace('● REC', '⏸ PAUSED');
+    } else {
+      badge.className = 'px-3 py-1 rounded-full bg-red-600 text-white text-xs font-bold whitespace-nowrap';
+      badge.textContent = badge.textContent.replace('⏸ PAUSED', '● REC');
+    }
   }
 
   function stopVideoRecording() {
     isRecording = false;
+    isPaused = false;
     cancelAnimationFrame(dualCanvasRaf);
     if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
     clearInterval(recTimerId);
-    const badge = document.getElementById('mfcRecBadge');
-    if (badge) badge.style.display = 'none';
+    const row = document.getElementById('mfcRecRow');
+    if (row) row.style.display = 'none';
     const sh = document.getElementById('mfcShutterBtn');
     if (sh) sh.style.borderRadius = '50%';
   }
 
   async function open(closeCb) {
     onCloseCallback = typeof closeCb === 'function' ? closeCb : null;
+    state.mirror = (state.facing === 'user');
     buildUI();
     document.getElementById('mahaFullCamOverlay').style.display = 'block';
     try { history.pushState({ modal: 'fullcam' }, '', '#camera'); } catch (_) {}
+
+    orientHandler = (ev) => {
+      if (!state.levelerOn) return;
+      const bar = document.getElementById('mfcLevelerBar');
+      if (!bar || ev.gamma == null) return;
+      const tilt = Math.max(-45, Math.min(45, ev.gamma));
+      bar.style.transform = `translate(-50%, -50%) rotate(${(-tilt).toFixed(1)}deg)`;
+      bar.classList.toggle('level-ok', Math.abs(tilt) < 2.5);
+    };
+    window.addEventListener('deviceorientation', orientHandler);
+
     try {
       await startMainCamera();
+      startDetectLoop();
     } catch (err) {
       showQuietNote('Camera permission denied: ' + (err.message || err));
     }
@@ -14594,6 +16010,14 @@ window.MahaProFullCamera = (() => {
 
   function close(invokeCb = false) {
     if (isRecording) stopVideoRecording();
+    if (isPanoCapturing) { isPanoCapturing = false; clearInterval(panoTimerId); panoSlices = []; }
+    if (speechRec) { try { speechRec.stop(); } catch (_) {} speechRec = null; state.voiceShutter = false; }
+    if (orientHandler) { window.removeEventListener('deviceorientation', orientHandler); orientHandler = null; }
+    tpPlaying = false;
+    cancelAnimationFrame(tpRaf);
+    cancelAnimationFrame(detectRaf);
+    cancelAnimationFrame(portraitRaf);
+    cancelAnimationFrame(audioMeterRaf);
     stopMainStream();
     stopDualStream();
     const el = document.getElementById('mahaFullCamOverlay');
@@ -14821,6 +16245,71 @@ window.MahaTouchTransform = (() => {
   });
 
   return { bind, bindVideoCanvas, bindViewportZoom, scanAndBindAll };
+})();
+</script>
+
+
+<script>
+// ============================================================================
+// MAHA PWA ONE-CLICK INSTALLER (Mobile Header + Desktop Sidebar)
+// ============================================================================
+(() => {
+  let deferredPrompt = null;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+  function getButtons() {
+    return [
+      document.getElementById('mobilePwaInstallBtn'),
+      document.getElementById('pwaInstallBtn')
+    ].filter(Boolean);
+  }
+
+  function hideButtonsIfInstalled() {
+    if (!isStandalone) return;
+    getButtons().forEach((b) => { b.style.display = 'none'; });
+  }
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    getButtons().forEach((b) => { b.style.display = 'flex'; });
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    getButtons().forEach((b) => { b.style.display = 'none'; });
+    if (typeof showToast === 'function') {
+      showToast('🎉 Maha AI STUDIO successfully install ho gaya!', 'success');
+    }
+  });
+
+  async function triggerInstall() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      if (choice && choice.outcome === 'accepted') {
+        getButtons().forEach((b) => { b.style.display = 'none'; });
+      }
+      return;
+    }
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+    const msg = isIOS
+      ? 'iPhone/iPad mein Safari ke Share button (↑) par tap karein → "Add to Home Screen" chunein.'
+      : 'Android Chrome mein upar 3-dot menu (⋮) par tap karein → "Install App" ya "Add to Home screen" par click karein (HTTPS / Vercel URL par direct 1-click install chalega).';
+    if (typeof showToast === 'function') showToast(msg, 'info');
+    else alert(msg);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    hideButtonsIfInstalled();
+    getButtons().forEach((btn) => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        triggerInstall();
+      };
+    });
+  });
 })();
 </script>
 
