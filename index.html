@@ -987,6 +987,20 @@ html, body { min-height: 100dvh; }
   </div>
 
   <script>
+// Global Crash-Proof Guard & Boot Splash Failsafe (App kabhi freeze nahi hoga)
+(() => {
+  window.addEventListener('error', (e) => {
+    try { console.warn('[MahaAI Guard]', e.message || e); } catch (_) {}
+  });
+  window.addEventListener('unhandledrejection', (e) => {
+    try { console.warn('[MahaAI Promise Guard]', e.reason); } catch (_) {}
+  });
+  setTimeout(() => {
+    const sp = document.getElementById('appBootSplash');
+    if (sp) { sp.style.opacity = '0'; setTimeout(() => { try { sp.remove(); } catch (_) {} }, 260); }
+  }, 2600);
+})();
+
 // Hydrate single-source brand icon across header, sidebar & apple-touch-icon
 (() => {
   const ico = document.querySelector('link[rel="icon"]')?.href;
@@ -10102,6 +10116,7 @@ const App = (() => {
     }
     if (state.route === 'camera' || state.route === 'photoshoot') {
       CameraPoseController.stopCamera();
+      if (window.MahaProFullCamera) { try { window.MahaProFullCamera.close(false); } catch (_) {} }
     }
     if (state.route === 'video-editor' || state.route === 'cinematic-video' || state.route === 'video-maker') {
       VideoStudioEngine.pausePlayback();
@@ -10487,7 +10502,12 @@ const App = (() => {
       };
     }
 
-    if (state.route === 'camera') { if (window.MahaProFullCamera) window.MahaProFullCamera.open(() => goBackInApp()); else bindCameraEvents(); }
+    if (state.route === 'camera') {
+      bindCameraEvents();
+      if (window.MahaProFullCamera) {
+        window.MahaProFullCamera.open(() => goBackInApp());
+      }
+    }
     else if (state.route === 'poses') bindPoseEvents();
     else if (state.route === 'photoshoot') bindPhotoshootEvents();
     else if (state.route === 'photo-editor') bindPhotoEditorEvents();
@@ -15014,8 +15034,24 @@ window.MahaProFullCamera = (() => {
       <input type="file" id="mfcMusicInput" accept="audio/*" style="display:none;" />
       <input type="file" id="mfcChromaImgInput" accept="image/*" style="display:none;" />
 
-      <video id="mahaCamMainVideo" autoplay playsinline muted></video>
+      <input type="file" id="mfcNativePhotoInput" accept="image/*" capture="environment" style="display:none;" />
+      <input type="file" id="mfcNativeVideoInput" accept="video/*" capture="environment" style="display:none;" />
+      <video id="mahaCamMainVideo" autoplay playsinline webkit-playsinline="true" muted></video>
       <canvas id="mahaCamFxCanvas"></canvas>
+      <!-- Interactive Camera Recovery & Native Camera Fallback Overlay (Never stuck on black screen!) -->
+      <div id="mfcErrPanel" style="display:none;position:absolute;inset:0;z-index:45;background:rgba(5,7,14,0.94);backdrop-filter:blur(10px);padding:20px;align-items:center;justify-content:center;">
+        <div style="max-width:360px;width:100%;background:#111526;border:1px solid rgba(99,102,241,0.4);border-radius:22px;padding:20px;text-align:center;color:#fff;box-shadow:0 20px 50px rgba(0,0,0,0.7);">
+          <div style="font-size:36px;margin-bottom:8px;">📷</div>
+          <div id="mfcErrTitle" style="font-size:15px;font-weight:800;margin-bottom:6px;">Camera Access Issue</div>
+          <div id="mfcErrMsg" style="font-size:11px;color:#cbd5e1;line-height:1.5;margin-bottom:16px;">Camera start nahi ho paya. Retry karein ya Native Phone Camera use karein.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button type="button" id="mfcErrRetryBtn" style="padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-weight:700;font-size:12px;border:none;cursor:pointer;">🔄 Retry Live Camera</button>
+            <button type="button" id="mfcErrNativePhotoBtn" style="padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:700;font-size:12px;border:none;cursor:pointer;">📸 Open Phone Native Camera (100% Working)</button>
+            <button type="button" id="mfcErrNativeVideoBtn" style="padding:9px 14px;border-radius:12px;background:rgba(255,255,255,0.08);color:#e2e8f0;font-weight:600;font-size:11px;border:1px solid rgba(255,255,255,0.15);cursor:pointer;">🎥 Record via Native Video Camera</button>
+            <button type="button" id="mfcErrCloseBtn" style="padding:8px 14px;border-radius:12px;background:transparent;color:#94a3b8;font-weight:600;font-size:11px;border:none;cursor:pointer;">← Back to Studio</button>
+          </div>
+        </div>
+      </div>
       <video id="mahaCamDualVideo" autoplay playsinline muted></video>
       <canvas id="mahaCamDetectCanvas"></canvas>
 
@@ -15423,6 +15459,50 @@ window.MahaProFullCamera = (() => {
       await applyHardwareFocus();
     };
     document.getElementById('mfcFocusSlider').oninput = async (e) => { state.focusDist = parseFloat(e.target.value); await applyHardwareFocus(); };
+
+    // Bind Camera Recovery Overlay & 100%-Working Native Phone Camera Fallback
+    const errRetryBtn = document.getElementById('mfcErrRetryBtn');
+    if (errRetryBtn) errRetryBtn.onclick = async () => {
+      try { await startMainCamera(); startDetectLoop(); startLiveFxLoop(); } catch (_) {}
+    };
+    const errCloseBtn = document.getElementById('mfcErrCloseBtn');
+    if (errCloseBtn) errCloseBtn.onclick = () => close(true);
+    const nativePhotoInp = document.getElementById('mfcNativePhotoInput');
+    const nativeVideoInp = document.getElementById('mfcNativeVideoInput');
+    const errNatPhotoBtn = document.getElementById('mfcErrNativePhotoBtn');
+    if (errNatPhotoBtn && nativePhotoInp) errNatPhotoBtn.onclick = () => nativePhotoInp.click();
+    const errNatVideoBtn = document.getElementById('mfcErrNativeVideoBtn');
+    if (errNatVideoBtn && nativeVideoInp) errNatVideoBtn.onclick = () => nativeVideoInp.click();
+    if (nativePhotoInp) nativePhotoInp.onchange = (ev) => {
+      const file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const im = new Image();
+        im.onload = () => {
+          const c = document.createElement('canvas');
+          c.width = im.naturalWidth || im.width;
+          c.height = im.naturalHeight || im.height;
+          c.getContext('2d').drawImage(im, 0, 0);
+          hideCamErrorPanel();
+          openInstantPhotoPreview(c, `MahaAI_Camera_${Date.now()}.png`, 'Pro Camera', false);
+        };
+        im.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+      ev.target.value = '';
+    };
+    if (nativeVideoInp) nativeVideoInp.onchange = async (ev) => {
+      const file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+      try {
+        if (typeof StudioStorage !== 'undefined') {
+          await StudioStorage.saveMedia({ name: file.name || `MahaAI_Video_${Date.now()}.mp4`, type: 'video', blob: file, album: 'Pro Camera' });
+        }
+        showQuietNote('✓ Video Saved to My Gallery!');
+      } catch (_) {}
+      ev.target.value = '';
+    };
 
     const mainVid = document.getElementById('mahaCamMainVideo');
     mainVid.addEventListener('click', async (e) => {
@@ -15967,36 +16047,130 @@ window.MahaProFullCamera = (() => {
     clearTimeout(el._t); el._t = setTimeout(() => { el.style.display = 'none'; }, 2000);
   }
 
+  function showCamErrorPanel(title, msg) {
+    const p = document.getElementById('mfcErrPanel');
+    const t = document.getElementById('mfcErrTitle');
+    const m = document.getElementById('mfcErrMsg');
+    if (t) t.textContent = title;
+    if (m) m.textContent = msg;
+    if (p) p.style.display = 'flex';
+  }
+  function hideCamErrorPanel() {
+    const p = document.getElementById('mfcErrPanel');
+    if (p) p.style.display = 'none';
+  }
+
   async function startMainCamera() {
+    hideCamErrorPanel();
     stopMainStream();
     if (typeof CameraPoseController !== 'undefined' && CameraPoseController.stopCamera) {
       try { CameraPoseController.stopCamera(); } catch (_) {}
     }
-    // Request full native sensor aspect (4:3 wide sensor) without artificial portrait crop so objects appear at true natural distance!
+
+    const isFile = window.location.protocol === 'file:' || window.location.protocol === 'content:';
+    const isSecure = window.isSecureContext || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      const reason = isFile
+        ? 'Aapne HTML file ko direct phone/PC storage (file://) se khola hai. Chrome security ki wajah se local file par live webcam block hoti hai. Neeche "Open Phone Native Camera" se turant photo click karein, ya app ko HTTPS (Vercel/GitHub Pages) par open karein!'
+        : (!isSecure
+          ? 'Live camera sirf HTTPS ya localhost par chalta hai. Neeche Native Phone Camera button use karein ya HTTPS link se open karein.'
+          : 'Is browser mein camera API unavailable hai. Neeche Native Phone Camera button use karein.');
+      showCamErrorPanel('Live Camera Blocked by Browser', reason);
+      throw new Error(reason);
+    }
+
     const wIdeal = state.quality === '4K' ? 3840 : 1920;
     const hIdeal = state.quality === '4K' ? 2160 : 1440;
 
-    try {
-      mainStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: state.facing }, width: { ideal: wIdeal }, height: { ideal: hIdeal }, frameRate: { ideal: state.fps, min: 24 } },
-        audio: true
-      });
-    } catch (_) {
-      mainStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: state.facing } }, audio: false });
+    // 4-tier progressive fallback (NEVER request audio on photo preview so mic denial never breaks camera!)
+    const attempts = [
+      { video: { facingMode: { ideal: state.facing }, width: { ideal: wIdeal }, height: { ideal: hIdeal } }, audio: false },
+      { video: { facingMode: { ideal: state.facing } }, audio: false },
+      { video: true, audio: false }
+    ];
+
+    let lastErr = null;
+    for (const constraints of attempts) {
+      try {
+        mainStream = await navigator.mediaDevices.getUserMedia(constraints);
+        break;
+      } catch (err) {
+        lastErr = err;
+        if (err && (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError' || err.name === 'SecurityError')) {
+          break;
+        }
+      }
     }
+
+    // 4th fallback: explicit deviceId from enumerateDevices
+    if (!mainStream && !(lastErr && (lastErr.name === 'NotAllowedError' || lastErr.name === 'PermissionDeniedError'))) {
+      try {
+        const devs = await navigator.mediaDevices.enumerateDevices();
+        const cams = devs.filter((d) => d.kind === 'videoinput');
+        if (cams.length > 0) {
+          const pick = state.facing === 'environment' ? (cams[cams.length - 1] || cams[0]) : cams[0];
+          mainStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: pick.deviceId } }, audio: false });
+        }
+      } catch (err4) {
+        lastErr = err4 || lastErr;
+      }
+    }
+
+    if (!mainStream) {
+      const ename = (lastErr && lastErr.name) || '';
+      let title = 'Camera Start Nahi Hua';
+      let msg = (lastErr && lastErr.message) || 'Camera access nahi mil paya.';
+      if (ename === 'NotAllowedError' || ename === 'PermissionDeniedError') {
+        title = 'Camera Permission Denied';
+        msg = 'Browser mein Camera permission Allow karein (Address bar ke Lock/Settings icon par tap karke Camera → Allow karein), ya neeche Native Phone Camera use karein.';
+      } else if (ename === 'NotFoundError' || ename === 'DevicesNotFoundError') {
+        title = 'No Camera Detected';
+        msg = 'Is device par koi camera sensor nahi mila. Neeche Native Phone Camera / Gallery se photo le sakte hain.';
+      } else if (ename === 'NotReadableError' || ename === 'TrackStartError') {
+        title = 'Camera Busy in Another App';
+        msg = 'Camera kisi aur app (WhatsApp/Instagram/Zoom) mein open hai. Use band karke Retry dabaiye.';
+      }
+      showCamErrorPanel(title, msg);
+      throw lastErr || new Error(msg);
+    }
+
     mainStream.getAudioTracks().forEach((tr) => { tr.enabled = state.mic; });
     const vid = document.getElementById('mahaCamMainVideo');
-    vid.classList.toggle('fill-screen', state.viewFill);
-    vid.srcObject = mainStream;
-    await new Promise((res) => { if (vid.readyState >= 1) res(); else vid.onloadedmetadata = () => res(); });
+    if (vid) {
+      vid.classList.toggle('fill-screen', state.viewFill);
+      vid.muted = true;
+      vid.playsInline = true;
+      vid.setAttribute('playsinline', '');
+      vid.setAttribute('webkit-playsinline', 'true');
+      vid.setAttribute('autoplay', '');
+      vid.srcObject = mainStream;
+
+      // Wait for metadata with 2000ms safety timeout so it NEVER hangs!
+      await new Promise((res) => {
+        if (vid.readyState >= 1) { res(); return; }
+        let settled = false;
+        const done = () => { if (!settled) { settled = true; vid.removeEventListener('loadedmetadata', done); res(); } };
+        vid.addEventListener('loadedmetadata', done, { once: true });
+        setTimeout(done, 2000);
+      });
+
+      // CRITICAL: Explicit vid.play() required on Android Chrome, iOS Safari & WebView!
+      try {
+        await vid.play();
+      } catch (_) {
+        vid.addEventListener('canplay', () => { vid.play().catch(() => {}); }, { once: true });
+      }
+    }
 
     // Force hardware zoom to widest optical minimum on startup so objects are never zoomed-in too close
     const track = mainStream.getVideoTracks()[0];
     if (track && track.getCapabilities) {
-      const caps = track.getCapabilities();
-      if (caps && caps.zoom) {
-        try { await track.applyConstraints({ advanced: [{ zoom: caps.zoom.min }] }); } catch (_) {}
-      }
+      try {
+        const caps = track.getCapabilities();
+        if (caps && caps.zoom) {
+          await track.applyConstraints({ advanced: [{ zoom: caps.zoom.min }] });
+        }
+      } catch (_) {}
     }
 
     await applyZoom(state.zoom);
@@ -17255,7 +17429,7 @@ window.MahaProFullCamera = (() => {
       startDetectLoop();
       startLiveFxLoop();
     } catch (err) {
-      showQuietNote('Camera permission denied: ' + (err.message || err));
+      showQuietNote('Camera issue: ' + (err.message || err));
     }
   }
 
