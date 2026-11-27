@@ -10874,6 +10874,7 @@ const App = (() => {
       mobBack.classList.toggle('hidden', state.route === 'dashboard');
       mobBack.onclick = () => goBackInApp();
     }
+    const isVideoSplitRoute = (state.route === 'video-maker' || state.route === 'video-editor' || state.route === 'cinematic-video');
     if (state.route !== 'dashboard' && main) {
       const backRow = document.createElement('div');
       backRow.className = isVideoSplitRoute ? 'video-studio-topbar-compact flex items-center justify-between gap-2 py-0.5' : 'mb-2.5 flex items-center justify-between gap-2';
@@ -10904,7 +10905,6 @@ const App = (() => {
       'video-editor': { step1: 'Clips Add Karein', step2: 'Trim, FX & Audio', step3: 'Export Video', saveBtn: 'vidExportBtn' }
     };
     const gInfo = guidedRoutes[state.route];
-    const isVideoSplitRoute = (state.route === 'video-maker' || state.route === 'video-editor' || state.route === 'cinematic-video');
     if (gInfo && main && !isVideoSplitRoute) {
       const bar = document.createElement('div');
       bar.className = 'mb-3 p-2 rounded-2xl bg-slate-900/90 border border-indigo-500/25 grid grid-cols-3 gap-1.5 text-[11px]';
