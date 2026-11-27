@@ -1232,7 +1232,7 @@ html, body { min-height: 100dvh; }
           <div class="text-[10.5px] text-slate-300">Ek sath sabhi photos/videos chunein ya neeche slot-by-slot select karein</div>
         </div>
         <div class="flex gap-1.5">
-          <label class="btn-primary px-3 py-1.5 rounded-xl text-[11px] font-bold cursor-pointer">📂 Select Phone Photos/Videos<input id="vtrMultiFileInput" type="file" accept="image/*,video/*" multiple class="sr-file-input"/></label>
+          <label class="btn-primary px-3 py-1.5 rounded-xl text-[11px] font-bold cursor-pointer">📂 Select Phone Photos/Videos<input id="vtrMultiFileInput" type="file" accept="image/*,video/*" multiple class="hidden"/></label>
           <button type="button" id="vtrFillGalleryBtn" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold text-amber-200 border-amber-400/35">🗂️ Auto-Fill Gallery</button>
         </div>
       </div>
@@ -1358,13 +1358,13 @@ html, body { min-height: 100dvh; }
             <div class="text-[11px] text-slate-300">602 Pose Guides • Real-Time MediaPipe Pose Matching</div>
           </div>
         </button>
-        <label id="spUsePhoneBtn" for="" class="btn-secondary w-full p-3.5 rounded-xl text-left flex items-center gap-3 border-emerald-500/30 cursor-pointer">
+        <button id="spUsePhoneBtn" class="btn-secondary w-full p-3.5 rounded-xl text-left flex items-center gap-3 border-emerald-500/30">
           <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-lg shrink-0">📂</div>
           <div>
-            <div class="font-bold text-sm text-white">Upload from Phone Gallery (Multi-Select)</div>
-            <div class="text-[11px] text-slate-300">Pick single or multiple photos/videos directly from device storage</div>
+            <div class="font-bold text-sm text-white">Upload from Phone Gallery</div>
+            <div class="text-[11px] text-slate-300">Pick existing photos or videos directly from device storage</div>
           </div>
-        </label>
+        </button>
         <button id="spUseAppGalBtn" class="btn-secondary w-full p-3 rounded-xl text-left flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0">🖼️</div>
           <div>
@@ -4037,30 +4037,21 @@ const CameraPoseController = (() => {
       '1080p': { width: { ideal: 1920 }, height: { ideal: 1080 } },
       '4K': { width: { ideal: 3840 }, height: { ideal: 2160 } }
     };
-    const altFacing = facingMode === 'user' ? 'environment' : 'user';
     const attempts = [
       { video: { facingMode: { ideal: facingMode }, ...(resMap[resolution] || resMap['1080p']) }, audio: false },
-      { video: { facingMode: { ideal: facingMode }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false },
       { video: { facingMode: { ideal: facingMode } }, audio: false },
-      { video: { facingMode: { ideal: altFacing } }, audio: false },
       { video: true, audio: false }
     ];
     let lastErr = null;
     for (const c of attempts) {
       try {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          return await navigator.mediaDevices.getUserMedia(c);
-        }
-        const legacyGum = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-        if (legacyGum) {
-          return await new Promise((res, rej) => legacyGum.call(navigator, c, res, rej));
-        }
+        return await navigator.mediaDevices.getUserMedia(c);
       } catch (err) {
         lastErr = err;
+        // Never retry permission denial or missing hardware
         if (err && (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError' || err.name === 'SecurityError' || err.name === 'NotFoundError')) {
           throw err;
         }
-        await new Promise((r) => setTimeout(r, 140));
       }
     }
     throw lastErr || new Error('Unable to acquire camera stream.');
@@ -4075,9 +4066,7 @@ const CameraPoseController = (() => {
       return { ok: false, code: env.code, title: env.title, message: env.message };
     }
 
-    const hadPrev = !!stream;
     stopCamera();
-    if (hadPrev) await new Promise((r) => setTimeout(r, 160));
     const reqId = ++initRequestId;
     isInitializing = true;
     if (statusEl) statusEl.textContent = 'Requesting camera access...';
@@ -8034,11 +8023,7 @@ const StudioViews = (() => {
               <p id="camOverlayMsg" class="text-xs text-slate-300 max-w-md leading-relaxed">Tap below to grant camera access. On Android Chrome, camera permissions require an HTTPS URL (or localhost) and direct user tap.</p>
               <div class="flex flex-wrap justify-center gap-2 pt-1">
                 <button id="camOverlayRetryBtn" class="btn-primary px-5 py-2.5 rounded-xl text-xs font-semibold">Start Camera / Allow Permission</button>
-                <label class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/45 text-emerald-200 cursor-pointer">📷 Native Phone Camera<input id="camNativeCaptureInput" type="file" accept="image/*" capture="environment" class="sr-file-input"/></label>
-                <label class="direct-file-wrap btn-secondary px-4 py-2.5 rounded-xl text-xs font-semibold text-white cursor-pointer inline-flex items-center gap-1.5">
-                  <span>📂 Import from Phone Gallery</span>
-                  <input id="camDirectImportInput" type="file" accept="image/*,video/*" multiple class="direct-file-overlay"/>
-                </label>
+                <button data-nav="gallery" class="btn-secondary px-4 py-2.5 rounded-xl text-xs">Import from Phone Gallery</button>
               </div>
             </div>
             <div id="camCountdownOverlay" class="hidden absolute inset-0 z-20 bg-black/40 flex items-center justify-center text-7xl font-black text-white pointer-events-none"></div>
@@ -8406,7 +8391,7 @@ const StudioViews = (() => {
           </div>
           <div class="flex flex-wrap gap-2">
             <button data-pick-source="photo-editor" data-pick-input="edUploadInput" data-pick-kind="photo" class="btn-secondary px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 border-indigo-400/35 text-indigo-200">📷 Camera / 📂 Upload</button>
-            <input id="edUploadInput" type="file" accept="image/*" multiple style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;"/>
+            <input id="edUploadInput" type="file" accept="image/*" class="hidden"/>
             <button id="edAutoEnhance5xBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-amber-500 via-pink-500 to-indigo-500 text-white shadow-lg hover:opacity-95 active:scale-95 transition-all flex items-center gap-1.5" title="1-Click 5x Pixel Upscale + Auto Face Tuning + Tone Balance">✨ Auto Enhance 5x</button>
             <button id="edHighZoomBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-emerald-500 to-cyan-600 text-white shadow-lg hover:opacity-95 active:scale-95 transition-all flex items-center gap-1.5" title="Progressive Ultra-HD upscaling + Lossless PNG download for sharp high-zoom inspection">🔍 Make High Zoom</button>
             <button id="edBeforeAfterBtn" class="btn-secondary px-2.5 py-1.5 rounded-lg text-xs text-cyan-300 border-cyan-500/30" title="Press & hold to view original photo">👁 Hold Before/After</button>
@@ -8511,7 +8496,7 @@ const StudioViews = (() => {
                 <div class="pt-3 border-t border-white/10 space-y-2">
                   <div class="font-semibold text-slate-200">3D Film LUT (.cube Import)</div>
                   <div class="flex gap-2">
-                    <label class="btn-secondary flex-1 py-2 rounded-lg text-center cursor-pointer">Upload .cube LUT<input id="edCubeInput" type="file" accept=".cube" class="sr-file-input"/></label>
+                    <label class="btn-secondary flex-1 py-2 rounded-lg text-center cursor-pointer">Upload .cube LUT<input id="edCubeInput" type="file" accept=".cube" class="hidden"/></label>
                     <button id="edClearLutBtn" class="btn-secondary px-3 py-2 rounded-lg text-rose-300">Clear</button>
                   </div>
                   <div class="text-[10px] text-slate-400">${PhotoEngine.getActiveCubeLUT() ? 'Active LUT: ' + esc(PhotoEngine.getActiveCubeLUT().name) : 'No .cube LUT loaded.'}</div>
@@ -8580,7 +8565,7 @@ const StudioViews = (() => {
           </div>
           <div class="flex flex-wrap gap-2">
             <button data-pick-source="bg-remover" data-pick-input="bgRemUpload" data-pick-kind="photo" class="btn-secondary px-3 py-1.5 rounded-lg text-xs border-indigo-400/35 text-indigo-200">📷 Camera / 📂 Upload</button>
-            <input id="bgRemUpload" type="file" accept="image/*" class="sr-file-input"/>
+            <input id="bgRemUpload" type="file" accept="image/*" class="hidden"/>
             <button id="bgRemRunBtn" class="btn-primary px-3.5 py-1.5 rounded-lg text-xs">Auto Remove Background (AI)</button>
             <button id="bgRemSendStudioBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs text-indigo-300">Send to BG Studio →</button>
             <button id="bgRemExportPngBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs text-emerald-300">Export PNG</button>
@@ -8618,8 +8603,8 @@ const StudioViews = (() => {
           </div>
           <div class="flex flex-wrap gap-2">
             <button data-pick-source="bg-generator" data-pick-input="bgGenSubjInput" data-pick-kind="photo" class="btn-secondary px-3 py-1.5 rounded-lg text-xs border-indigo-400/35 text-indigo-200">📷 Camera / 📂 Subject</button>
-            <input id="bgGenSubjInput" type="file" accept="image/*" class="sr-file-input"/>
-            <label class="btn-secondary px-3 py-1.5 rounded-lg text-xs cursor-pointer">Upload Custom BG<input id="bgGenCustomInput" type="file" accept="image/*" class="sr-file-input"/></label>
+            <input id="bgGenSubjInput" type="file" accept="image/*" class="hidden"/>
+            <label class="btn-secondary px-3 py-1.5 rounded-lg text-xs cursor-pointer">Upload Custom BG<input id="bgGenCustomInput" type="file" accept="image/*" class="hidden"/></label>
             <button id="bgGenSaveBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs text-emerald-300">Save to Gallery</button>
             <button id="bgGenExportBtn" class="btn-primary px-3.5 py-1.5 rounded-lg text-xs">Export PNG</button>
           </div>
@@ -8666,7 +8651,7 @@ const StudioViews = (() => {
           </div>
           <div class="flex gap-2">
             <button data-pick-source="makeup" data-pick-input="mkUpload" data-pick-kind="photo" class="btn-secondary px-3 py-1.5 rounded-lg text-xs border-indigo-400/35 text-indigo-200">📷 Camera / 📂 Upload</button>
-            <input id="mkUpload" type="file" accept="image/*" class="sr-file-input"/>
+            <input id="mkUpload" type="file" accept="image/*" class="hidden"/>
             <button id="mkSaveBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs text-emerald-300">Save Look</button>
             <button id="mkExportBtn" class="btn-primary px-3.5 py-1.5 rounded-lg text-xs">Export</button>
           </div>
@@ -8719,7 +8704,7 @@ const StudioViews = (() => {
           </div>
           <div class="flex gap-2">
             <button data-pick-source="beauty" data-pick-input="btUpload" data-pick-kind="photo" class="btn-secondary px-3 py-1.5 rounded-lg text-xs border-indigo-400/35 text-indigo-200">📷 Camera / 📂 Upload</button>
-            <input id="btUpload" type="file" accept="image/*" class="sr-file-input"/>
+            <input id="btUpload" type="file" accept="image/*" class="hidden"/>
             <button id="btSaveBtn" class="btn-primary px-3.5 py-1.5 rounded-lg text-xs">Save Portrait</button>
           </div>
         </div>
@@ -8755,8 +8740,8 @@ const StudioViews = (() => {
           </div>
           <div class="flex flex-wrap gap-2">
             <button data-pick-source="dress-changer" data-pick-input="drUpload" data-pick-kind="photo" class="btn-secondary px-3 py-1.5 rounded-lg text-xs border-indigo-400/35 text-indigo-200">📷 Camera / 📂 Your Photo</button>
-            <input id="drUpload" type="file" accept="image/*" class="sr-file-input"/>
-            <label class="btn-secondary px-3 py-1.5 rounded-lg text-xs cursor-pointer">Upload Outfit Ref<input id="drGarmentUpload" type="file" accept="image/*" class="sr-file-input"/></label>
+            <input id="drUpload" type="file" accept="image/*" class="hidden"/>
+            <label class="btn-secondary px-3 py-1.5 rounded-lg text-xs cursor-pointer">Upload Outfit Ref<input id="drGarmentUpload" type="file" accept="image/*" class="hidden"/></label>
           </div>
         </div>
         ${cloudBannerHtml('AI Virtual Try-On (IDM-VTON / Outfit Model)')}
@@ -8803,7 +8788,7 @@ const StudioViews = (() => {
           </div>
           <div class="flex gap-2">
             <button data-pick-source="hairstyle" data-pick-input="hrUpload" data-pick-kind="photo" class="btn-secondary px-3 py-1.5 rounded-lg text-xs border-indigo-400/35 text-indigo-200">📷 Camera / 📂 Upload</button>
-            <input id="hrUpload" type="file" accept="image/*" class="sr-file-input"/>
+            <input id="hrUpload" type="file" accept="image/*" class="hidden"/>
             <button id="hrSaveBtn" class="btn-primary px-3.5 py-1.5 rounded-lg text-xs">Save Result</button>
           </div>
         </div>
@@ -8843,7 +8828,7 @@ const StudioViews = (() => {
             <p class="text-xs text-slate-400">Run real on-device 2x/4x upscaling, HDR, sharpening & low-light recovery, or connect Cloud AI for 4K face restoration & prompt editing.</p>
           </div>
           <button data-pick-source="enhance" data-pick-input="enhUpload" data-pick-kind="photo" class="btn-secondary px-3 py-1.5 rounded-lg text-xs border-indigo-400/35 text-indigo-200">📷 Camera / 📂 Upload</button>
-          <input id="enhUpload" type="file" accept="image/*" class="sr-file-input"/>
+          <input id="enhUpload" type="file" accept="image/*" class="hidden"/>
         </div>
         ${cloudBannerHtml('4K AI Upscale, Face Restoration & Generative Prompt Editing')}
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
@@ -8892,7 +8877,7 @@ const StudioViews = (() => {
     const selClip = vs.clips.find((c) => c.id === vs.selectedClipId) || vs.clips[0];
     return `
       <div class="video-split-shell lg:space-y-4">
-        <input id="vidImportInput" type="file" accept="video/*,image/*" multiple style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;"/>
+        <input id="vidImportInput" type="file" accept="video/*,image/*" multiple class="hidden"/>
         <div class="hidden lg:flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-xl font-bold">${isCinematicMode ? 'AI Cinematic Video Studio' : 'Professional Multi-Clip Video Editor'}</h2>
@@ -8900,7 +8885,7 @@ const StudioViews = (() => {
           </div>
           <div class="flex flex-wrap gap-2">
             <button data-pick-source="video-editor" data-pick-input="vidImportInput" data-pick-kind="video" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold">📷 Camera / 📂 Add Media</button>
-            <label class="btn-secondary px-3 py-1.5 rounded-lg text-xs cursor-pointer">+ Audio Track<input id="vidAudioInput" type="file" accept="audio/*" class="sr-file-input"/></label>
+            <label class="btn-secondary px-3 py-1.5 rounded-lg text-xs cursor-pointer">+ Audio Track<input id="vidAudioInput" type="file" accept="audio/*" class="hidden"/></label>
             <button id="vidSampleClipBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs text-indigo-300">+ Add Sample Clip</button>
             <button id="vidSaveProjBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs">Save Project</button>
             <select id="vidExpFmtSel" class="bg-slate-900 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white" title="Export Format">
@@ -9053,14 +9038,14 @@ const StudioViews = (() => {
                   <option value="travel">Travel Vlog Reel</option>
                   <option value="birthday">Birthday Glam Reel</option>
                 </select>
-                <label class="btn-primary py-1.5 px-2 rounded-lg text-center cursor-pointer">Photos → Reel<input id="vidReelPhotosInput" type="file" accept="image/*" multiple class="sr-file-input"/></label>
+                <label class="btn-primary py-1.5 px-2 rounded-lg text-center cursor-pointer">Photos → Reel<input id="vidReelPhotosInput" type="file" accept="image/*" multiple class="hidden"/></label>
               </div>
               <div class="grid grid-cols-2 gap-1.5">
                 <button id="vidBeatAnalyzeBtn" class="btn-secondary py-1.5 rounded-lg">🎵 Detect Beats${vs.detectedBpm ? ` (${vs.detectedBpm} BPM)` : ''}</button>
                 <button id="vidBeatSyncBtn" class="btn-secondary py-1.5 rounded-lg text-indigo-300">⚡ Auto Beat-Sync</button>
               </div>
               <div class="flex items-center gap-1.5">
-                <label class="btn-secondary flex-1 py-1.5 rounded-lg text-center cursor-pointer">+ PiP Overlay<input id="vidPipInput" type="file" accept="image/*" class="sr-file-input"/></label>
+                <label class="btn-secondary flex-1 py-1.5 rounded-lg text-center cursor-pointer">+ PiP Overlay<input id="vidPipInput" type="file" accept="image/*" class="hidden"/></label>
                 <label class="flex items-center gap-1 text-[11px] text-emerald-300"><input id="vidChromaToggle" type="checkbox" ${vs.pipOverlay && vs.pipOverlay.chromaKey ? 'checked' : ''} class="accent-emerald-500"/>Green Screen</label>
                 ${vs.pipOverlay ? `<button id="vidClearPipBtn" class="btn-secondary px-2 py-1 rounded-lg text-rose-300">✕</button>` : ''}
               </div>
@@ -9115,9 +9100,9 @@ const StudioViews = (() => {
             <p class="text-xs text-slate-400">Import photos &amp; videos from your phone or browse captured media — persisted privately in IndexedDB.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <label class="direct-file-wrap btn-primary px-3.5 py-2 rounded-xl text-xs cursor-pointer flex items-center gap-1.5">
+            <label class="btn-primary px-3.5 py-2 rounded-xl text-xs cursor-pointer flex items-center gap-1.5">
               <i data-lucide="upload" class="w-3.5 h-3.5"></i><span>Import Photos / Videos</span>
-              <input id="galImportInput" type="file" accept="image/*,video/*" multiple class="direct-file-overlay"/>
+              <input id="galImportInput" type="file" accept="image/*,video/*" multiple class="hidden"/>
             </label>
             <button id="galCloudPushBtn" class="btn-secondary px-3 py-2 rounded-xl text-xs text-amber-300 border-amber-500/25" title="Backup local gallery to Firebase Storage &amp; Firestore">☁ Sync Cloud</button>
             <button id="galCloudPullBtn" class="btn-secondary px-3 py-2 rounded-xl text-xs text-sky-300 border-sky-500/25" title="Download saved media from Firebase">↓ Pull Cloud</button>
@@ -9236,7 +9221,7 @@ const StudioViews = (() => {
           <div class="flex flex-wrap gap-2">
             <button id="prjNewPhotoBtn" class="btn-primary px-3.5 py-1.5 rounded-xl text-xs">+ Save Current Project</button>
             <button id="prjExportJsonBtn" class="btn-secondary px-3 py-1.5 rounded-xl text-xs text-emerald-300">⬇ Export Backup JSON</button>
-            <label class="btn-secondary px-3 py-1.5 rounded-xl text-xs text-indigo-300 cursor-pointer">⬆ Import JSON<input id="prjImportJsonInput" type="file" accept=".json,application/json" class="sr-file-input"/></label>
+            <label class="btn-secondary px-3 py-1.5 rounded-xl text-xs text-indigo-300 cursor-pointer">⬆ Import JSON<input id="prjImportJsonInput" type="file" accept=".json,application/json" class="hidden"/></label>
           </div>
         </div>
         ${state.projects.length === 0 ? `
@@ -9433,7 +9418,7 @@ const StudioViews = (() => {
             </label>
             <label class="btn-primary py-2.5 rounded-xl text-center cursor-pointer font-semibold mt-auto">
               Select Multiple Photos &amp; Process
-              <input id="batchFilesInput" type="file" accept="image/*" multiple class="sr-file-input"/>
+              <input id="batchFilesInput" type="file" accept="image/*" multiple class="hidden"/>
             </label>
             <div id="batchStatus" class="text-[11px] text-emerald-300"></div>
           </div>
@@ -9442,7 +9427,7 @@ const StudioViews = (() => {
           <div class="studio-card rounded-2xl p-4 space-y-2.5 flex flex-col">
             <div class="flex items-center justify-between">
               <h3 class="text-sm font-bold text-white">2. Passport Photo Sheet (PDF)</h3>
-              <label class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-[10px] text-indigo-200 cursor-pointer">Upload Photo<input id="passUploadInput" type="file" accept="image/*" class="sr-file-input"/></label>
+              <label class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-[10px] text-indigo-200 cursor-pointer">Upload Photo<input id="passUploadInput" type="file" accept="image/*" class="hidden"/></label>
             </div>
             <div class="grid grid-cols-2 gap-2">
               <label class="text-slate-300">Paper Sheet Size
@@ -9518,7 +9503,7 @@ const StudioViews = (() => {
               <canvas id="colCanvas" width="720" height="720" class="max-w-full max-h-44 object-contain rounded"></canvas>
             </div>
             <div class="flex gap-2 mt-auto">
-              <label class="btn-secondary flex-1 py-2 rounded-xl text-center cursor-pointer">Pick 2–4 Photos<input id="colFilesInput" type="file" accept="image/*" multiple class="sr-file-input"/></label>
+              <label class="btn-secondary flex-1 py-2 rounded-xl text-center cursor-pointer">Pick 2–4 Photos<input id="colFilesInput" type="file" accept="image/*" multiple class="hidden"/></label>
               <button id="colSaveBtn" class="btn-primary flex-1 py-2 rounded-xl font-semibold">Save &amp; Download</button>
             </div>
           </div>
@@ -9536,7 +9521,7 @@ const StudioViews = (() => {
 
     return `
       <div class="video-split-shell lg:space-y-4">
-        <input id="vmImportInput" type="file" accept="video/*,image/*" multiple style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;"/>
+        <input id="vmImportInput" type="file" accept="video/*,image/*" multiple class="hidden"/>
         <div class="hidden lg:flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-xl font-bold">Video Maker — Unlimited Photos, Videos, Songs &amp; FX</h2>
@@ -9545,7 +9530,7 @@ const StudioViews = (() => {
           <div class="flex flex-wrap gap-2">
             <button data-pick-source="video-maker" data-pick-input="vmImportInput" data-pick-kind="video" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold">📷 Camera / 📂 Add Media</button>
             <button id="vmOpenGalPickerBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs text-indigo-300 border-indigo-400/30">+ From My Gallery (${state.media.length})</button>
-            <label class="btn-secondary px-3 py-1.5 rounded-lg text-xs cursor-pointer text-emerald-300">🎵 Add Song<input id="vmSongInput" type="file" accept="audio/*" class="sr-file-input"/></label>
+            <label class="btn-secondary px-3 py-1.5 rounded-lg text-xs cursor-pointer text-emerald-300">🎵 Add Song<input id="vmSongInput" type="file" accept="audio/*" class="hidden"/></label>
           </div>
         </div>
 
@@ -9708,7 +9693,7 @@ const StudioViews = (() => {
                   <option value="">🎵 Built-In Audio...</option>
                   ${VideoStudioEngine.BUILTIN_AUDIO_TRACKS.map((t) => `<option value="${t.id}">${esc(t.name)}</option>`).join('')}
                 </select>
-                <label class="btn-secondary py-1.5 px-2 rounded-lg text-center cursor-pointer text-emerald-300">📂 Phone Song<input id="vmPhoneSongInput2" type="file" accept="audio/*" class="sr-file-input"/></label>
+                <label class="btn-secondary py-1.5 px-2 rounded-lg text-center cursor-pointer text-emerald-300">📂 Phone Song<input id="vmPhoneSongInput2" type="file" accept="audio/*" class="hidden"/></label>
               </div>
 
               <div class="flex justify-between text-slate-400"><span>Song Volume</span><span id="vmVolVal">${vs.cinematicState.audioVolume}%</span></div>
@@ -9837,9 +9822,9 @@ const StudioViews = (() => {
           </div>
           <div class="flex flex-wrap gap-2">
             <button data-pick-source="photo-frame" data-pick-input="pfUpload" data-pick-kind="photo" class="btn-primary px-3.5 py-2 rounded-xl text-xs font-semibold">📷 Camera / 📂 Gallery</button>
-            <input id="pfUpload" type="file" accept="image/*" class="sr-file-input"/>
-            <input id="pfSlotUpload1" type="file" accept="image/*" class="sr-file-input"/>
-            <input id="pfSlotUpload2" type="file" accept="image/*" class="sr-file-input"/>
+            <input id="pfUpload" type="file" accept="image/*" class="hidden"/>
+            <input id="pfSlotUpload1" type="file" accept="image/*" class="hidden"/>
+            <input id="pfSlotUpload2" type="file" accept="image/*" class="hidden"/>
             <button id="pfToggleGenBtn" class="btn-secondary px-3 py-2 rounded-xl text-xs font-semibold text-amber-300 border-amber-400/40">🎨 Frame Generator (+ Own Frame)</button>
             <button id="pfSaveGalleryBtn" class="btn-secondary px-3 py-2 rounded-xl text-xs font-semibold text-emerald-300">💾 Save Gallery</button>
             <button id="pfDownloadBtn" class="btn-secondary px-3 py-2 rounded-xl text-xs font-semibold text-indigo-300">⬇ Download 4K HD</button>
@@ -10000,7 +9985,7 @@ const StudioViews = (() => {
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
                 <input id="pfgBanner" type="text" placeholder="Frame Banner Text (e.g. Forever Together ❤️)" class="sm:col-span-6 bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white text-xs"/>
-                <label class="sm:col-span-3 btn-secondary py-2 px-2 rounded-xl text-[11px] text-center cursor-pointer truncate">📂 Upload Frame Img<input id="pfgImgUpload" type="file" accept="image/*" class="sr-file-input"/></label>
+                <label class="sm:col-span-3 btn-secondary py-2 px-2 rounded-xl text-[11px] text-center cursor-pointer truncate">📂 Upload Frame Img<input id="pfgImgUpload" type="file" accept="image/*" class="hidden"/></label>
                 <button type="button" id="pfgSaveOwnBtn" class="sm:col-span-3 btn-primary py-2 px-3 rounded-xl text-xs font-bold">⭐ Save Own Frame</button>
               </div>
               <div id="pfgImgStatus" class="text-[10px] text-slate-400">Tip: Colors/Shapes chunein ya apna custom frame image upload karke "Save Own Frame" dabayein — seedha <strong>⭐ Own Frames</strong> mein save ho jayega!</div>
@@ -10012,7 +9997,7 @@ const StudioViews = (() => {
                 <div class="p-2.5 rounded-xl bg-gradient-to-r from-indigo-500/15 via-purple-500/10 to-cyan-500/15 border border-indigo-400/30 flex flex-wrap items-center gap-2 text-xs">
                 <input id="pfCustomPlacePrompt" type="text" placeholder="Kisi bhi duniya ki place ka naam likhein (e.g. Kedarnath, Taj Mahal, Switzerland, Goa)..." class="flex-1 min-w-[200px] bg-slate-900 border border-white/10 rounded-lg px-2.5 py-1.5 text-white text-xs"/>
                 <button type="button" id="pfGenCustomPlaceBtn" class="btn-primary px-3 py-1.5 rounded-lg text-[11px] font-semibold">✨ Generate Unlimited Place</button>
-                <label class="btn-secondary px-3 py-1.5 rounded-lg text-[11px] font-semibold text-emerald-300 cursor-pointer">📂 Own Place Photo<input id="pfOwnPlaceInput" type="file" accept="image/*" class="sr-file-input"/></label>
+                <label class="btn-secondary px-3 py-1.5 rounded-lg text-[11px] font-semibold text-emerald-300 cursor-pointer">📂 Own Place Photo<input id="pfOwnPlaceInput" type="file" accept="image/*" class="hidden"/></label>
               </div>
               <input id="pfSearchInput" type="search" value="${esc(state.photoFrameSearch || '')}" placeholder="Search frames (Wild, Love, Sky, Couple, Heart, Arch, Neon...)" class="flex-1 min-w-[200px] bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white"/>
                 <span class="text-[11px] font-semibold text-emerald-300 bg-emerald-500/15 px-2.5 py-1 rounded-full">Showing ${visibleFrames.length} of ${filtered.length.toLocaleString()} Frames</span>
@@ -10075,7 +10060,7 @@ const StudioViews = (() => {
           </div>
           <div class="flex flex-wrap gap-2">
             <button data-pick-source="ai-control-center" data-pick-input="aiccUpload" data-pick-kind="photo" class="btn-primary px-3.5 py-2 rounded-xl text-xs font-semibold">📷 Camera / 📂 Gallery</button>
-            <input id="aiccUpload" type="file" accept="image/*" class="sr-file-input"/>
+            <input id="aiccUpload" type="file" accept="image/*" class="hidden"/>
             <button id="aiccDownloadBtn" class="btn-secondary px-3 py-2 rounded-xl text-xs text-emerald-300">⬇ Download Output</button>
           </div>
         </div>
@@ -10166,7 +10151,7 @@ const StudioViews = (() => {
           </div>
           <div class="flex flex-wrap gap-2">
             <button data-pick-source="preset-library" data-pick-input="spUpload" data-pick-kind="photo" class="btn-primary px-3.5 py-2 rounded-xl text-xs font-semibold">📷 Camera / 📂 Gallery</button>
-            <input id="spUpload" type="file" accept="image/*" class="sr-file-input"/>
+            <input id="spUpload" type="file" accept="image/*" class="hidden"/>
             <button id="spApplyEditorBtn" class="btn-secondary px-3 py-2 rounded-xl text-xs font-semibold text-indigo-300">Apply in Photo Editor →</button>
             <button id="spSaveGalleryBtn" class="btn-secondary px-3 py-2 rounded-xl text-xs font-semibold text-emerald-300">💾 Save Graded PNG</button>
           </div>
@@ -10270,8 +10255,8 @@ const StudioViews = (() => {
           </div>
           <div class="flex flex-wrap gap-2">
             <button data-pick-source="ai-movie-studio" data-pick-input="aimUpload" data-pick-kind="photo" class="btn-primary px-3.5 py-2 rounded-xl text-xs font-semibold">📷 Camera / 📂 Upload Photo or Video</button>
-            <label class="btn-secondary px-3 py-2 rounded-xl text-xs font-semibold text-cyan-300 cursor-pointer">🎞️ Upload Video<input id="aimVideoUpload" type="file" accept="video/*" class="sr-file-input"/></label>
-            <input id="aimUpload" type="file" accept="image/*,video/*" class="sr-file-input"/>
+            <label class="btn-secondary px-3 py-2 rounded-xl text-xs font-semibold text-cyan-300 cursor-pointer">🎞️ Upload Video<input id="aimVideoUpload" type="file" accept="video/*" class="hidden"/></label>
+            <input id="aimUpload" type="file" accept="image/*,video/*" class="hidden"/>
             <button id="aimSaveGalBtn" class="btn-secondary px-3 py-2 rounded-xl text-xs text-emerald-300">💾 Save Image</button>
             <button id="aimSaveOwnFrameBtn" class="btn-secondary px-3 py-2 rounded-xl text-xs text-amber-300">⭐ Save to Own Frames</button>
             <button id="aimDlImgBtn" class="btn-secondary px-3 py-2 rounded-xl text-xs text-indigo-300">⬇ Download PNG</button>
@@ -10439,7 +10424,7 @@ const StudioViews = (() => {
                 <button id="fgGenAiBgBtn" class="btn-primary px-3.5 py-2 rounded-xl text-xs font-semibold shrink-0">✨ AI Generate BG</button>
               </div>
               <div class="flex flex-wrap items-center gap-2.5 pt-1">
-                <label class="btn-secondary px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer text-cyan-300">📂 Upload Custom BG Image<input id="fgBgUpload" type="file" accept="image/*" class="sr-file-input"/></label>
+                <label class="btn-secondary px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer text-cyan-300">📂 Upload Custom BG Image<input id="fgBgUpload" type="file" accept="image/*" class="hidden"/></label>
                 ${fg.bgImageUrl ? `<button type="button" id="fgClearBgBtn" class="btn-secondary px-2.5 py-1.5 rounded-xl text-[11px] text-rose-300">Clear BG Image</button>` : ''}
                 <label class="flex items-center gap-1.5 text-slate-300">Color 1 <input id="fgCol1" type="color" value="${fg.bgColor1}" class="w-7 h-7 rounded bg-transparent border-0 cursor-pointer"/></label>
                 <label class="flex items-center gap-1.5 text-slate-300">Color 2 <input id="fgCol2" type="color" value="${fg.bgColor2}" class="w-7 h-7 rounded bg-transparent border-0 cursor-pointer"/></label>
@@ -10451,7 +10436,7 @@ const StudioViews = (() => {
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <h3 class="text-sm font-bold text-white">2. Slot ${fg.activeSlot + 1} Cutout Area &amp; Photo Fit</h3>
                 <div class="flex gap-1.5">
-                  <label class="btn-primary px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer">＋ Add / Change Photo ${fg.activeSlot + 1}<input id="fgSlotPhotoInp" type="file" accept="image/*" class="sr-file-input"/></label>
+                  <label class="btn-primary px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer">＋ Add / Change Photo ${fg.activeSlot + 1}<input id="fgSlotPhotoInp" type="file" accept="image/*" class="hidden"/></label>
                   <button type="button" id="fgUseActivePhotoBtn" class="btn-secondary px-2.5 py-1.5 rounded-xl text-[11px] text-indigo-300">Use Current Photo</button>
                 </div>
               </div>
@@ -11047,20 +11032,11 @@ const App = (() => {
           state.cameraReturnRoute = targetRoute;
           navigate('photoshoot');
         };
-        const spPhoneLbl = document.getElementById('spUsePhoneBtn');
-        const targetInp = document.getElementById(inputId);
-        if (targetInp) {
-          targetInp.classList.remove('hidden');
-          targetInp.classList.add('sr-file-input');
-          targetInp.setAttribute('multiple', 'multiple');
-          targetInp.value = '';
-        }
-        if (spPhoneLbl) {
-          spPhoneLbl.setAttribute('for', inputId || '');
-          spPhoneLbl.onclick = () => {
-            setTimeout(close, 120);
-          };
-        }
+        document.getElementById('spUsePhoneBtn').onclick = () => {
+          close();
+          const inp = document.getElementById(inputId);
+          if (inp) inp.click();
+        };
         document.getElementById('spUseAppGalBtn').onclick = () => {
           close();
           state.galleryReturnRoute = targetRoute;
@@ -11102,12 +11078,7 @@ const App = (() => {
       };
     }
 
-    if (state.route === 'camera') {
-      bindCameraEvents();
-      if (window.MahaProFullCamera && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        try { window.MahaProFullCamera.open(() => {}); } catch (_) {}
-      }
-    }
+    if (state.route === 'camera') { if (window.MahaProFullCamera) window.MahaProFullCamera.open(() => goBackInApp()); else bindCameraEvents(); }
     else if (state.route === 'poses') bindPoseEvents();
     else if (state.route === 'photoshoot') bindPhotoshootEvents();
     else if (state.route === 'photo-editor') bindPhotoEditorEvents();
@@ -11211,16 +11182,10 @@ const App = (() => {
     };
 
     document.getElementById('camStartBtn').onclick = startCam;
-    if (!CameraPoseController.getState().cameraActive) {
-      setTimeout(() => { startCam(); }, 140);
+    if (state.cameraReturnRoute && !CameraPoseController.getState().cameraActive) {
+      setTimeout(() => { startCam(); }, 180);
     }
     if (ovBtn) ovBtn.onclick = startCam;
-    if (vid) {
-      vid.onclick = () => {
-        if (vid.srcObject && vid.paused) vid.play().catch(() => {});
-        else if (!CameraPoseController.getState().cameraActive) startCam();
-      };
-    }
 
     if (flipBtn) flipBtn.onclick = async () => {
       const cur = CameraPoseController.getState().facingMode;
@@ -11228,10 +11193,6 @@ const App = (() => {
       await startCam();
     };
     document.getElementById('camFullscreenBtn').onclick = () => {
-      if (window.MahaProFullCamera && window.MahaProFullCamera.open) {
-        window.MahaProFullCamera.open(() => {});
-        return;
-      }
       const wrap = document.getElementById('camViewportWrap');
       if (!wrap) return;
       if (document.fullscreenElement) {
@@ -15514,8 +15475,8 @@ window.MahaProFullCamera = (() => {
     div.id = 'mahaFullCamOverlay';
     div.style.display = 'none';
     div.innerHTML = `
-      <input type="file" id="mfcMusicInput" accept="audio/*" class="sr-file-input" />
-      <input type="file" id="mfcChromaImgInput" accept="image/*" class="sr-file-input" />
+      <input type="file" id="mfcMusicInput" accept="audio/*" style="display:none;" />
+      <input type="file" id="mfcChromaImgInput" accept="image/*" style="display:none;" />
 
       <video id="mahaCamMainVideo" autoplay playsinline muted></video>
       <canvas id="mahaCamFxCanvas"></canvas>
@@ -16471,61 +16432,27 @@ window.MahaProFullCamera = (() => {
   }
 
   async function startMainCamera() {
-    const hadPrev = !!mainStream;
     stopMainStream();
     if (typeof CameraPoseController !== 'undefined' && CameraPoseController.stopCamera) {
       try { CameraPoseController.stopCamera(); } catch (_) {}
     }
-    if (hadPrev) await new Promise((r) => setTimeout(r, 180));
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      throw new Error('Camera API unavailable. Please open over HTTPS (GitHub Pages) in Chrome/Safari.');
-    }
-
+    // Request full native sensor aspect (4:3 wide sensor) without artificial portrait crop so objects appear at true natural distance!
     const wIdeal = state.quality === '4K' ? 3840 : 1920;
     const hIdeal = state.quality === '4K' ? 2160 : 1440;
-    const altFacing = state.facing === 'user' ? 'environment' : 'user';
-    const attempts = [
-      { video: { facingMode: { ideal: state.facing }, width: { ideal: wIdeal }, height: { ideal: hIdeal } }, audio: false },
-      { video: { facingMode: { ideal: state.facing }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false },
-      { video: { facingMode: { ideal: state.facing } }, audio: false },
-      { video: { facingMode: { ideal: altFacing } }, audio: false },
-      { video: true, audio: false }
-    ];
 
-    let lastErr = null;
-    mainStream = null;
-    for (const c of attempts) {
-      try {
-        mainStream = await navigator.mediaDevices.getUserMedia(c);
-        break;
-      } catch (e) {
-        lastErr = e;
-        if (e && (e.name === 'NotAllowedError' || e.name === 'PermissionDeniedError' || e.name === 'SecurityError')) {
-          throw e;
-        }
-        await new Promise((r) => setTimeout(r, 150));
-      }
+    try {
+      mainStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: state.facing }, width: { ideal: wIdeal }, height: { ideal: hIdeal }, frameRate: { ideal: state.fps, min: 24 } },
+        audio: true
+      });
+    } catch (_) {
+      mainStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: state.facing } }, audio: false });
     }
-    if (!mainStream) throw (lastErr || new Error('Could not open camera stream.'));
-
     mainStream.getAudioTracks().forEach((tr) => { tr.enabled = state.mic; });
     const vid = document.getElementById('mahaCamMainVideo');
-    if (vid) {
-      vid.classList.toggle('fill-screen', state.viewFill);
-      vid.muted = true;
-      vid.playsInline = true;
-      vid.setAttribute('playsinline', '');
-      vid.setAttribute('webkit-playsinline', 'true');
-      vid.setAttribute('autoplay', '');
-      vid.srcObject = mainStream;
-      await new Promise((res) => {
-        if (vid.readyState >= 1) { res(); return; }
-        const done = () => { vid.removeEventListener('loadedmetadata', done); res(); };
-        vid.addEventListener('loadedmetadata', done, { once: true });
-        setTimeout(done, 1800);
-      });
-      try { await vid.play(); } catch (_) {}
-    }
+    vid.classList.toggle('fill-screen', state.viewFill);
+    vid.srcObject = mainStream;
+    await new Promise((res) => { if (vid.readyState >= 1) res(); else vid.onloadedmetadata = () => res(); });
 
     // Force hardware zoom to widest optical minimum on startup so objects are never zoomed-in too close
     const track = mainStream.getVideoTracks()[0];
@@ -17804,48 +17731,12 @@ window.MahaProFullCamera = (() => {
     };
     window.addEventListener('deviceorientation', orientHandler);
 
-    const oldErr = document.getElementById('mfcErrorOverlayBox');
-    if (oldErr) oldErr.remove();
     try {
       await startMainCamera();
       startDetectLoop();
       startLiveFxLoop();
     } catch (err) {
-      const ov = document.getElementById('mahaFullCamOverlay');
-      if (ov) {
-        const box = document.createElement('div');
-        box.id = 'mfcErrorOverlayBox';
-        box.style.cssText = 'position:absolute;inset:0;z-index:60;background:rgba(7,8,13,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;gap:12px;';
-        box.innerHTML = `
-          <div style="font-size:38px;">📷</div>
-          <div style="font-size:16px;font-weight:800;color:#fff;">Camera Access Needed</div>
-          <div style="font-size:12px;color:#cbd5e1;max-width:300px;line-height:1.5;">${(err && err.message) || 'Camera permission blocked or busy.'}<br/>Chrome address bar mein Lock icon → Camera → Allow karein, ya neeche Native Camera use karein.</div>
-          <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:6px;">
-            <button type="button" id="mfcRetryCamNowBtn" style="padding:10px 18px;border-radius:12px;background:#6366f1;color:#fff;font-size:12px;font-weight:800;border:none;">🔄 Retry Camera</button>
-            <label style="padding:10px 18px;border-radius:12px;background:#10b981;color:#052e16;font-size:12px;font-weight:800;cursor:pointer;">📷 Open Phone Camera<input id="mfcNativeFallbackInp" type="file" accept="image/*" capture="environment" style="position:fixed;left:-9999px;opacity:0;"/></label>
-            <button type="button" id="mfcErrCloseBtn" style="padding:10px 16px;border-radius:12px;background:rgba(255,255,255,0.12);color:#fff;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,0.2);">✕ Back</button>
-          </div>`;
-        ov.appendChild(box);
-        document.getElementById('mfcRetryCamNowBtn').onclick = () => {
-          box.remove();
-          startMainCamera().then(() => { startDetectLoop(); startLiveFxLoop(); }).catch((e2) => showQuietNote('Camera error: ' + (e2.message || e2)));
-        };
-        document.getElementById('mfcErrCloseBtn').onclick = () => close(true);
-        document.getElementById('mfcNativeFallbackInp').onchange = (ev) => {
-          const f = ev.target.files && ev.target.files[0];
-          if (!f) return;
-          const r = new FileReader();
-          r.onload = async () => {
-            if (typeof StudioStorage !== 'undefined' && StudioStorage.saveMedia) {
-              try { await StudioStorage.saveMedia({ name: f.name || `Camera_${Date.now()}.jpg`, type: 'photo', dataUrl: r.result, album: 'Pro Camera' }); } catch (_) {}
-            }
-            close(false);
-            if (typeof App !== 'undefined' && App.navigate) App.navigate('photo-editor');
-            if (typeof PhotoEngine !== 'undefined' && PhotoEngine.loadDataUrl) setTimeout(() => PhotoEngine.loadDataUrl(r.result, f.name), 150);
-          };
-          r.readAsDataURL(f);
-        };
-      }
+      showQuietNote('Camera permission denied: ' + (err.message || err));
     }
   }
 
@@ -19246,7 +19137,7 @@ window.MahaTouchTransform = (() => {
               <div class="font-extrabold text-white">🎵 Pro Audio, Built-In Beats &amp; Beat-Sync</div>
               <div class="text-[10.5px] text-slate-400">Current Track: <strong class="text-emerald-300">${vs.audioTrack ? vs.audioTrack.name : 'None'}</strong></div>
             </div>
-            <label class="btn-primary px-3 py-1.5 rounded-xl text-[11px] font-bold cursor-pointer">📂 Upload Phone Song<input id="vproUploadSongInput" type="file" accept="audio/*" class="sr-file-input"/></label>
+            <label class="btn-primary px-3 py-1.5 rounded-xl text-[11px] font-bold cursor-pointer">📂 Upload Phone Song<input id="vproUploadSongInput" type="file" accept="audio/*" class="hidden"/></label>
           </div>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
             ${[['upbeat','⚡ Upbeat Reel'], ['cinematic','🎬 Epic Cinema'], ['romantic','💖 Romantic Piano'], ['bass','🔥 Bass Drop']].map(([m, lbl]) => `
@@ -19399,7 +19290,7 @@ window.MahaTouchTransform = (() => {
           </div>
           <label class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold cursor-pointer shrink-0">
             ${f ? '🔄 Change' : '📷 Pick Photo/Video'}
-            <input type="file" accept="image/*,video/*" data-vtr-slot-file="${idx}" class="sr-file-input"/>
+            <input type="file" accept="image/*,video/*" data-vtr-slot-file="${idx}" class="hidden"/>
           </label>
         </div>`;
     }).join('');
@@ -20383,7 +20274,7 @@ window.MahaTouchTransform = (() => {
                     </div>
                     <label class="btn-primary px-2.5 py-1 rounded-lg text-[10.5px] font-bold cursor-pointer shrink-0">
                       📂 Pick
-                      <input type="file" accept="image/*,video/*" data-ms-file="${idx}" class="sr-file-input"/>
+                      <input type="file" accept="image/*,video/*" data-ms-file="${idx}" class="hidden"/>
                     </label>
                   </div>`;
               }).join('')}
@@ -20632,27 +20523,6 @@ window.MahaTouchTransform = (() => {
 })();
 </script>
 
-<script>
-document.addEventListener('change', (e) => {
-  if (e.target && e.target.id === 'camNativeCaptureInput' && e.target.files && e.target.files[0]) {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const dataUrl = reader.result;
-      if (typeof StudioStorage !== 'undefined' && StudioStorage.saveMedia) {
-        try { await StudioStorage.saveMedia({ name: file.name || `Camera_${Date.now()}.jpg`, type: 'photo', dataUrl, album: 'Pro Camera' }); } catch (_) {}
-      }
-      if (typeof PhotoEngine !== 'undefined' && PhotoEngine.loadDataUrl) {
-        if (typeof App !== 'undefined' && App.navigate) App.navigate('photo-editor');
-        setTimeout(() => PhotoEngine.loadDataUrl(dataUrl, file.name || 'CameraPhoto.jpg'), 150);
-      }
-      if (typeof window.showToast === 'function') window.showToast('📷 Photo captured & saved to Gallery!', 'success');
-    };
-    reader.readAsDataURL(file);
-    e.target.value = '';
-  }
-});
-</script>
 
 <script>
 /* ============================================================================
@@ -20937,9 +20807,9 @@ document.addEventListener('change', (e) => {
               <p class="text-xs text-slate-300">Unlimited photos upload karein, Paper Size, Photo Fit, Photos Per Page &amp; Quality (AI Enhance / High / Normal / Low) set karke instant PDF download karein.</p>
             </div>
             <div class="flex flex-wrap gap-2">
-              <label class="direct-file-wrap btn-primary px-3.5 py-2 rounded-xl text-xs font-extrabold cursor-pointer shadow-lg inline-flex items-center">
+              <label class="btn-primary px-3.5 py-2 rounded-xl text-xs font-extrabold cursor-pointer shadow-lg inline-flex items-center">
                 <span>📂 Upload Unlimited Photos</span>
-                <input id="p2pFileInput" type="file" accept="image/*" multiple class="direct-file-overlay"/>
+                <input id="p2pFileInput" type="file" accept="image/*" multiple class="hidden"/>
               </label>
               <button type="button" id="p2pImportGalBtn" class="btn-secondary px-3 py-2 rounded-xl text-xs font-bold text-amber-200 border-amber-400/35">🗂️ Import from My Gallery</button>
               ${p2pState.photos.length ? `<button type="button" id="p2pClearBtn" class="px-3 py-2 rounded-xl text-xs font-bold bg-rose-500/20 border border-rose-400/40 text-rose-200">🗑 Clear (${p2pState.photos.length})</button>` : ''}
@@ -21129,51 +20999,5 @@ document.addEventListener('change', (e) => {
 })();
 </script>
 
-<script>
-document.addEventListener('change', async (e) => {
-  if (e.target && e.target.id === 'camDirectImportInput' && e.target.files && e.target.files.length) {
-    const files = Array.from(e.target.files);
-    let saved = 0;
-    let firstPhotoUrl = null;
-    for (const f of files) {
-      const isVid = f.type && f.type.startsWith('video/');
-      if (typeof StudioStorage !== 'undefined' && StudioStorage.saveMedia) {
-        try {
-          let dataUrl = null;
-          if (!isVid) {
-            dataUrl = await new Promise((res) => {
-              const r = new FileReader();
-              r.onload = () => res(r.result);
-              r.onerror = () => res(null);
-              r.readAsDataURL(f);
-            });
-            if (!firstPhotoUrl && dataUrl) firstPhotoUrl = dataUrl;
-          }
-          await StudioStorage.saveMedia({
-            name: f.name || `Import_${Date.now()}`,
-            type: isVid ? 'video' : 'photo',
-            blob: f,
-            dataUrl,
-            mimeType: f.type || (isVid ? 'video/mp4' : 'image/jpeg'),
-            size: f.size,
-            album: 'Phone Imports'
-          });
-          saved++;
-        } catch (_) {}
-      }
-    }
-    e.target.value = '';
-    if (typeof window.showToast === 'function') {
-      window.showToast(`📂 Imported ${saved} file(s) from Phone Gallery!`, 'success');
-    }
-    if (files.length === 1 && firstPhotoUrl && typeof PhotoEngine !== 'undefined' && PhotoEngine.loadDataUrl) {
-      if (typeof App !== 'undefined' && App.navigate) App.navigate('photo-editor');
-      setTimeout(() => PhotoEngine.loadDataUrl(firstPhotoUrl, files[0].name), 150);
-    } else if (typeof App !== 'undefined' && App.navigate) {
-      App.navigate('gallery');
-    }
-  }
-});
-</script>
 </body>
 </html>
