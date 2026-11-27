@@ -667,6 +667,38 @@ html, body { min-height: 100dvh; }
     #mahaFixedVideoPortal input[type="range"] {
       touch-action: pan-x !important;
     }
+    #mahaFixedVideoPortal .sticky-preview-stage {
+      position: relative !important;
+      top: auto !important;
+      max-height: none !important;
+      min-height: 0 !important;
+      border: none !important;
+      border-bottom: 1.5px solid rgba(129, 140, 248, 0.45) !important;
+      border-radius: 0 0 18px 18px !important;
+      background: #07080d !important;
+      padding: 8px 10px !important;
+      margin: 0 !important;
+    }
+    #mahaFixedVideoPortal .sticky-preview-stage .min-h-\[340px\],
+    #mahaFixedVideoPortal .sticky-preview-stage .min-h-\[360px\],
+    #mahaFixedVideoPortal .sticky-preview-stage .min-h-\[260px\] {
+      min-height: 140px !important;
+      max-height: 27dvh !important;
+    }
+    #mahaFixedVideoPortal .sticky-preview-stage canvas,
+    #mahaFixedVideoPortal .sticky-preview-stage img:not(.pose-ref-thumb) {
+      max-height: 25dvh !important;
+      width: auto !important;
+      max-width: 100% !important;
+    }
+    body.photo-fixed-mode header.lg\:hidden {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 35 !important;
+      background: #090b14 !important;
+    }
     #mahaFixedVideoPortal .video-preview-pinned {
       position: relative !important;
       top: auto !important;
@@ -7629,6 +7661,7 @@ const StudioViews = (() => {
     { id: 'bg-remover', title: 'BACKGROUND REMOVER', desc: 'Remove background and create cutouts', emoji: '✂️', cat: 'photo', bg: 'linear-gradient(140deg, #059669 0%, #10b981 52%, #2dd4bf 100%)' },
     { id: 'bg-generator', title: 'BACKGROUND STUDIO', desc: 'Create and apply creative backdrops', emoji: '🌄', cat: 'photo', bg: 'linear-gradient(140deg, #0284c7 0%, #2563eb 52%, #60a5fa 100%)' },
     { id: 'enhance', title: 'IMAGE ENHANCER', desc: 'Enhance, sharpen, denoise and prompt tools', emoji: '✨', cat: 'ai', bg: 'linear-gradient(140deg, #d97706 0%, #f59e0b 52%, #fb923c 100%)' },
+    { id: 'photo-to-pdf', title: 'PHOTO TO PDF', desc: 'Unlimited photos to PDF, paper size, grid & HD quality', emoji: '📄', cat: 'tools', bg: 'linear-gradient(140deg, #b91c1c 0%, #ef4444 50%, #f59e0b 100%)' },
     { id: 'pro-tools', title: 'PRO+ CREATIVE TOOLS', desc: 'Collage, batch tools and passport sheets', emoji: '🧰', cat: 'tools', bg: 'linear-gradient(140deg, #047857 0%, #10b981 52%, #34d399 100%)' },
     { id: 'video-maker', title: 'VIDEO MAKER', desc: 'Create videos from photos, clips and music', emoji: '🎞️', cat: 'video', bg: 'linear-gradient(140deg, #dc2626 0%, #ea580c 52%, #f97316 100%)' },
     { id: 'video-maker', title: 'VIDEO TEMPLATES', desc: 'Create custom multi-clip templates, AI FX & 1-tap reels', emoji: '🧩', cat: 'video', bg: 'linear-gradient(140deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%)', key: 'video-templates' },
@@ -8334,7 +8367,7 @@ const StudioViews = (() => {
           </div>
           <div class="flex flex-wrap gap-2">
             <button data-pick-source="photo-editor" data-pick-input="edUploadInput" data-pick-kind="photo" class="btn-secondary px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 border-indigo-400/35 text-indigo-200">📷 Camera / 📂 Upload</button>
-            <input id="edUploadInput" type="file" accept="image/*" class="hidden"/>
+            <input id="edUploadInput" type="file" accept="image/*" multiple style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;"/>
             <button id="edAutoEnhance5xBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-amber-500 via-pink-500 to-indigo-500 text-white shadow-lg hover:opacity-95 active:scale-95 transition-all flex items-center gap-1.5" title="1-Click 5x Pixel Upscale + Auto Face Tuning + Tone Balance">✨ Auto Enhance 5x</button>
             <button id="edHighZoomBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-emerald-500 to-cyan-600 text-white shadow-lg hover:opacity-95 active:scale-95 transition-all flex items-center gap-1.5" title="Progressive Ultra-HD upscaling + Lossless PNG download for sharp high-zoom inspection">🔍 Make High Zoom</button>
             <button id="edBeforeAfterBtn" class="btn-secondary px-2.5 py-1.5 rounded-lg text-xs text-cyan-300 border-cyan-500/30" title="Press & hold to view original photo">👁 Hold Before/After</button>
@@ -8820,6 +8853,7 @@ const StudioViews = (() => {
     const selClip = vs.clips.find((c) => c.id === vs.selectedClipId) || vs.clips[0];
     return `
       <div class="video-split-shell lg:space-y-4">
+        <input id="vidImportInput" type="file" accept="video/*,image/*" multiple style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;"/>
         <div class="hidden lg:flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-xl font-bold">${isCinematicMode ? 'AI Cinematic Video Studio' : 'Professional Multi-Clip Video Editor'}</h2>
@@ -8827,7 +8861,6 @@ const StudioViews = (() => {
           </div>
           <div class="flex flex-wrap gap-2">
             <button data-pick-source="video-editor" data-pick-input="vidImportInput" data-pick-kind="video" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold">📷 Camera / 📂 Add Media</button>
-            <input id="vidImportInput" type="file" accept="video/*,image/*" multiple class="hidden"/>
             <label class="btn-secondary px-3 py-1.5 rounded-lg text-xs cursor-pointer">+ Audio Track<input id="vidAudioInput" type="file" accept="audio/*" class="hidden"/></label>
             <button id="vidSampleClipBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs text-indigo-300">+ Add Sample Clip</button>
             <button id="vidSaveProjBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs">Save Project</button>
@@ -9464,6 +9497,7 @@ const StudioViews = (() => {
 
     return `
       <div class="video-split-shell lg:space-y-4">
+        <input id="vmImportInput" type="file" accept="video/*,image/*" multiple style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;"/>
         <div class="hidden lg:flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-xl font-bold">Video Maker — Unlimited Photos, Videos, Songs &amp; FX</h2>
@@ -9471,7 +9505,6 @@ const StudioViews = (() => {
           </div>
           <div class="flex flex-wrap gap-2">
             <button data-pick-source="video-maker" data-pick-input="vmImportInput" data-pick-kind="video" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold">📷 Camera / 📂 Add Media</button>
-            <input id="vmImportInput" type="file" accept="video/*,image/*" multiple class="hidden"/>
             <button id="vmOpenGalPickerBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs text-indigo-300 border-indigo-400/30">+ From My Gallery (${state.media.length})</button>
             <label class="btn-secondary px-3 py-1.5 rounded-lg text-xs cursor-pointer text-emerald-300">🎵 Add Song<input id="vmSongInput" type="file" accept="audio/*" class="hidden"/></label>
           </div>
@@ -10741,6 +10774,7 @@ const App = (() => {
       ['bg-remover', 'BG Remover', 'eraser'],
       ['bg-generator', 'BG Generator', 'image'],
       ['enhance', 'Enhance & Prompt', 'zap'],
+      ['photo-to-pdf', 'Photo to PDF (Unlimited)', 'file-text'],
       ['pro-tools', 'Pro+ Free Tools', 'layers'],
       ['video-maker', 'Video Maker', 'clapperboard'],
       ['ai-movie-studio', 'AI Photo & Video Gen', 'sparkles'],
@@ -10792,6 +10826,7 @@ const App = (() => {
       case 'dress-changer': main.innerHTML = StudioViews.renderDressChanger(state); break;
       case 'hairstyle': main.innerHTML = StudioViews.renderHairstyle(state); break;
       case 'enhance': main.innerHTML = StudioViews.renderEnhanceAndPrompt(state); break;
+      case 'photo-to-pdf': main.innerHTML = '<div id="photoToPdfRoot"></div>'; break;
       case 'pro-tools': main.innerHTML = StudioViews.renderProTools(state); break;
       case 'video-maker': main.innerHTML = StudioViews.renderVideoMaker(state); break;
       case 'photo-frame': main.innerHTML = StudioViews.renderPhotoFrame(state); break;
@@ -10974,9 +11009,15 @@ const App = (() => {
           navigate('photoshoot');
         };
         document.getElementById('spUsePhoneBtn').onclick = () => {
-          close();
           const inp = document.getElementById(inputId);
-          if (inp) inp.click();
+          if (inp) {
+            inp.classList.remove('hidden');
+            inp.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;';
+            inp.setAttribute('multiple', 'multiple');
+            inp.value = '';
+            inp.click();
+          }
+          close();
         };
         document.getElementById('spUseAppGalBtn').onclick = () => {
           close();
@@ -17712,12 +17753,48 @@ window.MahaProFullCamera = (() => {
     };
     window.addEventListener('deviceorientation', orientHandler);
 
+    const oldErr = document.getElementById('mfcErrorOverlayBox');
+    if (oldErr) oldErr.remove();
     try {
       await startMainCamera();
       startDetectLoop();
       startLiveFxLoop();
     } catch (err) {
-      showQuietNote('Camera permission denied: ' + (err.message || err));
+      const ov = document.getElementById('mahaFullCamOverlay');
+      if (ov) {
+        const box = document.createElement('div');
+        box.id = 'mfcErrorOverlayBox';
+        box.style.cssText = 'position:absolute;inset:0;z-index:60;background:rgba(7,8,13,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;gap:12px;';
+        box.innerHTML = `
+          <div style="font-size:38px;">📷</div>
+          <div style="font-size:16px;font-weight:800;color:#fff;">Camera Access Needed</div>
+          <div style="font-size:12px;color:#cbd5e1;max-width:300px;line-height:1.5;">${(err && err.message) || 'Camera permission blocked or busy.'}<br/>Chrome address bar mein Lock icon → Camera → Allow karein, ya neeche Native Camera use karein.</div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:6px;">
+            <button type="button" id="mfcRetryCamNowBtn" style="padding:10px 18px;border-radius:12px;background:#6366f1;color:#fff;font-size:12px;font-weight:800;border:none;">🔄 Retry Camera</button>
+            <label style="padding:10px 18px;border-radius:12px;background:#10b981;color:#052e16;font-size:12px;font-weight:800;cursor:pointer;">📷 Open Phone Camera<input id="mfcNativeFallbackInp" type="file" accept="image/*" capture="environment" style="position:fixed;left:-9999px;opacity:0;"/></label>
+            <button type="button" id="mfcErrCloseBtn" style="padding:10px 16px;border-radius:12px;background:rgba(255,255,255,0.12);color:#fff;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,0.2);">✕ Back</button>
+          </div>`;
+        ov.appendChild(box);
+        document.getElementById('mfcRetryCamNowBtn').onclick = () => {
+          box.remove();
+          startMainCamera().then(() => { startDetectLoop(); startLiveFxLoop(); }).catch((e2) => showQuietNote('Camera error: ' + (e2.message || e2)));
+        };
+        document.getElementById('mfcErrCloseBtn').onclick = () => close(true);
+        document.getElementById('mfcNativeFallbackInp').onchange = (ev) => {
+          const f = ev.target.files && ev.target.files[0];
+          if (!f) return;
+          const r = new FileReader();
+          r.onload = async () => {
+            if (typeof StudioStorage !== 'undefined' && StudioStorage.saveMedia) {
+              try { await StudioStorage.saveMedia({ name: f.name || `Camera_${Date.now()}.jpg`, type: 'photo', dataUrl: r.result, album: 'Pro Camera' }); } catch (_) {}
+            }
+            close(false);
+            if (typeof App !== 'undefined' && App.navigate) App.navigate('photo-editor');
+            if (typeof PhotoEngine !== 'undefined' && PhotoEngine.loadDataUrl) setTimeout(() => PhotoEngine.loadDataUrl(r.result, f.name), 150);
+          };
+          r.readAsDataURL(f);
+        };
+      }
     }
   }
 
@@ -18321,6 +18398,7 @@ window.MahaTouchTransform = (() => {
     { id: 'frame-generator', emoji: '🎨', title: 'Custom AI Frame Generator', sub: 'Design your own multi-photo frames' },
     { id: 'preset-library', emoji: '🎛️', title: 'Smart Preset Library', sub: '15 pro color grading categories' },
     { id: 'ai-movie-studio', emoji: '🎥', title: 'AI Photo & Video Generator', sub: '3D, Bollywood, Anime & AI movies' },
+    { id: 'photo-to-pdf', emoji: '📄', title: 'Photo to PDF (Unlimited)', sub: 'Unlimited photos, paper size, fit, grid & quality/enhance' },
     { id: 'pro-tools', emoji: '🧰', title: 'Pro+ Creative Tools', sub: 'Passport PDF, Collage & Batch tools' },
     { id: 'gallery', emoji: '🗂️', title: 'My Media Gallery', sub: 'Saved photos, videos & share hub' },
     { id: 'projects', emoji: '📁', title: 'My Projects', sub: 'Saved studio projects' },
@@ -20443,13 +20521,18 @@ window.MahaTouchTransform = (() => {
     if (!main) return;
     const portal = ensurePortal();
     const isMobile = window.innerWidth < 1024;
-    const isFixedMode = document.body.classList.contains('video-fixed-mode');
+    const isVideoMode = document.body.classList.contains('video-fixed-mode');
+    const photoPreviewInMain = main.querySelector('.sticky-preview-stage:not(.video-preview-pinned)');
+    const photoPreviewInPortal = portal.querySelector('.sticky-preview-stage:not(.video-preview-pinned)');
+    const isPhotoMode = !isVideoMode && !!(photoPreviewInMain || photoPreviewInPortal);
+    document.body.classList.toggle('photo-fixed-mode', isMobile && isPhotoMode);
+    const isFixedMode = isVideoMode || isPhotoMode;
     const header = document.querySelector('header.lg\\:hidden');
 
-    // If user left video route or switched to desktop, clear portal & restore padding
+    // If user left photo/video route or switched to desktop, clear portal & restore padding
     if (!isMobile || !isFixedMode) {
       if (portal.firstChild) {
-        const leftCol = main.querySelector('.video-left-col');
+        const leftCol = main.querySelector('.video-left-col') || main.querySelector('.grid');
         if (leftCol && isFixedMode) leftCol.prepend(portal.firstChild);
         else portal.innerHTML = '';
       }
@@ -20459,13 +20542,13 @@ window.MahaTouchTransform = (() => {
     }
 
     // Check if a fresh preview was rendered inside mainContent
-    const inMainPreview = main.querySelector('.video-preview-pinned');
+    const inMainPreview = main.querySelector('.video-preview-pinned') || main.querySelector('.sticky-preview-stage');
     if (inMainPreview && !inMainPreview.classList.contains('video-unpinned')) {
       portal.innerHTML = '';
       portal.appendChild(inMainPreview);
     }
 
-    const activePreview = portal.querySelector('.video-preview-pinned');
+    const activePreview = portal.querySelector('.video-preview-pinned, .sticky-preview-stage');
     if (activePreview && activePreview.classList.contains('video-unpinned')) {
       const leftCol = main.querySelector('.video-left-col');
       if (leftCol) leftCol.prepend(activePreview);
@@ -20517,6 +20600,481 @@ document.addEventListener('change', (e) => {
     e.target.value = '';
   }
 });
+</script>
+
+<script>
+/* ============================================================================
+   MAHA AI STUDIO — UNLIMITED PHOTO TO PDF STUDIO (100% OFFLINE MULTI-PAGE PDF)
+   Paper Size • Fit Mode • Photos/Page Grid • Quality (AI Enhance/High/Normal/Low)
+   ============================================================================ */
+(() => {
+  const p2pState = {
+    photos: [], // { id, name, dataUrl, img, rot: 0 }
+    paperSize: 'a4',      // a4, letter, legal, a5, auto
+    orientation: 'portrait', // portrait, landscape, auto
+    fitMode: 'fit',       // fit, fill, margin
+    perPage: 1,           // 1, 2, 4, 6, 9
+    quality: 'high',      // enhance, high, normal, low
+    filename: 'MahaAI_Photos_Document',
+    isBuilding: false,
+    progressText: ''
+  };
+
+  const PAPER_MM = {
+    a4: [210, 297],
+    letter: [215.9, 279.4],
+    legal: [215.9, 355.6],
+    a5: [148, 210]
+  };
+
+  function toast(msg, type = 'info') {
+    if (typeof window.showToast === 'function') window.showToast(msg, type);
+  }
+
+  function loadImageObj(src) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = src;
+    });
+  }
+
+  async function addFilesToPdf(fileList) {
+    const files = Array.from(fileList || []).filter((f) => f && f.type && f.type.startsWith('image/'));
+    if (!files.length) return;
+    let added = 0;
+    for (const f of files) {
+      const dataUrl = await new Promise((res) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result);
+        r.onerror = () => res(null);
+        r.readAsDataURL(f);
+      });
+      if (!dataUrl) continue;
+      const img = await loadImageObj(dataUrl);
+      if (!img) continue;
+      p2pState.photos.push({
+        id: 'p2p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        name: f.name || `Photo_${p2pState.photos.length + 1}.jpg`,
+        dataUrl,
+        img,
+        rot: 0
+      });
+      added++;
+    }
+    renderPhotoToPdf();
+    if (added) toast(`📄 Added ${added} photo(s) to PDF queue! Total: ${p2pState.photos.length}`, 'success');
+  }
+
+  /* Pure Offline Binary Multi-Page PDF 1.4 Builder (JPEG streams, handles unlimited pages!) */
+  function buildMultiPagePdfBlob(pageJpegs) {
+    // pageJpegs: [{ bytes: Uint8Array, wPx, hPx, wPt, hPt }]
+    const chunks = [];
+    const offsets = [0];
+    let pos = 0;
+    const enc = new TextEncoder();
+
+    function pushStr(s) {
+      const b = enc.encode(s);
+      chunks.push(b);
+      pos += b.length;
+    }
+    function pushBytes(b) {
+      chunks.push(b);
+      pos += b.length;
+    }
+
+    pushStr('%PDF-1.4\n%\xFF\xFF\xFF\xFF\n');
+
+    const totalPages = pageJpegs.length;
+    // Object IDs:
+    // 1 = Catalog, 2 = Pages
+    // For page i (0..N-1):
+    //   pageObj = 3 + i*3
+    //   imgObj  = 4 + i*3
+    //   cntObj  = 5 + i*3
+    const kidsRefs = pageJpegs.map((_, i) => `${3 + i * 3} 0 R`).join(' ');
+
+    offsets.push(pos);
+    pushStr(`1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n`);
+
+    offsets.push(pos);
+    pushStr(`2 0 obj\n<< /Type /Pages /Kids [${kidsRefs}] /Count ${totalPages} >>\nendobj\n`);
+
+    pageJpegs.forEach((pg, i) => {
+      const pageId = 3 + i * 3;
+      const imgId = 4 + i * 3;
+      const cntId = 5 + i * 3;
+      const wPt = pg.wPt.toFixed(2);
+      const hPt = pg.hPt.toFixed(2);
+
+      offsets.push(pos);
+      pushStr(`${pageId} 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${wPt} ${hPt}] /Resources << /XObject << /Im0 ${imgId} 0 R >> >> /Contents ${cntId} 0 R >>\nendobj\n`);
+
+      offsets.push(pos);
+      pushStr(`${imgId} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${pg.wPx} /Height ${pg.hPx} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${pg.bytes.length} >>\nstream\n`);
+      pushBytes(pg.bytes);
+      pushStr(`\nendstream\nendobj\n`);
+
+      const contentStr = `q\n${wPt} 0 0 ${hPt} 0 0 cm\n/Im0 Do\nQ\n`;
+      offsets.push(pos);
+      pushStr(`${cntId} 0 obj\n<< /Length ${contentStr.length} >>\nstream\n${contentStr}endstream\nendobj\n`);
+    });
+
+    const xrefPos = pos;
+    const objCount = offsets.length;
+    pushStr(`xref\n0 ${objCount}\n0000000000 65535 f \n`);
+    for (let i = 1; i < objCount; i++) {
+      pushStr(String(offsets[i]).padStart(10, '0') + ' 00000 n \n');
+    }
+    pushStr(`trailer\n<< /Size ${objCount} /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF`);
+
+    return new Blob(chunks, { type: 'application/pdf' });
+  }
+
+  function dataUrlToUint8(dataUrl) {
+    const b64 = dataUrl.split(',')[1];
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+
+  async function generatePdf(shareAfter = false) {
+    if (!p2pState.photos.length) {
+      toast('Pehle kam se kam 1 photo upload karein!', 'error');
+      return;
+    }
+    p2pState.isBuilding = true;
+    p2pState.progressText = 'Preparing pages...';
+    renderPhotoToPdf();
+
+    try {
+      const qMap = {
+        enhance: { dpiScale: 1.5, jpegQ: 0.94, filter: 'contrast(1.12) saturate(1.12) brightness(1.03)' },
+        high:    { dpiScale: 1.5, jpegQ: 0.94, filter: 'none' },
+        normal:  { dpiScale: 1.15, jpegQ: 0.82, filter: 'none' },
+        low:     { dpiScale: 0.8, jpegQ: 0.58, filter: 'none' }
+      };
+      const qCfg = qMap[p2pState.quality] || qMap.high;
+      const perPage = Number(p2pState.perPage || 1);
+      const gridDims = perPage === 2 ? [1, 2] : perPage === 4 ? [2, 2] : perPage === 6 ? [2, 3] : perPage === 9 ? [3, 3] : [1, 1];
+      const pagesOut = [];
+
+      for (let start = 0; start < p2pState.photos.length; start += perPage) {
+        const batch = p2pState.photos.slice(start, start + perPage);
+        p2pState.progressText = `Rendering PDF Page ${pagesOut.length + 1} of ${Math.ceil(p2pState.photos.length / perPage)}...`;
+        const progEl = document.getElementById('p2pProgText');
+        if (progEl) progEl.textContent = p2pState.progressText;
+
+        let wMm = 210, hMm = 297;
+        if (p2pState.paperSize === 'auto' && perPage === 1) {
+          const im = batch[0].img;
+          const rot90 = (batch[0].rot % 180) !== 0;
+          const iw = rot90 ? im.height : im.width;
+          const ih = rot90 ? im.width : im.height;
+          const aspect = iw / Math.max(1, ih);
+          wMm = 210;
+          hMm = Math.max(80, Math.min(450, 210 / aspect));
+        } else {
+          [wMm, hMm] = PAPER_MM[p2pState.paperSize] || PAPER_MM.a4;
+          let isLand = p2pState.orientation === 'landscape';
+          if (p2pState.orientation === 'auto' && batch[0]) {
+            const im = batch[0].img;
+            const rot90 = (batch[0].rot % 180) !== 0;
+            isLand = (rot90 ? im.height : im.width) > (rot90 ? im.width : im.height);
+          }
+          if (isLand) [wMm, hMm] = [hMm, wMm];
+        }
+
+        const wPt = (wMm / 25.4) * 72;
+        const hPt = (hMm / 25.4) * 72;
+        const pxPerMm = 4.2 * qCfg.dpiScale;
+        const cW = Math.round(wMm * pxPerMm);
+        const cH = Math.round(hMm * pxPerMm);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = cW;
+        canvas.height = cH;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, cW, cH);
+
+        const marginPx = p2pState.fitMode === 'fill' ? 0 : (p2pState.fitMode === 'margin' ? Math.round(12 * pxPerMm) : Math.round(5 * pxPerMm));
+        const gapPx = perPage > 1 ? Math.round(4 * pxPerMm) : 0;
+        const [cols, rows] = gridDims;
+        const cellW = (cW - marginPx * 2 - gapPx * (cols - 1)) / cols;
+        const cellH = (cH - marginPx * 2 - gapPx * (rows - 1)) / rows;
+
+        batch.forEach((item, idx) => {
+          const col = idx % cols;
+          const row = Math.floor(idx / cols);
+          const x = marginPx + col * (cellW + gapPx);
+          const y = marginPx + row * (cellH + gapPx);
+
+          const im = item.img;
+          const rotRad = (item.rot * Math.PI) / 180;
+          const rot90 = (item.rot % 180) !== 0;
+          const srcW = rot90 ? im.height : im.width;
+          const srcH = rot90 ? im.width : im.height;
+          const scale = p2pState.fitMode === 'fill'
+            ? Math.max(cellW / srcW, cellH / srcH)
+            : Math.min(cellW / srcW, cellH / srcH);
+          const drawW = im.width * scale;
+          const drawH = im.height * scale;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(x, y, cellW, cellH);
+          ctx.clip();
+          ctx.filter = qCfg.filter;
+          ctx.translate(x + cellW / 2, y + cellH / 2);
+          if (rotRad) ctx.rotate(rotRad);
+          ctx.drawImage(im, -drawW / 2, -drawH / 2, drawW, drawH);
+          ctx.restore();
+        });
+
+        const jpgUrl = canvas.toDataURL('image/jpeg', qCfg.jpegQ);
+        pagesOut.push({ bytes: dataUrlToUint8(jpgUrl), wPx: cW, hPx: cH, wPt, hPt });
+        await new Promise((r) => setTimeout(r, 15));
+      }
+
+      const pdfBlob = buildMultiPagePdfBlob(pagesOut);
+      const safeName = ((p2pState.filename || 'MahaAI_Photos').replace(/[^a-zA-Z0-9_\- ]/g, '').trim() || 'MahaAI_Photos') + '.pdf';
+
+      if (shareAfter && window.StudioShare) {
+        window.StudioShare.open({
+          title: safeName,
+          text: `📄 ${safeName} (${pagesOut.length} Pages • ${p2pState.photos.length} Photos) — Created with Maha AI STUDIO 👑`,
+          blob: pdfBlob,
+          fileName: safeName,
+          mediaType: 'app'
+        });
+      } else {
+        const url = URL.createObjectURL(pdfBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = safeName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+      }
+      toast(`✅ PDF Ready! ${pagesOut.length} page(s) (${(pdfBlob.size / 1024 / 1024).toFixed(2)} MB) downloaded!`, 'success');
+    } catch (err) {
+      toast('PDF error: ' + (err.message || err), 'error');
+    } finally {
+      p2pState.isBuilding = false;
+      p2pState.progressText = '';
+      renderPhotoToPdf();
+    }
+  }
+
+  function renderPhotoToPdf() {
+    const root = document.getElementById('photoToPdfRoot');
+    if (!root) return;
+    const estPages = Math.ceil(p2pState.photos.length / Number(p2pState.perPage || 1));
+
+    root.innerHTML = `
+      <div class="space-y-4">
+        <div class="royal-hero-card rounded-3xl p-4 sm:p-5 space-y-3">
+          <div class="relative flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-lg sm:text-xl font-black text-white">📄 Photo to PDF Studio (Unlimited Photos)</h2>
+              <p class="text-xs text-slate-300">Unlimited photos upload karein, Paper Size, Photo Fit, Photos Per Page &amp; Quality (AI Enhance / High / Normal / Low) set karke instant PDF download karein.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <label class="btn-primary px-3.5 py-2 rounded-xl text-xs font-extrabold cursor-pointer shadow-lg">
+                📂 Upload Unlimited Photos
+                <input id="p2pFileInput" type="file" accept="image/*" multiple style="position:fixed;left:-9999px;opacity:0;"/>
+              </label>
+              <button type="button" id="p2pImportGalBtn" class="btn-secondary px-3 py-2 rounded-xl text-xs font-bold text-amber-200 border-amber-400/35">🗂️ Import from My Gallery</button>
+              ${p2pState.photos.length ? `<button type="button" id="p2pClearBtn" class="px-3 py-2 rounded-xl text-xs font-bold bg-rose-500/20 border border-rose-400/40 text-rose-200">🗑 Clear (${p2pState.photos.length})</button>` : ''}
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+          <!-- Settings Panel -->
+          <div class="lg:col-span-5 studio-card rounded-2xl p-4 space-y-3 text-xs">
+            <h3 class="text-sm font-extrabold text-white">⚙️ PDF Page &amp; Quality Settings</h3>
+
+            <label class="block text-slate-300 font-semibold">PDF File Name
+              <input id="p2pFilenameInp" type="text" value="${p2pState.filename.replace(/"/g, '&quot;')}" class="mt-1 w-full bg-slate-950 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+            </label>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <label class="text-slate-300 font-semibold">Paper Size
+                <select id="p2pPaperSel" class="mt-1 w-full bg-slate-950 border border-white/15 rounded-xl px-2.5 py-2 text-white">
+                  <option value="a4" ${p2pState.paperSize==='a4'?'selected':''}>A4 (210×297 mm)</option>
+                  <option value="letter" ${p2pState.paperSize==='letter'?'selected':''}>Letter (8.5×11 in)</option>
+                  <option value="legal" ${p2pState.paperSize==='legal'?'selected':''}>Legal (8.5×14 in)</option>
+                  <option value="a5" ${p2pState.paperSize==='a5'?'selected':''}>A5 (148×210 mm)</option>
+                  <option value="auto" ${p2pState.paperSize==='auto'?'selected':''}>Auto Fit to Photo Size</option>
+                </select>
+              </label>
+              <label class="text-slate-300 font-semibold">Page Orientation
+                <select id="p2pOrientSel" class="mt-1 w-full bg-slate-950 border border-white/15 rounded-xl px-2.5 py-2 text-white">
+                  <option value="portrait" ${p2pState.orientation==='portrait'?'selected':''}>Portrait (Vertical)</option>
+                  <option value="landscape" ${p2pState.orientation==='landscape'?'selected':''}>Landscape (Horizontal)</option>
+                  <option value="auto" ${p2pState.orientation==='auto'?'selected':''}>Auto (Match Photo)</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <label class="text-slate-300 font-semibold">Photo Fit Mode
+                <select id="p2pFitSel" class="mt-1 w-full bg-slate-950 border border-white/15 rounded-xl px-2.5 py-2 text-white">
+                  <option value="fit" ${p2pState.fitMode==='fit'?'selected':''}>Fit to Page (No Crop)</option>
+                  <option value="fill" ${p2pState.fitMode==='fill'?'selected':''}>Fill Full Page (Edge-to-Edge)</option>
+                  <option value="margin" ${p2pState.fitMode==='margin'?'selected':''}>Paper Size + Margin Border</option>
+                </select>
+              </label>
+              <label class="text-slate-300 font-semibold">Photos Per Page
+                <select id="p2pPerPageSel" class="mt-1 w-full bg-slate-950 border border-white/15 rounded-xl px-2.5 py-2 text-white">
+                  <option value="1" ${Number(p2pState.perPage)===1?'selected':''}>1 Photo / Page</option>
+                  <option value="2" ${Number(p2pState.perPage)===2?'selected':''}>2 Photos / Page</option>
+                  <option value="4" ${Number(p2pState.perPage)===4?'selected':''}>4 Photos / Page (2×2)</option>
+                  <option value="6" ${Number(p2pState.perPage)===6?'selected':''}>6 Photos / Page (2×3)</option>
+                  <option value="9" ${Number(p2pState.perPage)===9?'selected':''}>9 Photos / Page (3×3)</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="block text-slate-300 font-semibold">Photo Quality &amp; Enhancement
+              <select id="p2pQualitySel" class="mt-1 w-full bg-slate-950 border border-amber-400/40 rounded-xl px-2.5 py-2 text-amber-200 font-bold">
+                <option value="enhance" ${p2pState.quality==='enhance'?'selected':''}>✨ AI Enhance (HD Sharp + Auto Contrast)</option>
+                <option value="high" ${p2pState.quality==='high'?'selected':''}>💎 High Quality (95% HD)</option>
+                <option value="normal" ${p2pState.quality==='normal'?'selected':''}>✅ Normal (82% Balanced)</option>
+                <option value="low" ${p2pState.quality==='low'?'selected':''}>🪶 Low / Small File Size (58% Compact)</option>
+              </select>
+            </label>
+
+            <div class="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-[11px]">
+              <span class="text-slate-300">Total Photos: <strong class="text-white">${p2pState.photos.length}</strong></span>
+              <span class="text-indigo-300 font-bold">Est. PDF Pages: ${estPages}</span>
+            </div>
+
+            <div id="p2pProgText" class="text-[11px] text-emerald-300 font-semibold ${p2pState.progressText ? '' : 'hidden'}">${p2pState.progressText}</div>
+
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button type="button" id="p2pDownloadBtn" ${p2pState.isBuilding ? 'disabled' : ''} class="btn-primary py-2.5 rounded-xl font-extrabold text-xs shadow-lg">⬇ Download PDF</button>
+              <button type="button" id="p2pShareBtn" ${p2pState.isBuilding ? 'disabled' : ''} class="py-2.5 rounded-xl font-extrabold text-xs bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/45 text-emerald-200">📤 Share PDF</button>
+            </div>
+          </div>
+
+          <!-- Uploaded Photos Queue -->
+          <div class="lg:col-span-7 studio-card rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-extrabold text-white">🖼️ Selected Photos (${p2pState.photos.length})</h3>
+              <span class="text-[11px] text-slate-400">Reorder, Rotate or Add More</span>
+            </div>
+            ${p2pState.photos.length === 0 ? `
+              <div class="py-12 text-center space-y-3 border border-dashed border-white/15 rounded-2xl">
+                <div class="text-4xl">📄</div>
+                <div class="text-sm font-bold text-white">No photos added yet</div>
+                <p class="text-xs text-slate-400 max-w-sm mx-auto">Tap <strong>Upload Unlimited Photos</strong> above to select multiple photos from your phone at once, or import from My Gallery.</p>
+              </div>
+            ` : `
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                ${p2pState.photos.map((p, idx) => `
+                  <div class="rounded-xl overflow-hidden bg-slate-950 border border-white/15 flex flex-col">
+                    <div class="aspect-[4/3] bg-black relative overflow-hidden flex items-center justify-center">
+                      <img src="${p.dataUrl}" alt="${p.name}" style="transform:rotate(${p.rot}deg);" class="max-w-full max-h-full object-contain transition-transform"/>
+                      <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold text-amber-300">#${idx + 1}</span>
+                    </div>
+                    <div class="p-2 flex items-center justify-between gap-1 text-[10px]">
+                      <div class="flex gap-1">
+                        <button type="button" data-p2p-up="${idx}" class="px-1.5 py-1 rounded bg-white/10 text-white" title="Move Up">↑</button>
+                        <button type="button" data-p2p-dn="${idx}" class="px-1.5 py-1 rounded bg-white/10 text-white" title="Move Down">↓</button>
+                        <button type="button" data-p2p-rot="${idx}" class="px-1.5 py-1 rounded bg-indigo-500/25 text-indigo-200" title="Rotate 90°">↻</button>
+                      </div>
+                      <button type="button" data-p2p-del="${idx}" class="px-1.5 py-1 rounded bg-rose-500/20 text-rose-300" title="Remove">✕</button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  const mo = new MutationObserver(() => {
+    const r = document.getElementById('photoToPdfRoot');
+    if (r && !r.dataset.mounted) {
+      r.dataset.mounted = '1';
+      renderPhotoToPdf();
+    }
+  });
+  mo.observe(document.body, { childList: true, subtree: true });
+
+  document.addEventListener('change', async (e) => {
+    const el = e.target;
+    if (!el) return;
+    if (el.id === 'p2pFileInput' && el.files && el.files.length) {
+      await addFilesToPdf(el.files);
+      el.value = '';
+    } else if (el.id === 'p2pPaperSel') { p2pState.paperSize = el.value; renderPhotoToPdf(); }
+    else if (el.id === 'p2pOrientSel') { p2pState.orientation = el.value; renderPhotoToPdf(); }
+    else if (el.id === 'p2pFitSel') { p2pState.fitMode = el.value; renderPhotoToPdf(); }
+    else if (el.id === 'p2pPerPageSel') { p2pState.perPage = Number(el.value); renderPhotoToPdf(); }
+    else if (el.id === 'p2pQualitySel') { p2pState.quality = el.value; renderPhotoToPdf(); }
+  });
+
+  document.addEventListener('input', (e) => {
+    if (e.target && e.target.id === 'p2pFilenameInp') p2pState.filename = e.target.value;
+  });
+
+  document.addEventListener('click', async (e) => {
+    const t = e.target;
+    if (t.closest('#p2pImportGalBtn') && typeof StudioStorage !== 'undefined' && StudioStorage.getAllMedia) {
+      const all = (await StudioStorage.getAllMedia()).filter((m) => m.type === 'photo');
+      if (!all.length) { toast('My Gallery mein koi photo nahi hai.', 'info'); return; }
+      let added = 0;
+      for (const m of all) {
+        const src = m.dataUrl || (m.blob ? URL.createObjectURL(m.blob) : '');
+        if (!src) continue;
+        const img = await loadImageObj(src);
+        if (!img) continue;
+        p2pState.photos.push({ id: 'p2p_g_' + m.id + '_' + Date.now(), name: m.name || 'GalleryPhoto.jpg', dataUrl: src, img, rot: 0 });
+        added++;
+      }
+      renderPhotoToPdf();
+      toast(`🗂️ Imported ${added} photo(s) from My Gallery!`, 'success');
+      return;
+    }
+    if (t.closest('#p2pClearBtn')) { p2pState.photos = []; renderPhotoToPdf(); return; }
+    if (t.closest('#p2pDownloadBtn')) { await generatePdf(false); return; }
+    if (t.closest('#p2pShareBtn')) { await generatePdf(true); return; }
+
+    const up = t.closest('[data-p2p-up]');
+    if (up) {
+      const i = Number(up.getAttribute('data-p2p-up'));
+      if (i > 0) { [p2pState.photos[i - 1], p2pState.photos[i]] = [p2pState.photos[i], p2pState.photos[i - 1]]; renderPhotoToPdf(); }
+      return;
+    }
+    const dn = t.closest('[data-p2p-dn]');
+    if (dn) {
+      const i = Number(dn.getAttribute('data-p2p-dn'));
+      if (i < p2pState.photos.length - 1) { [p2pState.photos[i + 1], p2pState.photos[i]] = [p2pState.photos[i], p2pState.photos[i + 1]]; renderPhotoToPdf(); }
+      return;
+    }
+    const rot = t.closest('[data-p2p-rot]');
+    if (rot) {
+      const i = Number(rot.getAttribute('data-p2p-rot'));
+      if (p2pState.photos[i]) { p2pState.photos[i].rot = (p2pState.photos[i].rot + 90) % 360; renderPhotoToPdf(); }
+      return;
+    }
+    const del = t.closest('[data-p2p-del]');
+    if (del) {
+      const i = Number(del.getAttribute('data-p2p-del'));
+      p2pState.photos.splice(i, 1);
+      renderPhotoToPdf();
+    }
+  });
+})();
 </script>
 </body>
 </html>
