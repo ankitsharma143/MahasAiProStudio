@@ -643,9 +643,43 @@ html, body { min-height: 100dvh; }
     }
 
   
-    /* === TRUE FIXED TOP VIDEO PREVIEW (WORKS ON ALL ANDROID WEBVIEWS & CANVAS) + AUTO-MEASURED SCROLL OFFSET === */
+    /* === TRUE FIXED TOP VIDEO PREVIEW PORTAL (DIRECT CHILD OF BODY — NEVER MOVES ON SCROLL OR PULL!) === */
+    html:has(body.video-fixed-mode),
+    body.video-fixed-mode {
+      overscroll-behavior-y: none !important;
+    }
     body.video-fixed-mode #mainContent {
       padding-bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px)) !important;
+      overscroll-behavior-y: contain !important;
+    }
+    #mahaFixedVideoPortal {
+      position: fixed !important;
+      top: 52px;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 32 !important;
+      background: #07080d !important;
+      pointer-events: auto;
+      touch-action: none;
+      overscroll-behavior: none;
+      transform: none !important;
+    }
+    #mahaFixedVideoPortal input[type="range"] {
+      touch-action: pan-x !important;
+    }
+    #mahaFixedVideoPortal .video-preview-pinned {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      width: 100% !important;
+      background: #07080d !important;
+      border: none !important;
+      border-bottom: 1.5px solid rgba(129, 140, 248, 0.48) !important;
+      border-radius: 0 0 18px 18px !important;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.96) !important;
+      padding: 8px 10px !important;
+      margin: 0 !important;
     }
     @media (max-width: 1023px) {
       body.video-fixed-mode header.lg\:hidden {
@@ -3935,21 +3969,30 @@ const CameraPoseController = (() => {
       '1080p': { width: { ideal: 1920 }, height: { ideal: 1080 } },
       '4K': { width: { ideal: 3840 }, height: { ideal: 2160 } }
     };
+    const altFacing = facingMode === 'user' ? 'environment' : 'user';
     const attempts = [
       { video: { facingMode: { ideal: facingMode }, ...(resMap[resolution] || resMap['1080p']) }, audio: false },
+      { video: { facingMode: { ideal: facingMode }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false },
       { video: { facingMode: { ideal: facingMode } }, audio: false },
+      { video: { facingMode: { ideal: altFacing } }, audio: false },
       { video: true, audio: false }
     ];
     let lastErr = null;
     for (const c of attempts) {
       try {
-        return await navigator.mediaDevices.getUserMedia(c);
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          return await navigator.mediaDevices.getUserMedia(c);
+        }
+        const legacyGum = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        if (legacyGum) {
+          return await new Promise((res, rej) => legacyGum.call(navigator, c, res, rej));
+        }
       } catch (err) {
         lastErr = err;
-        // Never retry permission denial or missing hardware
         if (err && (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError' || err.name === 'SecurityError' || err.name === 'NotFoundError')) {
           throw err;
         }
+        await new Promise((r) => setTimeout(r, 140));
       }
     }
     throw lastErr || new Error('Unable to acquire camera stream.');
@@ -3964,7 +4007,9 @@ const CameraPoseController = (() => {
       return { ok: false, code: env.code, title: env.title, message: env.message };
     }
 
+    const hadPrev = !!stream;
     stopCamera();
+    if (hadPrev) await new Promise((r) => setTimeout(r, 160));
     const reqId = ++initRequestId;
     isInitializing = true;
     if (statusEl) statusEl.textContent = 'Requesting camera access...';
@@ -7920,6 +7965,7 @@ const StudioViews = (() => {
               <p id="camOverlayMsg" class="text-xs text-slate-300 max-w-md leading-relaxed">Tap below to grant camera access. On Android Chrome, camera permissions require an HTTPS URL (or localhost) and direct user tap.</p>
               <div class="flex flex-wrap justify-center gap-2 pt-1">
                 <button id="camOverlayRetryBtn" class="btn-primary px-5 py-2.5 rounded-xl text-xs font-semibold">Start Camera / Allow Permission</button>
+                <label class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/45 text-emerald-200 cursor-pointer">📷 Native Phone Camera<input id="camNativeCaptureInput" type="file" accept="image/*" capture="environment" class="hidden"/></label>
                 <button data-nav="gallery" class="btn-secondary px-4 py-2.5 rounded-xl text-xs">Import from Phone Gallery</button>
               </div>
             </div>
@@ -8773,7 +8819,7 @@ const StudioViews = (() => {
     const vs = VideoStudioEngine.getState();
     const selClip = vs.clips.find((c) => c.id === vs.selectedClipId) || vs.clips[0];
     return `
-      <div class="video-split-shell lg:space-y-4 fade-in">
+      <div class="video-split-shell lg:space-y-4">
         <div class="hidden lg:flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-xl font-bold">${isCinematicMode ? 'AI Cinematic Video Studio' : 'Professional Multi-Clip Video Editor'}</h2>
@@ -9417,7 +9463,7 @@ const StudioViews = (() => {
     const canvasDims = ar === '9:16' ? [360, 640] : ar === '1:1' ? [540, 540] : ar === '4:5' ? [432, 540] : [720, 405];
 
     return `
-      <div class="video-split-shell lg:space-y-4 fade-in">
+      <div class="video-split-shell lg:space-y-4">
         <div class="hidden lg:flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-xl font-bold">Video Maker — Unlimited Photos, Videos, Songs &amp; FX</h2>
@@ -11077,10 +11123,16 @@ const App = (() => {
     };
 
     document.getElementById('camStartBtn').onclick = startCam;
-    if (state.cameraReturnRoute && !CameraPoseController.getState().cameraActive) {
-      setTimeout(() => { startCam(); }, 180);
+    if (!CameraPoseController.getState().cameraActive) {
+      setTimeout(() => { startCam(); }, 140);
     }
     if (ovBtn) ovBtn.onclick = startCam;
+    if (vid) {
+      vid.onclick = () => {
+        if (vid.srcObject && vid.paused) vid.play().catch(() => {});
+        else if (!CameraPoseController.getState().cameraActive) startCam();
+      };
+    }
 
     if (flipBtn) flipBtn.onclick = async () => {
       const cur = CameraPoseController.getState().facingMode;
@@ -16327,27 +16379,61 @@ window.MahaProFullCamera = (() => {
   }
 
   async function startMainCamera() {
+    const hadPrev = !!mainStream;
     stopMainStream();
     if (typeof CameraPoseController !== 'undefined' && CameraPoseController.stopCamera) {
       try { CameraPoseController.stopCamera(); } catch (_) {}
     }
-    // Request full native sensor aspect (4:3 wide sensor) without artificial portrait crop so objects appear at true natural distance!
+    if (hadPrev) await new Promise((r) => setTimeout(r, 180));
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error('Camera API unavailable. Please open over HTTPS (GitHub Pages) in Chrome/Safari.');
+    }
+
     const wIdeal = state.quality === '4K' ? 3840 : 1920;
     const hIdeal = state.quality === '4K' ? 2160 : 1440;
+    const altFacing = state.facing === 'user' ? 'environment' : 'user';
+    const attempts = [
+      { video: { facingMode: { ideal: state.facing }, width: { ideal: wIdeal }, height: { ideal: hIdeal } }, audio: false },
+      { video: { facingMode: { ideal: state.facing }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false },
+      { video: { facingMode: { ideal: state.facing } }, audio: false },
+      { video: { facingMode: { ideal: altFacing } }, audio: false },
+      { video: true, audio: false }
+    ];
 
-    try {
-      mainStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: state.facing }, width: { ideal: wIdeal }, height: { ideal: hIdeal }, frameRate: { ideal: state.fps, min: 24 } },
-        audio: true
-      });
-    } catch (_) {
-      mainStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: state.facing } }, audio: false });
+    let lastErr = null;
+    mainStream = null;
+    for (const c of attempts) {
+      try {
+        mainStream = await navigator.mediaDevices.getUserMedia(c);
+        break;
+      } catch (e) {
+        lastErr = e;
+        if (e && (e.name === 'NotAllowedError' || e.name === 'PermissionDeniedError' || e.name === 'SecurityError')) {
+          throw e;
+        }
+        await new Promise((r) => setTimeout(r, 150));
+      }
     }
+    if (!mainStream) throw (lastErr || new Error('Could not open camera stream.'));
+
     mainStream.getAudioTracks().forEach((tr) => { tr.enabled = state.mic; });
     const vid = document.getElementById('mahaCamMainVideo');
-    vid.classList.toggle('fill-screen', state.viewFill);
-    vid.srcObject = mainStream;
-    await new Promise((res) => { if (vid.readyState >= 1) res(); else vid.onloadedmetadata = () => res(); });
+    if (vid) {
+      vid.classList.toggle('fill-screen', state.viewFill);
+      vid.muted = true;
+      vid.playsInline = true;
+      vid.setAttribute('playsinline', '');
+      vid.setAttribute('webkit-playsinline', 'true');
+      vid.setAttribute('autoplay', '');
+      vid.srcObject = mainStream;
+      await new Promise((res) => {
+        if (vid.readyState >= 1) { res(); return; }
+        const done = () => { vid.removeEventListener('loadedmetadata', done); res(); };
+        vid.addEventListener('loadedmetadata', done, { once: true });
+        setTimeout(done, 1800);
+      });
+      try { await vid.play(); } catch (_) {}
+    }
 
     // Force hardware zoom to widest optical minimum on startup so objects are never zoomed-in too close
     const track = mainStream.getVideoTracks()[0];
@@ -20337,30 +20423,100 @@ window.MahaTouchTransform = (() => {
 
 <script>
 (() => {
-  function syncFixedVideoOffset() {
+  let portalEl = null;
+
+  function ensurePortal() {
+    if (!portalEl) {
+      portalEl = document.getElementById('mahaFixedVideoPortal');
+      if (!portalEl) {
+        portalEl = document.createElement('div');
+        portalEl.id = 'mahaFixedVideoPortal';
+        portalEl.style.display = 'none';
+        document.body.appendChild(portalEl);
+      }
+    }
+    return portalEl;
+  }
+
+  function syncFixedVideoPortal() {
     const main = document.getElementById('mainContent');
     if (!main) return;
+    const portal = ensurePortal();
     const isMobile = window.innerWidth < 1024;
     const isFixedMode = document.body.classList.contains('video-fixed-mode');
     const header = document.querySelector('header.lg\\:hidden');
-    const preview = document.querySelector('body.video-fixed-mode .video-preview-pinned:not(.video-unpinned)');
-    if (isMobile && isFixedMode && preview) {
-      const hH = header ? Math.ceil(header.getBoundingClientRect().height) : 54;
-      preview.style.setProperty('top', hH + 'px', 'important');
-      const pH = Math.ceil(preview.getBoundingClientRect().height);
-      main.style.paddingTop = (hH + pH + 10) + 'px';
+
+    // If user left video route or switched to desktop, clear portal & restore padding
+    if (!isMobile || !isFixedMode) {
+      if (portal.firstChild) {
+        const leftCol = main.querySelector('.video-left-col');
+        if (leftCol && isFixedMode) leftCol.prepend(portal.firstChild);
+        else portal.innerHTML = '';
+      }
+      portal.style.display = 'none';
+      main.style.paddingTop = '';
+      return;
+    }
+
+    // Check if a fresh preview was rendered inside mainContent
+    const inMainPreview = main.querySelector('.video-preview-pinned');
+    if (inMainPreview && !inMainPreview.classList.contains('video-unpinned')) {
+      portal.innerHTML = '';
+      portal.appendChild(inMainPreview);
+    }
+
+    const activePreview = portal.querySelector('.video-preview-pinned');
+    if (activePreview && activePreview.classList.contains('video-unpinned')) {
+      const leftCol = main.querySelector('.video-left-col');
+      if (leftCol) leftCol.prepend(activePreview);
+      portal.style.display = 'none';
+      const hH = header ? Math.ceil(header.getBoundingClientRect().height) : 52;
+      main.style.paddingTop = (hH + 8) + 'px';
+      return;
+    }
+
+    if (activePreview) {
+      const hH = header ? Math.ceil(header.getBoundingClientRect().height) : 52;
+      portal.style.top = hH + 'px';
+      portal.style.display = 'block';
+      const pH = Math.ceil(portal.getBoundingClientRect().height);
+      main.style.paddingTop = (hH + pH + 8) + 'px';
     } else {
+      portal.style.display = 'none';
       main.style.paddingTop = '';
     }
   }
-  window.addEventListener('resize', syncFixedVideoOffset);
-  window.addEventListener('orientationchange', () => setTimeout(syncFixedVideoOffset, 150));
-  document.addEventListener('click', () => setTimeout(syncFixedVideoOffset, 60));
-  const obs = new MutationObserver(() => requestAnimationFrame(syncFixedVideoOffset));
+
+  window.addEventListener('resize', syncFixedVideoPortal);
+  window.addEventListener('orientationchange', () => setTimeout(syncFixedVideoPortal, 150));
+  document.addEventListener('click', () => setTimeout(syncFixedVideoPortal, 50));
+  const obs = new MutationObserver(() => requestAnimationFrame(syncFixedVideoPortal));
   obs.observe(document.body, { attributes: true, attributeFilter: ['class'], childList: true, subtree: true });
-  setInterval(syncFixedVideoOffset, 600);
-  syncFixedVideoOffset();
+  setInterval(syncFixedVideoPortal, 500);
+  syncFixedVideoPortal();
 })();
+</script>
+
+<script>
+document.addEventListener('change', (e) => {
+  if (e.target && e.target.id === 'camNativeCaptureInput' && e.target.files && e.target.files[0]) {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const dataUrl = reader.result;
+      if (typeof StudioStorage !== 'undefined' && StudioStorage.saveMedia) {
+        try { await StudioStorage.saveMedia({ name: file.name || `Camera_${Date.now()}.jpg`, type: 'photo', dataUrl, album: 'Pro Camera' }); } catch (_) {}
+      }
+      if (typeof PhotoEngine !== 'undefined' && PhotoEngine.loadDataUrl) {
+        if (typeof App !== 'undefined' && App.navigate) App.navigate('photo-editor');
+        setTimeout(() => PhotoEngine.loadDataUrl(dataUrl, file.name || 'CameraPhoto.jpg'), 150);
+      }
+      if (typeof window.showToast === 'function') window.showToast('📷 Photo captured & saved to Gallery!', 'success');
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  }
+});
 </script>
 </body>
 </html>
