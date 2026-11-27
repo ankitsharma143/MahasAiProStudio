@@ -695,6 +695,103 @@ html, body { min-height: 100dvh; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+
+    /* === MAHA PRO UPGRADE: SHARE STUDIO, COMMAND PALETTE & COMPARE SLIDER === */
+    .share-platform-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 6px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f8fafc;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+    .share-platform-btn:hover {
+      background: rgba(99, 102, 241, 0.18);
+      border-color: rgba(129, 140, 248, 0.55);
+      transform: translateY(-1px);
+    }
+    .share-platform-btn:active { transform: scale(0.96); }
+    .share-icon-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    #edCompareWrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 14px;
+      user-select: none;
+      touch-action: none;
+    }
+    #edCompareOverlay {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    #edCompareDivider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.85);
+      pointer-events: none;
+      z-index: 6;
+    }
+    #edCompareHandle {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      border: 2px solid #ffffff;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+      pointer-events: none;
+      z-index: 7;
+    }
+    .cmd-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid transparent;
+      color: #e2e8f0;
+      font-size: 12px;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.14s ease, border-color 0.14s ease;
+    }
+    .cmd-item:hover, .cmd-item.cmd-active {
+      background: rgba(99, 102, 241, 0.22);
+      border-color: rgba(129, 140, 248, 0.45);
+      color: #ffffff;
+    }
   </style>
 </head>
 <body class="bg-[#07080d] text-slate-100 min-h-screen">
@@ -717,6 +814,12 @@ html, body { min-height: 100dvh; }
       </div>
     </div>
     <div class="flex items-center gap-1.5">
+      <button type="button" id="mobileQuickSearchBtn" class="btn-secondary px-2 py-1.5 rounded-lg text-xs flex items-center justify-center" title="Quick Search Modules">
+        <i data-lucide="search" class="w-3.5 h-3.5 text-indigo-300"></i>
+      </button>
+      <button type="button" id="mobileShareAppBtn" class="btn-secondary px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-emerald-300 border-emerald-500/35 flex items-center gap-1" title="Share Photo or Studio">
+        <i data-lucide="share-2" class="w-3.5 h-3.5"></i><span>Share</span>
+      </button>
       <button type="button" id="mobilePwaInstallBtn" class="btn-primary px-2.5 py-1.5 rounded-lg text-[11px] font-bold flex items-center gap-1 shadow-md">
         <span>⬇</span><span>Install App</span>
       </button>
@@ -751,6 +854,17 @@ html, body { min-height: 100dvh; }
       </div>
       <nav id="sidebarNav" class="space-y-1 flex-1"></nav>
       <div class="mt-4 pt-3 border-t border-white/10 space-y-2">
+        <div class="grid grid-cols-2 gap-1.5">
+          <button type="button" id="desktopShareBtn" class="btn-primary py-1.5 px-2 rounded-lg text-[11px] font-semibold flex items-center justify-center gap-1.5">
+            <i data-lucide="share-2" class="w-3.5 h-3.5"></i><span>Share</span>
+          </button>
+          <button type="button" id="desktopQuickSearchBtn" class="btn-secondary py-1.5 px-2 rounded-lg text-[11px] flex items-center justify-center gap-1" title="Quick Search (Ctrl+K)">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-indigo-300"></i><span>Ctrl+K</span>
+          </button>
+        </div>
+        <button type="button" id="desktopShortcutsBtn" class="btn-secondary w-full py-1.5 px-2.5 rounded-lg text-[11px] flex items-center justify-center gap-1.5 text-slate-300">
+          <i data-lucide="keyboard" class="w-3.5 h-3.5 text-amber-300"></i><span>Pro Shortcuts (?)</span>
+        </button>
         <button id="pwaInstallBtn" class="btn-secondary w-full py-1.5 px-2.5 rounded-lg text-[11px] flex items-center justify-center gap-1.5">
           <i data-lucide="smartphone" class="w-3.5 h-3.5 text-indigo-400"></i><span>Install Android / Desktop App</span>
         </button>
@@ -805,7 +919,12 @@ html, body { min-height: 100dvh; }
         <span>Add Studio Watermark</span>
         <input id="expWatermarkToggle" type="checkbox" class="accent-indigo-500 w-4 h-4"/>
       </label>
-      <button id="expConfirmBtn" class="btn-primary w-full py-2.5 rounded-xl font-semibold">Download Export</button>
+      <div class="grid grid-cols-2 gap-2">
+        <button type="button" id="expShareBtn" class="btn-secondary py-2.5 rounded-xl font-semibold text-emerald-300 border-emerald-500/35 flex items-center justify-center gap-1.5">
+          <i data-lucide="share-2" class="w-3.5 h-3.5"></i><span>Share Now</span>
+        </button>
+        <button id="expConfirmBtn" class="btn-primary py-2.5 rounded-xl font-semibold">Download Export</button>
+      </div>
     </div>
   </div>
 
@@ -833,6 +952,9 @@ html, body { min-height: 100dvh; }
           <div id="mpMeta" class="text-[11px] text-slate-400"></div>
         </div>
         <div class="flex items-center gap-2 shrink-0">
+          <button type="button" id="mpShareBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs text-emerald-300 border-emerald-500/35 font-semibold flex items-center gap-1">
+            <i data-lucide="share-2" class="w-3.5 h-3.5"></i><span>Share</span>
+          </button>
           <button id="mpDownloadBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs">Download</button>
           <button id="mpEditBtn" class="btn-primary px-3 py-1.5 rounded-lg text-xs hidden">Open in Editor</button>
           <button id="mpCloseBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs">✕ Close</button>
@@ -980,6 +1102,127 @@ html, body { min-height: 100dvh; }
       </div>
     </div>
     <span class="text-[10px] font-semibold text-cyan-300 shrink-0">↗</span>
+  </div>
+
+
+  <!-- Universal Pro Share Studio Modal (Native Share API + WhatsApp / Telegram / X / Copy / Branded Share Card) -->
+  <div id="universalShareModal" class="hidden fixed inset-0 z-[80] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="studio-card studio-modal-card rounded-3xl p-5 w-full max-w-md space-y-4 text-xs border border-emerald-400/30 shadow-2xl">
+      <div class="flex items-center justify-between gap-2">
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-300 inline-flex items-center justify-center">📤</span>
+            <span>Share Studio</span>
+          </h3>
+          <p id="usmSubtitle" class="text-[11px] text-slate-400 mt-0.5">Apni edited photo, video ya Maha AI STUDIO ko kahin bhi share karein.</p>
+        </div>
+        <button type="button" id="usmCloseBtn" class="btn-secondary px-2.5 py-1 rounded-lg text-xs">✕</button>
+      </div>
+
+      <!-- Mode Switcher (Current Media vs App Studio) -->
+      <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-900/90 border border-white/10">
+        <button type="button" id="usmModeMediaBtn" class="py-1.5 rounded-lg font-semibold text-white bg-indigo-600 transition">🖼️ Current Creation</button>
+        <button type="button" id="usmModeAppBtn" class="py-1.5 rounded-lg font-semibold text-slate-300 hover:text-white transition">🚀 Share Studio App</button>
+      </div>
+
+      <!-- Live Preview Card -->
+      <div class="flex items-center gap-3 p-2.5 rounded-2xl bg-slate-900/80 border border-white/10">
+        <div id="usmThumbWrap" class="w-16 h-16 rounded-xl bg-black/70 border border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
+          <img id="usmThumbImg" src="" alt="Share preview" class="w-full h-full object-cover hidden"/>
+          <span id="usmThumbFallback" class="text-2xl">✨</span>
+        </div>
+        <div class="min-w-0 flex-1 space-y-1">
+          <div id="usmTitle" class="font-bold text-white text-xs truncate">Maha AI STUDIO Creation</div>
+          <div id="usmMeta" class="text-[10px] text-slate-400 truncate">Ready for HD Sharing</div>
+          <div class="flex items-center gap-1.5">
+            <span id="usmNativeBadge" class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[9px] font-bold">Instant Share Ready</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editable Caption / Message -->
+      <div class="space-y-1">
+        <div class="flex items-center justify-between text-[11px] text-slate-300">
+          <label for="usmCaption" class="font-semibold">Caption / Message</label>
+          <button type="button" id="usmCopyCaptionBtn" class="text-indigo-300 hover:text-indigo-200 font-semibold">📋 Copy Text</button>
+        </div>
+        <textarea id="usmCaption" rows="2" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-400 resize-none"></textarea>
+      </div>
+
+      <!-- Primary Native Share Button -->
+      <button type="button" id="usmNativeShareBtn" class="btn-primary w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg">
+        <span>🚀</span><span id="usmNativeShareLabel">Native Share (WhatsApp / Instagram / System)</span>
+      </button>
+
+      <!-- Direct Platform Share Grid -->
+      <div class="grid grid-cols-4 gap-2">
+        <button type="button" data-usm-platform="whatsapp" class="share-platform-btn">
+          <span class="share-icon-badge bg-emerald-500/20 text-emerald-300">💬</span>
+          <span>WhatsApp</span>
+        </button>
+        <button type="button" data-usm-platform="telegram" class="share-platform-btn">
+          <span class="share-icon-badge bg-sky-500/20 text-sky-300">✈️</span>
+          <span>Telegram</span>
+        </button>
+        <button type="button" data-usm-platform="x" class="share-platform-btn">
+          <span class="share-icon-badge bg-slate-500/25 text-white">𝕏</span>
+          <span>X / Post</span>
+        </button>
+        <button type="button" data-usm-platform="email" class="share-platform-btn">
+          <span class="share-icon-badge bg-amber-500/20 text-amber-300">✉️</span>
+          <span>Email</span>
+        </button>
+      </div>
+
+      <!-- Pro Share Utilities: Copy Image, Branded Status Card, Download -->
+      <div class="grid grid-cols-3 gap-2 pt-1 border-t border-white/10">
+        <button type="button" id="usmCopyImageBtn" class="btn-secondary py-2 px-2 rounded-xl text-[11px] font-semibold flex items-center justify-center gap-1">
+          <span>🖼️</span><span>Copy Img</span>
+        </button>
+        <button type="button" id="usmStoryCardBtn" class="btn-secondary py-2 px-2 rounded-xl text-[11px] font-semibold text-fuchsia-300 border-fuchsia-500/30 flex items-center justify-center gap-1" title="Generate 1080×1080 Branded Status Card">
+          <span>✨</span><span>Story Card</span>
+        </button>
+        <button type="button" id="usmDownloadBtn" class="btn-secondary py-2 px-2 rounded-xl text-[11px] font-semibold text-cyan-300 border-cyan-500/30 flex items-center justify-center gap-1">
+          <span>⬇</span><span>Save File</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Command Palette & Quick Module Search Modal (Ctrl+K) -->
+  <div id="commandPaletteModal" class="hidden fixed inset-0 z-[82] bg-black/80 backdrop-blur-md flex items-start justify-center p-4 pt-[10vh]">
+    <div class="studio-card studio-modal-card rounded-3xl p-4 w-full max-w-lg space-y-3 text-xs border border-indigo-400/35 shadow-2xl">
+      <div class="flex items-center gap-2 bg-slate-900 border border-white/15 rounded-xl px-3 py-2">
+        <i data-lucide="search" class="w-4 h-4 text-indigo-400 shrink-0"></i>
+        <input id="cmdSearchInput" type="text" placeholder="Search 24 modules & actions (e.g. Share, Camera, BG Remover, Video, Frame)..." class="w-full bg-transparent text-white text-xs focus:outline-none"/>
+        <button type="button" id="cmdCloseBtn" class="text-slate-400 hover:text-white text-xs px-1.5 py-0.5 rounded bg-white/10">ESC</button>
+      </div>
+      <div id="cmdResultsList" class="max-h-[55vh] overflow-y-auto space-y-1 pr-1"></div>
+      <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-white/10">
+        <span>↑↓ Navigate • Enter Open</span>
+        <span>Shortcut: Ctrl+K / ⌘K</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pro Keyboard Shortcuts Guide Modal (?) -->
+  <div id="shortcutsModal" class="hidden fixed inset-0 z-[82] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="studio-card studio-modal-card rounded-3xl p-5 w-full max-w-md space-y-4 text-xs border border-amber-400/30 shadow-2xl">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">⌨️ Pro Keyboard Shortcuts</h3>
+        <button type="button" id="scCloseBtn" class="btn-secondary px-2.5 py-1 rounded-lg text-xs">✕</button>
+      </div>
+      <div class="space-y-2 text-slate-200">
+        <div class="flex items-center justify-between p-2 rounded-xl bg-white/5"><span>Quick Module Search</span><kbd class="px-2 py-0.5 rounded bg-slate-800 border border-white/15 font-mono text-[10px]">Ctrl + K</kbd></div>
+        <div class="flex items-center justify-between p-2 rounded-xl bg-white/5"><span>Open Universal Share Studio</span><kbd class="px-2 py-0.5 rounded bg-slate-800 border border-white/15 font-mono text-[10px]">Ctrl + Shift + S</kbd></div>
+        <div class="flex items-center justify-between p-2 rounded-xl bg-white/5"><span>Quick Save Active Photo to Gallery</span><kbd class="px-2 py-0.5 rounded bg-slate-800 border border-white/15 font-mono text-[10px]">Ctrl + S</kbd></div>
+        <div class="flex items-center justify-between p-2 rounded-xl bg-white/5"><span>Undo / Redo (Photo Editor)</span><kbd class="px-2 py-0.5 rounded bg-slate-800 border border-white/15 font-mono text-[10px]">Ctrl + Z / Y</kbd></div>
+        <div class="flex items-center justify-between p-2 rounded-xl bg-white/5"><span>Toggle Before / After Compare</span><kbd class="px-2 py-0.5 rounded bg-slate-800 border border-white/15 font-mono text-[10px]">C</kbd></div>
+        <div class="flex items-center justify-between p-2 rounded-xl bg-white/5"><span>Close Open Modal / Go Back</span><kbd class="px-2 py-0.5 rounded bg-slate-800 border border-white/15 font-mono text-[10px]">Esc</kbd></div>
+        <div class="flex items-center justify-between p-2 rounded-xl bg-white/5"><span>Show Shortcuts Guide</span><kbd class="px-2 py-0.5 rounded bg-slate-800 border border-white/15 font-mono text-[10px]">?</kbd></div>
+      </div>
+      <button type="button" id="scDoneBtn" class="btn-primary w-full py-2 rounded-xl font-semibold">Got It</button>
+    </div>
   </div>
 
   <script>
@@ -6940,6 +7183,8 @@ const StudioViews = (() => {
               <button data-nav="camera" class="btn-primary px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5"><i data-lucide="camera" class="w-4 h-4"></i>Pro Camera</button>
               <button data-nav="photo-editor" class="btn-secondary px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 text-cyan-300"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i>Image Editor</button>
               <button data-nav="video-maker" class="btn-secondary px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 text-rose-300"><i data-lucide="clapperboard" class="w-4 h-4"></i>Video Maker</button>
+              <button type="button" id="dashHeroShareBtn" class="btn-secondary px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 text-emerald-300 border-emerald-500/40"><i data-lucide="share-2" class="w-4 h-4"></i>Share Studio</button>
+              <button type="button" id="dashHeroSearchBtn" class="btn-secondary px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 text-indigo-300 border-indigo-500/40" title="Quick Module Search (Ctrl+K)"><i data-lucide="search" class="w-4 h-4"></i>Search</button>
             </div>
           </div>
           <div class="relative grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4 pt-4 border-t border-white/10">
@@ -7482,7 +7727,9 @@ const StudioViews = (() => {
             <button id="edUndoBtn" class="btn-secondary px-2.5 py-1.5 rounded-lg text-xs" title="Undo">↶ Undo</button>
             <button id="edRedoBtn" class="btn-secondary px-2.5 py-1.5 rounded-lg text-xs" title="Redo">↷ Redo</button>
             <button id="edResetBtn" class="btn-secondary px-2.5 py-1.5 rounded-lg text-xs">Reset</button>
+            <button type="button" id="edCompareToggleBtn" class="btn-secondary px-2.5 py-1.5 rounded-lg text-xs text-cyan-300 border-cyan-500/35" title="Before / After Split Compare (C)">⇄ Compare</button>
             <button id="edSaveGalleryBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs text-emerald-300 border-emerald-500/30">Save</button>
+            <button type="button" id="edShareBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs text-fuchsia-300 border-fuchsia-500/35 font-semibold" title="Share Edited Photo">📤 Share</button>
             <button id="edExportOpenBtn" class="btn-primary px-3.5 py-1.5 rounded-lg text-xs">Export</button>
           </div>
         </div>
@@ -7736,6 +7983,7 @@ const StudioViews = (() => {
             <button data-pick-source="makeup" data-pick-input="mkUpload" data-pick-kind="photo" class="btn-secondary px-3 py-1.5 rounded-lg text-xs border-indigo-400/35 text-indigo-200">📷 Camera / 📂 Upload</button>
             <input id="mkUpload" type="file" accept="image/*" class="hidden"/>
             <button id="mkSaveBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs text-emerald-300">Save Look</button>
+            <button type="button" id="mkShareBtn" class="btn-secondary px-3 py-1.5 rounded-lg text-xs text-fuchsia-300 border-fuchsia-500/35 font-semibold">📤 Share</button>
             <button id="mkExportBtn" class="btn-primary px-3.5 py-1.5 rounded-lg text-xs">Export</button>
           </div>
         </div>
@@ -8252,6 +8500,7 @@ const StudioViews = (() => {
                       <button data-gal-preview="${item.id}" class="btn-secondary px-2 py-1 rounded-lg text-[11px]" title="Full Preview">View</button>
                       ${item.type === 'photo' ? `<button data-gal-edit="${item.id}" class="btn-primary flex-1 py-1 rounded-lg text-[11px]">Edit</button>` : `<button data-gal-to-video="${item.id}" class="btn-primary flex-1 py-1 rounded-lg text-[11px]">Edit Video</button>`}
                       <button data-gal-ren="${item.id}" class="btn-secondary px-2 py-1 rounded-lg text-[11px]" title="Rename">Rename</button>
+                      <button data-gal-share="${item.id}" class="btn-secondary px-2 py-1 rounded-lg text-[11px] text-emerald-300 border-emerald-500/30" title="Share">📤</button>
                       <button data-gal-dl="${item.id}" class="btn-secondary px-2 py-1 rounded-lg text-[11px]" title="Download">↓</button>
                       <button data-gal-del="${item.id}" class="btn-secondary px-2 py-1 rounded-lg text-[11px] text-rose-300" title="Delete">✕</button>
                     </div>
@@ -9755,7 +10004,7 @@ const App = (() => {
     }
 
     // 3. If any modal / overlay is open, close it first
-    const openModal = ['universalFormatModal', 'exportHudOverlay', 'sourcePickerModal', 'exportModal', 'renameModal', 'confirmModal', 'mediaPreviewModal']
+    const openModal = ['commandPaletteModal', 'shortcutsModal', 'universalShareModal', 'universalFormatModal', 'exportHudOverlay', 'sourcePickerModal', 'exportModal', 'renameModal', 'confirmModal', 'mediaPreviewModal']
       .map(id => document.getElementById(id))
       .find(el => el && !el.classList.contains('hidden'));
     if (openModal) {
@@ -11052,6 +11301,23 @@ const App = (() => {
       showToast('Saved edited photo to My Gallery!', 'success');
     };
     document.getElementById('edExportOpenBtn').onclick = () => openExportModal(canvas);
+    const edShareBtn = document.getElementById('edShareBtn');
+    if (edShareBtn) {
+      edShareBtn.onclick = () => {
+        if (window.MahaShareStudio) {
+          window.MahaShareStudio.open({
+            dataUrl: canvas.toDataURL('image/png'),
+            title: 'AI Edited Photo — Maha AI STUDIO',
+            filename: 'maha-ai-edited-' + Date.now() + '.png',
+            type: 'photo'
+          });
+        }
+      };
+    }
+    const edCompareBtn = document.getElementById('edCompareToggleBtn');
+    if (edCompareBtn && window.MahaCompareSlider) {
+      edCompareBtn.onclick = () => window.MahaCompareSlider.toggle(canvas, state.activeImageDataUrl, edCompareBtn);
+    }
   }
 
   // ---- MODULE 8: BG REMOVER ----
@@ -11275,6 +11541,19 @@ const App = (() => {
       showToast('Makeup look saved to Gallery!', 'success');
     };
     document.getElementById('mkExportBtn').onclick = () => openExportModal(canvas);
+    const mkShareBtn = document.getElementById('mkShareBtn');
+    if (mkShareBtn) {
+      mkShareBtn.onclick = () => {
+        if (window.MahaShareStudio) {
+          window.MahaShareStudio.open({
+            dataUrl: canvas.toDataURL('image/png'),
+            title: 'AI Makeup Look — Maha AI STUDIO',
+            filename: 'maha-ai-makeup-' + Date.now() + '.png',
+            type: 'photo'
+          });
+        }
+      };
+    }
   }
 
   // ---- MODULE 13: BEAUTY ----
@@ -13126,6 +13405,20 @@ const App = (() => {
     }
 
     if (dlBtn) dlBtn.onclick = () => triggerMediaDownload(item);
+    const mpShareBtn = document.getElementById('mpShareBtn');
+    if (mpShareBtn) {
+      mpShareBtn.onclick = () => {
+        if (window.MahaShareStudio) {
+          window.MahaShareStudio.open({
+            dataUrl: item.dataUrl || null,
+            blob: item.blob || null,
+            title: item.name || 'Maha AI STUDIO Media',
+            filename: item.name || (item.type === 'video' ? 'maha-video.webm' : 'maha-photo.png'),
+            type: item.type || 'photo'
+          });
+        }
+      };
+    }
     if (closeBtn) closeBtn.onclick = closeMediaPreview;
     modal.classList.remove('hidden');
   }
@@ -13458,6 +13751,20 @@ const App = (() => {
           renderApp();
           showToast('Renamed to ' + newName, 'success');
         });
+      };
+    });
+    document.querySelectorAll('[data-gal-share]').forEach((b) => {
+      b.onclick = () => {
+        const item = state.media.find((m) => m.id === b.getAttribute('data-gal-share'));
+        if (item && window.MahaShareStudio) {
+          window.MahaShareStudio.open({
+            dataUrl: item.dataUrl || null,
+            blob: item.blob || null,
+            title: item.name || 'Maha AI STUDIO Media',
+            filename: item.name || (item.type === 'video' ? 'maha-video.webm' : 'maha-photo.png'),
+            type: item.type || 'photo'
+          });
+        }
       };
     });
     document.querySelectorAll('[data-gal-dl]').forEach((b) => {
@@ -13883,6 +14190,24 @@ const App = (() => {
       qSlider.oninput = (e) => { qVal.textContent = e.target.value + '%'; };
     }
     document.getElementById('expCloseBtn').onclick = () => modal.classList.add('hidden');
+    const expShareBtn = document.getElementById('expShareBtn');
+    if (expShareBtn) {
+      expShareBtn.onclick = () => {
+        const format = document.getElementById('expFormatSel').value;
+        const quality = Number(document.getElementById('expQualitySlider').value) / 100;
+        const mime = format === 'jpeg' ? 'image/jpeg' : 'image/png';
+        const dataUrl = sourceCanvas ? sourceCanvas.toDataURL(mime, quality) : null;
+        modal.classList.add('hidden');
+        if (window.MahaShareStudio) {
+          window.MahaShareStudio.open({
+            dataUrl,
+            title: 'Exported Creation — Maha AI STUDIO',
+            filename: `maha-ai-export-${Date.now()}.${format === 'jpeg' ? 'jpg' : 'png'}`,
+            type: 'photo'
+          });
+        }
+      };
+    }
     document.getElementById('expConfirmBtn').onclick = () => {
       const format = document.getElementById('expFormatSel').value;
       const quality = Number(document.getElementById('expQualitySlider').value);
@@ -13893,6 +14218,22 @@ const App = (() => {
       showToast(`Exported ${format.toUpperCase()} (${scale}x)!`, 'success');
     };
   }
+
+  window.__mahaStudioBridge = {
+    navigate: (r) => navigate(r),
+    getState: () => state,
+    showToast: (m, t) => showToast(m, t),
+    getActiveCanvasDataUrl: () => {
+      const ids = ['editorCanvas', 'mkCanvas', 'bgGenCanvas', 'bgRemCanvas', 'pfCanvas', 'fgCanvas', 'beauCanvas', 'hairCanvas', 'dressCanvas', 'enhCanvas'];
+      for (const id of ids) {
+        const c = document.getElementById(id);
+        if (c && c.width > 0 && c.height > 0) {
+          try { return c.toDataURL('image/png'); } catch (_) {}
+        }
+      }
+      return state.activeImageDataUrl || null;
+    }
+  };
 
   async function init() {
     await refreshStorage();
@@ -17045,7 +17386,15 @@ window.MahaTouchTransform = (() => {
       ? 'iPhone/iPad mein Safari ke Share button (↑) par tap karein → "Add to Home Screen" chunein.'
       : 'Android Chrome mein upar 3-dot menu (⋮) par tap karein → "Install App" ya "Add to Home screen" par click karein (HTTPS / Vercel URL par direct 1-click install chalega).';
     if (typeof showToast === 'function') showToast(msg, 'info');
-    else alert(msg);
+    else if (window.__mahaStudioBridge && window.__mahaStudioBridge.showToast) window.__mahaStudioBridge.showToast(msg, 'info');
+    else {
+      const t = document.getElementById('studioToast');
+      if (t) {
+        t.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 z-[95] px-4 py-2.5 rounded-xl bg-slate-900/95 border border-indigo-400/40 text-xs text-white shadow-xl max-w-[90vw] text-center';
+        t.textContent = msg;
+        setTimeout(() => { t.className = 'hidden'; }, 4500);
+      }
+    }
   }
 
   window.addEventListener('DOMContentLoaded', () => {
@@ -17056,6 +17405,778 @@ window.MahaTouchTransform = (() => {
         triggerInstall();
       };
     });
+  });
+})();
+</script>
+
+
+<script>
+// ============================================================================
+// MAHA PRO UPGRADE ENGINE v2:
+// 1) Universal Share Studio (Native Web Share API + WhatsApp/Telegram/X/Email + Copy Image/Text + 1080x1080 Branded Story Card)
+// 2) Live Interactive Before/After Split-Screen Comparison Slider (Photo Editor)
+// 3) Global Command Palette & Quick Module Search (Ctrl+K)
+// 4) Pro Keyboard Shortcuts Engine & Cheat-Sheet (?)
+// ============================================================================
+(() => {
+  function notify(msg, type = 'info') {
+    if (window.__mahaStudioBridge && window.__mahaStudioBridge.showToast) {
+      window.__mahaStudioBridge.showToast(msg, type);
+      return;
+    }
+    const t = document.getElementById('studioToast');
+    if (t) {
+      t.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 z-[95] px-4 py-2.5 rounded-xl bg-slate-900/95 border border-indigo-400/40 text-xs text-white shadow-xl max-w-[90vw] text-center';
+      t.textContent = msg;
+      setTimeout(() => { t.className = 'hidden'; }, 3500);
+    }
+  }
+
+  async function safeCopyText(text) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_) {}
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function dataUrlToBlob(dataUrl) {
+    if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.includes(',')) return null;
+    try {
+      const parts = dataUrl.split(',');
+      const mimeMatch = parts[0].match(/:(.*?);/);
+      const mime = mimeMatch ? mimeMatch[1] : 'image/png';
+      const bin = atob(parts[1]);
+      const arr = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      return new Blob([arr], { type: mime });
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function triggerDownloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 8000);
+  }
+
+  // ---- 1. UNIVERSAL SHARE STUDIO ----
+  const MahaShareStudio = (() => {
+    let currentPayload = {
+      mode: 'media',
+      dataUrl: null,
+      blob: null,
+      title: 'Maha AI STUDIO Creation',
+      filename: 'maha-ai-studio.png',
+      type: 'photo'
+    };
+
+    const APP_SHARE_TITLE = 'Maha AI STUDIO — A Brand of India!';
+    const APP_SHARE_TEXT = '✨ Maha AI STUDIO try karo! 24+ Free Pro AI Photo, DSLR Camera, 602 Pose Guides, BG Remover, Dress Changer & Video Maker tools — sab ek hi studio mein! 🚀 #MahaAIStudio #AIBrandOfIndia';
+    const MEDIA_SHARE_TEXT = '✨ Maha AI STUDIO se edit kiya gaya! Pro AI Photo & Video Studio — Make by MahaIndustries 🚀 #MahaAIStudio #AIProStudio';
+
+    function getShareUrl() {
+      try {
+        const href = window.location.href || '';
+        if (href.startsWith('http://') || href.startsWith('https://')) return href;
+      } catch (_) {}
+      return '';
+    }
+
+    function updateModalUI() {
+      const thumbImg = document.getElementById('usmThumbImg');
+      const thumbFallback = document.getElementById('usmThumbFallback');
+      const titleEl = document.getElementById('usmTitle');
+      const metaEl = document.getElementById('usmMeta');
+      const captionEl = document.getElementById('usmCaption');
+      const modeMediaBtn = document.getElementById('usmModeMediaBtn');
+      const modeAppBtn = document.getElementById('usmModeAppBtn');
+      const nativeBadge = document.getElementById('usmNativeBadge');
+      const copyImgBtn = document.getElementById('usmCopyImageBtn');
+      const storyCardBtn = document.getElementById('usmStoryCardBtn');
+      const dlBtn = document.getElementById('usmDownloadBtn');
+
+      const isMedia = currentPayload.mode === 'media';
+      if (modeMediaBtn && modeAppBtn) {
+        modeMediaBtn.className = isMedia
+          ? 'py-1.5 rounded-lg font-semibold text-white bg-indigo-600 transition'
+          : 'py-1.5 rounded-lg font-semibold text-slate-300 hover:text-white transition';
+        modeAppBtn.className = !isMedia
+          ? 'py-1.5 rounded-lg font-semibold text-white bg-indigo-600 transition'
+          : 'py-1.5 rounded-lg font-semibold text-slate-300 hover:text-white transition';
+      }
+
+      if (isMedia) {
+        if (titleEl) titleEl.textContent = currentPayload.title || 'Maha AI STUDIO Creation';
+        if (metaEl) metaEl.textContent = currentPayload.type === 'video' ? '🎬 HD Video Clip • Ready to Share' : '🖼️ High-Res Photo • Ready to Share';
+        if (captionEl) captionEl.value = MEDIA_SHARE_TEXT;
+        if (thumbImg && thumbFallback) {
+          if (currentPayload.type !== 'video' && currentPayload.dataUrl) {
+            thumbImg.src = currentPayload.dataUrl;
+            thumbImg.classList.remove('hidden');
+            thumbFallback.classList.add('hidden');
+          } else {
+            thumbImg.classList.add('hidden');
+            thumbFallback.classList.remove('hidden');
+            thumbFallback.textContent = currentPayload.type === 'video' ? '🎬' : '🖼️';
+          }
+        }
+        if (copyImgBtn) copyImgBtn.disabled = currentPayload.type === 'video';
+        if (storyCardBtn) storyCardBtn.disabled = currentPayload.type === 'video';
+        if (dlBtn) dlBtn.disabled = false;
+      } else {
+        if (titleEl) titleEl.textContent = APP_SHARE_TITLE;
+        if (metaEl) metaEl.textContent = '24 AI Modules • Camera • Photo • Video • Offline Ready';
+        const url = getShareUrl();
+        if (captionEl) captionEl.value = url ? `${APP_SHARE_TEXT}\n${url}` : APP_SHARE_TEXT;
+        if (thumbImg && thumbFallback) {
+          thumbImg.classList.add('hidden');
+          thumbFallback.classList.remove('hidden');
+          thumbFallback.textContent = '🚀';
+        }
+        if (copyImgBtn) copyImgBtn.disabled = false;
+        if (storyCardBtn) storyCardBtn.disabled = false;
+        if (dlBtn) dlBtn.disabled = false;
+      }
+
+      if (nativeBadge) {
+        const hasNative = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+        nativeBadge.textContent = hasNative ? '⚡ Native OS Share Supported' : '🌐 Direct Web Share Ready';
+      }
+    }
+
+    async function getActiveMediaBlob() {
+      if (currentPayload.blob) return currentPayload.blob;
+      if (currentPayload.dataUrl) return dataUrlToBlob(currentPayload.dataUrl);
+      const fallbackUrl = window.__mahaStudioBridge ? window.__mahaStudioBridge.getActiveCanvasDataUrl() : null;
+      return fallbackUrl ? dataUrlToBlob(fallbackUrl) : null;
+    }
+
+    async function buildBrandedStoryCardBlob() {
+      const c = document.createElement('canvas');
+      c.width = 1080;
+      c.height = 1080;
+      const ctx = c.getContext('2d');
+
+      // Rich studio gradient backdrop
+      const bg = ctx.createLinearGradient(0, 0, 1080, 1080);
+      bg.addColorStop(0, '#090b16');
+      bg.addColorStop(0.5, '#17153b');
+      bg.addColorStop(1, '#0c1020');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, 1080, 1080);
+
+      // Subtle glow orbs
+      const g1 = ctx.createRadialGradient(220, 180, 20, 220, 180, 380);
+      g1.addColorStop(0, 'rgba(99,102,241,0.35)');
+      g1.addColorStop(1, 'rgba(99,102,241,0)');
+      ctx.fillStyle = g1;
+      ctx.fillRect(0, 0, 1080, 1080);
+
+      const g2 = ctx.createRadialGradient(880, 900, 20, 880, 900, 380);
+      g2.addColorStop(0, 'rgba(168,85,247,0.32)');
+      g2.addColorStop(1, 'rgba(168,85,247,0)');
+      ctx.fillStyle = g2;
+      ctx.fillRect(0, 0, 1080, 1080);
+
+      // Header badge
+      ctx.fillStyle = 'rgba(255,255,255,0.08)';
+      ctx.strokeStyle = 'rgba(129,140,248,0.45)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(64, 48, 952, 76, 22);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 30px system-ui, -apple-system, sans-serif';
+      ctx.fillText('✨ MAHA AI STUDIO', 96, 97);
+      ctx.fillStyle = '#fb7185';
+      ctx.font = '600 22px system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('A Brand of India!', 984, 95);
+      ctx.textAlign = 'left';
+
+      // Draw photo frame if media available
+      const imgData = currentPayload.mode === 'media' && currentPayload.type !== 'video' ? currentPayload.dataUrl : null;
+      if (imgData) {
+        await new Promise((resolve) => {
+          const im = new Image();
+          im.onload = () => {
+            const boxX = 84, boxY = 156, boxW = 912, boxH = 710;
+            ctx.save();
+            ctx.beginPath();
+            ctx.roundRect(boxX, boxY, boxW, boxH, 28);
+            ctx.fillStyle = '#05070e';
+            ctx.fill();
+            ctx.clip();
+            const scale = Math.min(boxW / im.width, boxH / im.height);
+            const dw = im.width * scale;
+            const dh = im.height * scale;
+            ctx.drawImage(im, boxX + (boxW - dw) / 2, boxY + (boxH - dh) / 2, dw, dh);
+            ctx.restore();
+            ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.roundRect(boxX, boxY, boxW, boxH, 28);
+            ctx.stroke();
+            resolve();
+          };
+          im.onerror = () => resolve();
+          im.src = imgData;
+        });
+      } else {
+        // Brand promo card center
+        ctx.fillStyle = 'rgba(255,255,255,0.06)';
+        ctx.strokeStyle = 'rgba(255,255,255,0.16)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(84, 180, 912, 650, 32);
+        ctx.fill();
+        ctx.stroke();
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 64px system-ui, sans-serif';
+        ctx.fillText('📷 24+ AI Pro Tools', 540, 420);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '500 32px system-ui, sans-serif';
+        ctx.fillText('DSLR Camera • 602 Poses • Photo & Video Editor', 540, 500);
+        ctx.fillText('BG Remover • Dress Changer • 6,048+ Frames', 540, 560);
+        ctx.fillStyle = '#34d399';
+        ctx.font = 'bold 30px system-ui, sans-serif';
+        ctx.fillText('100% Free On-Device AI Studio', 540, 660);
+        ctx.textAlign = 'left';
+      }
+
+      // Footer caption bar
+      const capEl = document.getElementById('usmCaption');
+      const rawCap = (capEl ? capEl.value : MEDIA_SHARE_TEXT).replace(/\s+/g, ' ').trim();
+      const shortCap = rawCap.length > 74 ? rawCap.slice(0, 71) + '...' : rawCap;
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = '600 24px system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(shortCap, 540, 932);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '500 20px system-ui, -apple-system, sans-serif';
+      ctx.fillText('Make by MahaIndustries • Pro. Ankit Sharma • 7500343487', 540, 994);
+      ctx.textAlign = 'left';
+
+      return await new Promise((resolve) => c.toBlob((b) => resolve(b), 'image/png'));
+    }
+
+    async function runNativeShare() {
+      const caption = (document.getElementById('usmCaption')?.value || MEDIA_SHARE_TEXT).trim();
+      const url = getShareUrl();
+
+      if (navigator.share) {
+        try {
+          if (currentPayload.mode === 'media') {
+            const blob = await getActiveMediaBlob();
+            if (blob) {
+              const file = new File([blob], currentPayload.filename || 'maha-ai-studio.png', { type: blob.type || 'image/png' });
+              if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({ title: currentPayload.title, text: caption, files: [file] });
+                notify('🎉 Shared successfully!', 'success');
+                return;
+              }
+            }
+          }
+          const shareData = { title: currentPayload.mode === 'app' ? APP_SHARE_TITLE : currentPayload.title, text: caption };
+          if (url) shareData.url = url;
+          await navigator.share(shareData);
+          notify('🎉 Shared successfully!', 'success');
+          return;
+        } catch (err) {
+          if (err && err.name === 'AbortError') return;
+        }
+      }
+
+      // Fallback when navigator.share isn't available in iframe/desktop browser
+      const copied = await safeCopyText(caption + (url && !caption.includes(url) ? '\n' + url : ''));
+      if (currentPayload.mode === 'media') {
+        const blob = await getActiveMediaBlob();
+        if (blob) triggerDownloadBlob(blob, currentPayload.filename || 'maha-ai-studio.png');
+        notify(copied ? '📋 Caption copy & file save ho gayi! Ab WhatsApp/Instagram par share karein.' : '⬇ File save ho gayi — ab kisi bhi app par share karein!', 'success');
+      } else {
+        notify(copied ? '📋 Studio share message copy ho gaya! Kahin bhi paste karke share karein.' : 'Platform button (WhatsApp/Telegram) par click karke share karein.', 'success');
+      }
+    }
+
+    async function shareToPlatform(platform) {
+      const caption = (document.getElementById('usmCaption')?.value || APP_SHARE_TEXT).trim();
+      const url = getShareUrl();
+      const fullText = url && !caption.includes(url) ? `${caption}\n${url}` : caption;
+      const encText = encodeURIComponent(fullText);
+      const encUrl = encodeURIComponent(url || 'https://maha-ai-studio.app');
+
+      let target = '';
+      if (platform === 'whatsapp') target = `https://wa.me/?text=${encText}`;
+      else if (platform === 'telegram') target = `https://t.me/share/url?url=${encUrl}&text=${encodeURIComponent(caption)}`;
+      else if (platform === 'x') target = `https://twitter.com/intent/tweet?text=${encText}`;
+      else if (platform === 'email') target = `mailto:?subject=${encodeURIComponent(APP_SHARE_TITLE)}&body=${encText}`;
+
+      if (currentPayload.mode === 'media') {
+        await safeCopyText(fullText);
+      }
+      if (target) {
+        window.open(target, '_blank', 'noopener,noreferrer');
+        notify(`📤 Opening ${platform.toUpperCase()} share...`, 'info');
+      }
+    }
+
+    function open(opts = {}) {
+      const modal = document.getElementById('universalShareModal');
+      if (!modal) return;
+      const fallbackDataUrl = window.__mahaStudioBridge ? window.__mahaStudioBridge.getActiveCanvasDataUrl() : null;
+      currentPayload = {
+        mode: opts.mode || (opts.dataUrl || opts.blob || fallbackDataUrl ? 'media' : 'app'),
+        dataUrl: opts.dataUrl || (opts.blob ? null : fallbackDataUrl),
+        blob: opts.blob || null,
+        title: opts.title || 'Maha AI STUDIO Creation',
+        filename: opts.filename || 'maha-ai-studio-' + Date.now() + '.png',
+        type: opts.type || 'photo'
+      };
+      updateModalUI();
+      modal.classList.remove('hidden');
+      if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons();
+    }
+
+    function close() {
+      const modal = document.getElementById('universalShareModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function init() {
+      const closeBtn = document.getElementById('usmCloseBtn');
+      const modal = document.getElementById('universalShareModal');
+      if (closeBtn) closeBtn.onclick = close;
+      if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+
+      const modeMediaBtn = document.getElementById('usmModeMediaBtn');
+      const modeAppBtn = document.getElementById('usmModeAppBtn');
+      if (modeMediaBtn) modeMediaBtn.onclick = () => { currentPayload.mode = 'media'; updateModalUI(); };
+      if (modeAppBtn) modeAppBtn.onclick = () => { currentPayload.mode = 'app'; updateModalUI(); };
+
+      const nativeBtn = document.getElementById('usmNativeShareBtn');
+      if (nativeBtn) nativeBtn.onclick = runNativeShare;
+
+      document.querySelectorAll('[data-usm-platform]').forEach((btn) => {
+        btn.onclick = () => shareToPlatform(btn.getAttribute('data-usm-platform'));
+      });
+
+      const copyCapBtn = document.getElementById('usmCopyCaptionBtn');
+      if (copyCapBtn) {
+        copyCapBtn.onclick = async () => {
+          const text = document.getElementById('usmCaption')?.value || APP_SHARE_TEXT;
+          const ok = await safeCopyText(text);
+          notify(ok ? '📋 Caption clipboard mein copy ho gaya!' : 'Copy failed — text manually select karein.', ok ? 'success' : 'error');
+        };
+      }
+
+      const copyImgBtn = document.getElementById('usmCopyImageBtn');
+      if (copyImgBtn) {
+        copyImgBtn.onclick = async () => {
+          try {
+            const blob = currentPayload.mode === 'media' ? await getActiveMediaBlob() : await buildBrandedStoryCardBlob();
+            if (!blob) { notify('Pehle koi photo open karein.', 'error'); return; }
+            if (navigator.clipboard && window.ClipboardItem) {
+              await navigator.clipboard.write([new ClipboardItem({ [blob.type || 'image/png']: blob })]);
+              notify('🖼️ Image clipboard mein copy ho gayi! Ab WhatsApp/Telegram mein Paste (Ctrl+V) karein.', 'success');
+              return;
+            }
+            triggerDownloadBlob(blob, currentPayload.filename || 'maha-share.png');
+            notify('⬇ Direct image copy unsupported — image file save kar di gayi hai!', 'info');
+          } catch (_) {
+            const blob = await getActiveMediaBlob();
+            if (blob) triggerDownloadBlob(blob, currentPayload.filename || 'maha-share.png');
+            notify('⬇ Image file save ho gayi — ab direct attach karke share karein!', 'info');
+          }
+        };
+      }
+
+      const storyCardBtn = document.getElementById('usmStoryCardBtn');
+      if (storyCardBtn) {
+        storyCardBtn.onclick = async () => {
+          notify('✨ 1080×1080 Branded Story Card ban raha hai...', 'info');
+          const blob = await buildBrandedStoryCardBlob();
+          if (!blob) { notify('Story Card generate nahi ho saka.', 'error'); return; }
+          const fname = 'maha-ai-story-card-' + Date.now() + '.png';
+          if (navigator.share) {
+            try {
+              const file = new File([blob], fname, { type: 'image/png' });
+              if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({ title: APP_SHARE_TITLE, text: document.getElementById('usmCaption')?.value || MEDIA_SHARE_TEXT, files: [file] });
+                notify('🎉 Branded Story Card share ho gaya!', 'success');
+                return;
+              }
+            } catch (err) {
+              if (err && err.name === 'AbortError') return;
+            }
+          }
+          triggerDownloadBlob(blob, fname);
+          notify('✨ 1080×1080 Branded Story Card download ho gaya! WhatsApp Status / Instagram par lagayein.', 'success');
+        };
+      }
+
+      const dlBtn = document.getElementById('usmDownloadBtn');
+      if (dlBtn) {
+        dlBtn.onclick = async () => {
+          const blob = currentPayload.mode === 'media' ? await getActiveMediaBlob() : await buildBrandedStoryCardBlob();
+          if (!blob) { notify('Koi file ready nahi hai.', 'error'); return; }
+          triggerDownloadBlob(blob, currentPayload.mode === 'media' ? (currentPayload.filename || 'maha-creation.png') : 'maha-ai-studio-card.png');
+          notify('⬇ File download shuru ho gayi!', 'success');
+        };
+      }
+
+      // Bind Header & Sidebar Share buttons + delegated Dashboard Hero buttons
+      const mobShare = document.getElementById('mobileShareAppBtn');
+      const deskShare = document.getElementById('desktopShareBtn');
+      if (mobShare) mobShare.onclick = () => open();
+      if (deskShare) deskShare.onclick = () => open();
+      document.addEventListener('click', (e) => {
+        const shareTarget = e.target && e.target.closest ? e.target.closest('#dashHeroShareBtn') : null;
+        if (shareTarget) { open(); return; }
+        const searchTarget = e.target && e.target.closest ? e.target.closest('#dashHeroSearchBtn') : null;
+        if (searchTarget && window.MahaCommandPalette) { window.MahaCommandPalette.open(); }
+      });
+    }
+
+    return { open, close, init };
+  })();
+  window.MahaShareStudio = MahaShareStudio;
+
+  // ---- 2. LIVE BEFORE / AFTER SPLIT-SCREEN COMPARE SLIDER (PHOTO EDITOR) ----
+  const MahaCompareSlider = (() => {
+    let active = false;
+    let splitPct = 50;
+    let overlayEl = null;
+    let dividerEl = null;
+    let handleEl = null;
+    let badgeBefore = null;
+    let badgeAfter = null;
+    let origImgEl = null;
+    let currentHost = null;
+    let dragging = false;
+
+    function cleanup(btn) {
+      active = false;
+      if (overlayEl) { overlayEl.remove(); overlayEl = null; }
+      if (dividerEl) { dividerEl.remove(); dividerEl = null; }
+      if (handleEl) { handleEl.remove(); handleEl = null; }
+      if (badgeBefore) { badgeBefore.remove(); badgeBefore = null; }
+      if (badgeAfter) { badgeAfter.remove(); badgeAfter = null; }
+      if (currentHost) {
+        currentHost.onpointerdown = null;
+        currentHost.onpointermove = null;
+        currentHost.onpointerup = null;
+        currentHost = null;
+      }
+      if (btn) {
+        btn.classList.remove('bg-cyan-600', 'text-white');
+        btn.textContent = '⇄ Compare';
+      }
+    }
+
+    function updatePosition(pct) {
+      splitPct = Math.max(5, Math.min(95, pct));
+      if (overlayEl) overlayEl.style.clipPath = `inset(0 ${100 - splitPct}% 0 0)`;
+      if (dividerEl) dividerEl.style.left = splitPct + '%';
+      if (handleEl) handleEl.style.left = splitPct + '%';
+    }
+
+    function toggle(canvas, originalDataUrl, btn) {
+      if (!canvas || !canvas.parentElement) return;
+      if (active) {
+        cleanup(btn);
+        notify('Compare mode OFF.', 'info');
+        return;
+      }
+      if (!originalDataUrl) {
+        notify('Original photo available nahi hai compare karne ke liye.', 'info');
+        return;
+      }
+
+      const host = canvas.parentElement;
+      if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+      currentHost = host;
+      active = true;
+      splitPct = 50;
+
+      overlayEl = document.createElement('div');
+      overlayEl.id = 'edCompareOverlay';
+      overlayEl.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:5;';
+
+      origImgEl = document.createElement('img');
+      origImgEl.src = originalDataUrl;
+      origImgEl.alt = 'Before original';
+      origImgEl.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain;width:' + canvas.clientWidth + 'px;height:' + canvas.clientHeight + 'px;';
+      overlayEl.appendChild(origImgEl);
+
+      dividerEl = document.createElement('div');
+      dividerEl.id = 'edCompareDivider';
+
+      handleEl = document.createElement('div');
+      handleEl.id = 'edCompareHandle';
+      handleEl.textContent = '⇄';
+
+      badgeBefore = document.createElement('span');
+      badgeBefore.textContent = 'BEFORE';
+      badgeBefore.className = 'absolute top-2.5 left-2.5 z-10 px-2 py-0.5 rounded-md bg-black/75 text-[10px] font-bold text-amber-300 border border-amber-400/40 pointer-events-none';
+
+      badgeAfter = document.createElement('span');
+      badgeAfter.textContent = 'AFTER (AI)';
+      badgeAfter.className = 'absolute top-2.5 right-2.5 z-10 px-2 py-0.5 rounded-md bg-black/75 text-[10px] font-bold text-emerald-300 border border-emerald-400/40 pointer-events-none';
+
+      host.appendChild(overlayEl);
+      host.appendChild(dividerEl);
+      host.appendChild(handleEl);
+      host.appendChild(badgeBefore);
+      host.appendChild(badgeAfter);
+
+      updatePosition(50);
+
+      const moveFromEvent = (e) => {
+        const rect = host.getBoundingClientRect();
+        if (!rect.width) return;
+        const pct = ((e.clientX - rect.left) / rect.width) * 100;
+        updatePosition(pct);
+      };
+
+      host.onpointerdown = (e) => {
+        dragging = true;
+        try { host.setPointerCapture(e.pointerId); } catch (_) {}
+        moveFromEvent(e);
+      };
+      host.onpointermove = (e) => {
+        if (!dragging) return;
+        moveFromEvent(e);
+      };
+      host.onpointerup = () => { dragging = false; };
+
+      if (btn) {
+        btn.classList.add('bg-cyan-600', 'text-white');
+        btn.textContent = '✕ Exit Compare';
+      }
+      notify('⇄ Drag left/right on photo to compare Before vs After!', 'success');
+    }
+
+    return { toggle, cleanup };
+  })();
+  window.MahaCompareSlider = MahaCompareSlider;
+
+  // ---- 3. GLOBAL COMMAND PALETTE & QUICK MODULE SEARCH (Ctrl+K) ----
+  const MahaCommandPalette = (() => {
+    const COMMANDS = [
+      { id: 'act-share', label: 'Share Current Photo / Studio', cat: 'Action', icon: '📤', run: () => MahaShareStudio.open() },
+      { id: 'act-shortcuts', label: 'View Keyboard Shortcuts (?)', cat: 'Action', icon: '⌨️', run: () => openShortcutsModal() },
+      { id: 'dashboard', label: 'Home Dashboard', cat: 'Module', icon: '🏠' },
+      { id: 'camera', label: 'AI Pro DSLR Camera', cat: 'Module', icon: '📷' },
+      { id: 'photoshoot', label: 'Smart Photoshoot (Auto-Capture)', cat: 'Module', icon: '✨' },
+      { id: 'poses', label: 'Pose Studio (602 Poses)', cat: 'Module', icon: '🧍' },
+      { id: 'photo-editor', label: 'AI Photo Editor (5x Upscale & LUTs)', cat: 'Module', icon: '🎚️' },
+      { id: 'beauty', label: 'AI Beauty Studio', cat: 'Module', icon: '🪄' },
+      { id: 'dress-changer', label: 'AI Dress Changer (Virtual Try-On)', cat: 'Module', icon: '👕' },
+      { id: 'makeup', label: 'AI Makeup Studio', cat: 'Module', icon: '🎨' },
+      { id: 'hairstyle', label: 'AI Hairstyle Studio', cat: 'Module', icon: '✂️' },
+      { id: 'bg-remover', label: 'AI Background Remover', cat: 'Module', icon: '🧹' },
+      { id: 'bg-generator', label: 'AI Background Generator', cat: 'Module', icon: '🏞️' },
+      { id: 'enhance', label: 'Enhance & AI Prompt Editor', cat: 'Module', icon: '⚡' },
+      { id: 'pro-tools', label: 'Pro+ Free Tools (Passport PDF / Collage)', cat: 'Module', icon: '🗂️' },
+      { id: 'video-maker', label: 'Video Maker (Multi-Clip)', cat: 'Module', icon: '🎬' },
+      { id: 'ai-movie-studio', label: 'AI Photo & Video Generator', cat: 'Module', icon: '🌟' },
+      { id: 'ai-control-center', label: 'AI Control Center', cat: 'Module', icon: '🧠' },
+      { id: 'preset-library', label: 'Smart Presets (15 Cinematic Looks)', cat: 'Module', icon: '🎛️' },
+      { id: 'photo-frame', label: 'Photo Frame Studio (6,048+)', cat: 'Module', icon: '🖼️' },
+      { id: 'frame-generator', label: 'AI Frame Generator', cat: 'Module', icon: '🪄' },
+      { id: 'video-editor', label: 'AI Video Editor (Timeline)', cat: 'Module', icon: '🎞️' },
+      { id: 'cinematic-video', label: 'Cinematic Video Studio', cat: 'Module', icon: '🎥' },
+      { id: 'gallery', label: 'My Gallery (Saved Media)', cat: 'Module', icon: '🖼️' },
+      { id: 'projects', label: 'Saved Projects & JSON Backup', cat: 'Module', icon: '📁' },
+      { id: 'settings', label: 'Studio Settings & Theme', cat: 'Module', icon: '⚙️' }
+    ];
+
+    let filtered = COMMANDS.slice();
+    let activeIdx = 0;
+
+    function executeItem(item) {
+      close();
+      if (!item) return;
+      if (typeof item.run === 'function') item.run();
+      else if (window.__mahaStudioBridge) window.__mahaStudioBridge.navigate(item.id);
+    }
+
+    function renderList() {
+      const listEl = document.getElementById('cmdResultsList');
+      if (!listEl) return;
+      if (!filtered.length) {
+        listEl.innerHTML = '<div class="text-center text-slate-400 py-6 text-xs">No matching module or action found.</div>';
+        return;
+      }
+      listEl.innerHTML = filtered.map((item, idx) => `
+        <button type="button" data-cmd-idx="${idx}" class="cmd-item ${idx === activeIdx ? 'cmd-active' : ''}">
+          <span class="flex items-center gap-2.5 min-w-0">
+            <span class="text-base shrink-0">${item.icon}</span>
+            <span class="font-semibold truncate">${item.label}</span>
+          </span>
+          <span class="px-2 py-0.5 rounded-md bg-white/10 text-[10px] text-slate-300 shrink-0">${item.cat}</span>
+        </button>
+      `).join('');
+      listEl.querySelectorAll('[data-cmd-idx]').forEach((btn) => {
+        btn.onclick = () => executeItem(filtered[Number(btn.getAttribute('data-cmd-idx'))]);
+      });
+    }
+
+    function open() {
+      const modal = document.getElementById('commandPaletteModal');
+      const input = document.getElementById('cmdSearchInput');
+      if (!modal) return;
+      filtered = COMMANDS.slice();
+      activeIdx = 0;
+      if (input) input.value = '';
+      renderList();
+      modal.classList.remove('hidden');
+      if (input) setTimeout(() => input.focus(), 30);
+    }
+
+    function close() {
+      const modal = document.getElementById('commandPaletteModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function init() {
+      const modal = document.getElementById('commandPaletteModal');
+      const input = document.getElementById('cmdSearchInput');
+      const closeBtn = document.getElementById('cmdCloseBtn');
+      const mobSearch = document.getElementById('mobileQuickSearchBtn');
+      const deskSearch = document.getElementById('desktopQuickSearchBtn');
+
+      if (closeBtn) closeBtn.onclick = close;
+      if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+      if (mobSearch) mobSearch.onclick = open;
+      if (deskSearch) deskSearch.onclick = open;
+
+      if (input) {
+        input.oninput = () => {
+          const q = input.value.trim().toLowerCase();
+          filtered = q ? COMMANDS.filter((c) => c.label.toLowerCase().includes(q) || c.id.includes(q) || c.cat.toLowerCase().includes(q)) : COMMANDS.slice();
+          activeIdx = 0;
+          renderList();
+        };
+        input.onkeydown = (e) => {
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            activeIdx = Math.min(filtered.length - 1, activeIdx + 1);
+            renderList();
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            activeIdx = Math.max(0, activeIdx - 1);
+            renderList();
+          } else if (e.key === 'Enter') {
+            e.preventDefault();
+            executeItem(filtered[activeIdx]);
+          } else if (e.key === 'Escape') {
+            close();
+          }
+        };
+      }
+    }
+
+    return { open, close, init };
+  })();
+  window.MahaCommandPalette = MahaCommandPalette;
+
+  // ---- 4. KEYBOARD SHORTCUTS MODAL & ENGINE ----
+  function openShortcutsModal() {
+    const m = document.getElementById('shortcutsModal');
+    if (m) m.classList.remove('hidden');
+  }
+  function closeShortcutsModal() {
+    const m = document.getElementById('shortcutsModal');
+    if (m) m.classList.add('hidden');
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    MahaShareStudio.init();
+    MahaCommandPalette.init();
+
+    const scBtn = document.getElementById('desktopShortcutsBtn');
+    const scClose = document.getElementById('scCloseBtn');
+    const scDone = document.getElementById('scDoneBtn');
+    const scModal = document.getElementById('shortcutsModal');
+    if (scBtn) scBtn.onclick = openShortcutsModal;
+    if (scClose) scClose.onclick = closeShortcutsModal;
+    if (scDone) scDone.onclick = closeShortcutsModal;
+    if (scModal) scModal.addEventListener('click', (e) => { if (e.target === scModal) closeShortcutsModal(); });
+
+    window.addEventListener('keydown', (e) => {
+      const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+      const isTyping = tag === 'input' || tag === 'textarea' || tag === 'select' || (e.target && e.target.isContentEditable);
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        MahaCommandPalette.open();
+        return;
+      }
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        MahaShareStudio.open();
+        return;
+      }
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 's') {
+        const saveBtn = document.getElementById('edSaveGalleryBtn') || document.getElementById('mkSaveBtn');
+        if (saveBtn) {
+          e.preventDefault();
+          saveBtn.click();
+        }
+        return;
+      }
+      if (e.key === 'Escape') {
+        MahaCommandPalette.close();
+        MahaShareStudio.close();
+        closeShortcutsModal();
+        return;
+      }
+      if (isTyping) return;
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        const undoBtn = document.getElementById('edUndoBtn');
+        if (undoBtn) { e.preventDefault(); undoBtn.click(); }
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+        const redoBtn = document.getElementById('edRedoBtn');
+        if (redoBtn) { e.preventDefault(); redoBtn.click(); }
+      } else if (e.key.toLowerCase() === 'c' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const cmpBtn = document.getElementById('edCompareToggleBtn');
+        if (cmpBtn) { e.preventDefault(); cmpBtn.click(); }
+      } else if (e.key === '?') {
+        e.preventDefault();
+        openShortcutsModal();
+      }
+    });
+
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
   });
 })();
 </script>
