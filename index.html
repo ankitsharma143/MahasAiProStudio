@@ -691,6 +691,17 @@ html, body { min-height: 100dvh; }
       width: auto !important;
       max-width: 100% !important;
     }
+    #camViewportWrap {
+      min-height: 56dvh !important;
+      max-height: none !important;
+      overflow: hidden !important;
+      position: relative !important;
+    }
+    #camViewportWrap #camOverlay {
+      overflow-y: auto !important;
+      padding: 18px 14px !important;
+      justify-content: center !important;
+    }
     body.photo-fixed-mode header.lg\:hidden {
       position: fixed !important;
       top: 0 !important;
@@ -7980,7 +7991,7 @@ const StudioViews = (() => {
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
           <!-- Viewfinder -->
-          <div id="camViewportWrap" class="sticky-preview-stage lg:col-span-8 relative rounded-2xl overflow-hidden bg-black border border-white/10 min-h-[340px] sm:min-h-[460px] flex items-center justify-center">
+          <div id="camViewportWrap" class="lg:col-span-8 relative rounded-2xl overflow-hidden bg-black border border-white/10 min-h-[340px] sm:min-h-[460px] flex items-center justify-center">
             <div id="camZoomHudBadge" class="hidden absolute top-12 left-3 z-20 px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-md border border-indigo-400/50 text-[11px] font-bold text-indigo-200 pointer-events-none">🔭 1x HIGH ZOOM</div>
             <video id="camVideo" autoplay playsinline webkit-playsinline="true" muted class="w-full h-full object-cover max-h-[560px]" style="transform:${cs.facingMode === 'user' ? 'scaleX(-1)' : 'none'}; filter:${cs.liveFilter};"></video>
             <canvas id="camZebraCanvas" class="absolute inset-0 w-full h-full pointer-events-none" style="transform:${cs.facingMode === 'user' ? 'scaleX(-1)' : 'none'};"></canvas>
@@ -11181,6 +11192,10 @@ const App = (() => {
       await startCam();
     };
     document.getElementById('camFullscreenBtn').onclick = () => {
+      if (window.MahaProFullCamera && window.MahaProFullCamera.open) {
+        window.MahaProFullCamera.open(() => {});
+        return;
+      }
       const wrap = document.getElementById('camViewportWrap');
       if (!wrap) return;
       if (document.fullscreenElement) {
@@ -20522,9 +20537,10 @@ window.MahaTouchTransform = (() => {
     const portal = ensurePortal();
     const isMobile = window.innerWidth < 1024;
     const isVideoMode = document.body.classList.contains('video-fixed-mode');
-    const photoPreviewInMain = main.querySelector('.sticky-preview-stage:not(.video-preview-pinned)');
-    const photoPreviewInPortal = portal.querySelector('.sticky-preview-stage:not(.video-preview-pinned)');
-    const isPhotoMode = !isVideoMode && !!(photoPreviewInMain || photoPreviewInPortal);
+    const isCameraOrShoot = !!(main.querySelector('#camViewportWrap, #psVideo') || portal.querySelector('#camViewportWrap, #psVideo'));
+    const photoPreviewInMain = isCameraOrShoot ? null : main.querySelector('.sticky-preview-stage:not(.video-preview-pinned):not(#camViewportWrap)');
+    const photoPreviewInPortal = isCameraOrShoot ? null : portal.querySelector('.sticky-preview-stage:not(.video-preview-pinned):not(#camViewportWrap)');
+    const isPhotoMode = !isVideoMode && !isCameraOrShoot && !!(photoPreviewInMain || photoPreviewInPortal);
     document.body.classList.toggle('photo-fixed-mode', isMobile && isPhotoMode);
     const isFixedMode = isVideoMode || isPhotoMode;
     const header = document.querySelector('header.lg\\:hidden');
