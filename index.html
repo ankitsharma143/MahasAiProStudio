@@ -7782,7 +7782,10 @@ const StudioViews = (() => {
     { id: 'bg-remover', title: 'BACKGROUND REMOVER', desc: 'Remove background and create cutouts', emoji: '✂️', cat: 'photo', bg: 'linear-gradient(140deg, #059669 0%, #10b981 52%, #2dd4bf 100%)' },
     { id: 'bg-generator', title: 'BACKGROUND STUDIO', desc: 'Create and apply creative backdrops', emoji: '🌄', cat: 'photo', bg: 'linear-gradient(140deg, #0284c7 0%, #2563eb 52%, #60a5fa 100%)' },
     { id: 'enhance', title: 'IMAGE ENHANCER', desc: 'Enhance, sharpen, denoise and prompt tools', emoji: '✨', cat: 'ai', bg: 'linear-gradient(140deg, #d97706 0%, #f59e0b 52%, #fb923c 100%)' },
-    { id: 'spatial-3d-lab', title: '3D PARALLAX & MOCKUPS', desc: '2D→3D zoom reels, 3D mockups & hologram titles', emoji: '🧊', cat: 'video', bg: 'linear-gradient(135deg,#06b6d4,#6366f1,#a855f7)' },
+    { id: 'broadcast-studio', title: 'BROADCAST & TELEPROMPTER', desc: 'Screen+Facecam recorder, teleprompter & stop-motion', emoji: '🎥', cat: 'video', bg: 'linear-gradient(135deg,#ef4444,#f97316,#eab308)' },
+      { id: 'cinemagraph-color-lab', title: 'CINEMAGRAPH & COLOR AI', desc: 'Living photos & movie Steal-the-Look color transfer', emoji: '✨', cat: 'photo', bg: 'linear-gradient(135deg,#14b8a6,#06b6d4,#6366f1)' },
+      { id: 'ecommerce-restore-hub', title: 'PRODUCT, RESTORE & PWA', desc: 'Amazon/Flipkart podiums, old photo restore & AI/PWA', emoji: '🛍️', cat: 'tools', bg: 'linear-gradient(135deg,#10b981,#059669,#0284c7)' },
+      { id: 'spatial-3d-lab', title: '3D PARALLAX & MOCKUPS', desc: '2D→3D zoom reels, 3D mockups & hologram titles', emoji: '🧊', cat: 'video', bg: 'linear-gradient(135deg,#06b6d4,#6366f1,#a855f7)' },
       { id: 'viral-creator-hub', title: 'VIRAL REEL & CARD HUB', desc: '1-click reel director, thumbnails, QR cards & .maha', emoji: '🚀', cat: 'ai', bg: 'linear-gradient(135deg,#f59e0b,#ec4899,#7c3aed)' },
       { id: 'design-studio', title: 'NEXT-GEN DESIGN STUDIO', desc: 'Layer canvas, posters, thumbnails & Brand Kit', emoji: '🎨', cat: 'photo', bg: 'linear-gradient(135deg,#ec4899,#8b5cf6,#3b82f6)' },
       { id: 'photo-to-pdf', title: 'PHOTO TO PDF', desc: 'Unlimited photos to PDF, paper size, grid & HD quality', emoji: '📄', cat: 'tools', bg: 'linear-gradient(140deg, #b91c1c 0%, #ef4444 50%, #f59e0b 100%)' },
@@ -10897,6 +10900,9 @@ const App = (() => {
       ['bg-remover', 'BG Remover', 'eraser'],
       ['bg-generator', 'BG Generator', 'image'],
       ['enhance', 'Enhance & Prompt', 'zap'],
+      ['broadcast-studio', 'Broadcast & Teleprompter', 'video'],
+      ['cinemagraph-color-lab', 'Cinemagraph & Color AI', 'sparkles'],
+      ['ecommerce-restore-hub', 'Product, Restore & PWA', 'shopping-bag'],
       ['spatial-3d-lab', '3D Parallax & Mockups', 'box'],
       ['viral-creator-hub', 'Viral Reel & Card Hub', 'rocket'],
       ['design-studio', 'Next-Gen Design Studio', 'layers'],
@@ -10952,6 +10958,9 @@ const App = (() => {
       case 'dress-changer': main.innerHTML = StudioViews.renderDressChanger(state); break;
       case 'hairstyle': main.innerHTML = StudioViews.renderHairstyle(state); break;
       case 'enhance': main.innerHTML = StudioViews.renderEnhanceAndPrompt(state); break;
+      case 'broadcast-studio': main.innerHTML = '<div id="v5BroadcastRoot"></div>'; break;
+      case 'cinemagraph-color-lab': main.innerHTML = '<div id="v5CinemaColorRoot"></div>'; break;
+      case 'ecommerce-restore-hub': main.innerHTML = '<div id="v5EcomRestoreRoot"></div>'; break;
       case 'spatial-3d-lab': main.innerHTML = '<div id="ultra3DLabRoot"></div>'; break;
       case 'viral-creator-hub': main.innerHTML = '<div id="ultraViralHubRoot"></div>'; break;
       case 'design-studio': main.innerHTML = '<div id="nextGenDesignRoot"></div>'; break;
@@ -18445,6 +18454,9 @@ window.MahaTouchTransform = (() => {
     { id: 'frame-generator', emoji: '🎨', title: 'Custom AI Frame Generator', sub: 'Design your own multi-photo frames' },
     { id: 'preset-library', emoji: '🎛️', title: 'Smart Preset Library', sub: '15 pro color grading categories' },
     { id: 'ai-movie-studio', emoji: '🎥', title: 'AI Photo & Video Generator', sub: '3D, Bollywood, Anime & AI movies' },
+    { id: 'broadcast-studio', emoji: '🎥', title: 'Broadcast Screen+Facecam, Teleprompter & Stop-Motion', sub: 'PiP screen recorder, scrolling script prompter & onion-skin stop-motion' },
+    { id: 'cinemagraph-color-lab', emoji: '✨', title: 'Living Photo (Cinemagraph) & Steal-the-Look Color Match', sub: 'Animate selected photo areas & extract movie color grading' },
+    { id: 'ecommerce-restore-hub', emoji: '🛍️', title: 'E-Commerce Product Studio, Old Photo Restorer & PWA/AI', sub: 'Marketplace podiums, B&W photo restore, live subtitles & offline PWA' },
     { id: 'spatial-3d-lab', emoji: '🧊', title: '3D Parallax Reel & 3D Mockup Studio', sub: '2D-to-3D zoom reels, Phone/Billboard mockups & hologram text' },
     { id: 'viral-creator-hub', emoji: '🚀', title: 'Viral Reel Director, Thumbnail, QR Card & .maha', sub: '1-click viral reels, thumbnail lab, festival QR cards & project save' },
     { id: 'design-studio', emoji: '🎨', title: 'Next-Gen Design Studio & Brand Kit', sub: 'Layers, posters, thumbnails, shapes, text & brand kit' },
@@ -23641,6 +23653,846 @@ window.MahaTouchTransform = (() => {
   mo.observe(document.body, { childList: true, subtree: true });
   setInterval(syncUltraMounts, 700);
   syncUltraMounts();
+})();
+</script>
+
+
+<script>
+/* ============================================================================
+   MAHA AI STUDIO — 2027 BROADCAST & CINEMA SUITE v5 (Modules 30, 31, 32)
+   30) Broadcast Studio: Screen+Facecam PiP Recorder with Live Draw Pen,
+       Smart AI Teleprompter Camera, and Onion-Skin Stop-Motion / Time-Lapse
+   31) Cinemagraph & Color AI Lab: Living Photo Animator + Reinhard "Steal the
+       Look" Movie Color Grading Transfer
+   32) E-Commerce Product Studio, Old & B&W Photo Restorer/Colorizer,
+       Live Speech-to-Text Subtitles, Cloud AI API Connectors & Offline PWA Kit
+   ============================================================================ */
+(() => {
+  const toast = (msg, type = 'info') => {
+    if (typeof window.showToast === 'function') window.showToast(msg, type);
+  };
+
+  /* ==========================================================================
+     MODULE 30: BROADCAST, TELEPROMPTER & STOP-MOTION STUDIO
+     ========================================================================== */
+  const bc = {
+    tab: 'screen', // screen | prompter | stopmotion
+    screenStream: null,
+    camStream: null,
+    rec: null,
+    chunks: [],
+    recording: false,
+    raf: null,
+    penOn: false,
+    penStrokes: [],
+    // Teleprompter
+    script: 'Namaste dosto! Aaj hum Maha AI STUDIO ke Next-Gen features dekh rahe hain.\n\nYeh camera lens ke bilkul paas smooth scroll karta hai taaki aap bina atke ek hi take mein professional YouTube ya Reels video shoot kar sakein.\n\nLike, Share aur Subscribe zaroor karein!',
+    speed: 42,
+    fontSize: 28,
+    mirror: false,
+    scrolling: false,
+    scrollY: 0,
+    // Stop-motion
+    smFrames: [],
+    onionAlpha: 0.38,
+    tlTimer: null
+  };
+
+  function stopBroadcastStreams() {
+    cancelAnimationFrame(bc.raf);
+    clearInterval(bc.tlTimer); bc.tlTimer = null;
+    if (bc.screenStream) { bc.screenStream.getTracks().forEach((t) => t.stop()); bc.screenStream = null; }
+    if (bc.camStream) { bc.camStream.getTracks().forEach((t) => t.stop()); bc.camStream = null; }
+    bc.recording = false;
+  }
+
+  async function startScreenFacecamPreview() {
+    stopBroadcastStreams();
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+      toast('Screen capture is supported on Desktop Chrome/Edge/Firefox over HTTPS.', 'error');
+      return;
+    }
+    try {
+      bc.screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      try { bc.camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true }); } catch (_) {}
+      const sv = document.createElement('video'); sv.srcObject = bc.screenStream; sv.muted = true; sv.play().catch(() => {});
+      const cv = document.createElement('video'); if (bc.camStream) { cv.srcObject = bc.camStream; cv.muted = true; cv.play().catch(() => {}); }
+
+      const loop = () => {
+        const c = document.getElementById('v5ScreenCanvas');
+        if (!c || !bc.screenStream) return;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#07080d'; ctx.fillRect(0, 0, c.width, c.height);
+        if (sv.videoWidth) ctx.drawImage(sv, 0, 0, c.width, c.height);
+        // Circular Facecam Bubble (bottom-right)
+        if (bc.camStream && cv.videoWidth) {
+          const r = 92, cx = c.width - r - 28, cy = c.height - r - 28;
+          ctx.save();
+          ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.closePath();
+          ctx.lineWidth = 6; ctx.strokeStyle = '#6366f1'; ctx.stroke();
+          ctx.clip();
+          ctx.drawImage(cv, cx - r, cy - r, r * 2, r * 2);
+          ctx.restore();
+        }
+        // Live Pen Strokes
+        if (bc.penStrokes.length) {
+          ctx.save(); ctx.strokeStyle = '#facc15'; ctx.lineWidth = 5; ctx.lineCap = 'round';
+          for (const st of bc.penStrokes) {
+            if (st.length < 2) continue;
+            ctx.beginPath(); ctx.moveTo(st[0].x, st[0].y);
+            for (let i = 1; i < st.length; i++) ctx.lineTo(st[i].x, st[i].y);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+        bc.raf = requestAnimationFrame(loop);
+      };
+      bc.raf = requestAnimationFrame(loop);
+      toast('🖥️ Screen + Facecam Live! Tap Start Recording.', 'success');
+    } catch (err) {
+      toast('Screen share cancelled or blocked: ' + (err.message || err), 'error');
+    }
+  }
+
+  function toggleScreenRecording() {
+    const c = document.getElementById('v5ScreenCanvas');
+    if (!c) return;
+    if (bc.recording && bc.rec) {
+      bc.rec.stop(); bc.recording = false;
+      const b = document.getElementById('v5ScreenRecBtn');
+      if (b) b.textContent = '⏺ Start Recording';
+      return;
+    }
+    if (!bc.screenStream) { toast('Pehle "Start Screen + Facecam" dabayein!', 'error'); return; }
+    try {
+      const stream = c.captureStream(30);
+      bc.screenStream.getAudioTracks().forEach((t) => stream.addTrack(t));
+      if (bc.camStream) bc.camStream.getAudioTracks().forEach((t) => stream.addTrack(t));
+      bc.chunks = [];
+      bc.rec = new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm' });
+      bc.rec.ondataavailable = (e) => { if (e.data && e.data.size) bc.chunks.push(e.data); };
+      bc.rec.onstop = async () => {
+        const blob = new Blob(bc.chunks, { type: 'video/webm' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `MahaAI_ScreenCast_${Date.now()}.webm`; a.click();
+        if (typeof StudioStorage !== 'undefined' && StudioStorage.saveMedia) {
+          try { await StudioStorage.saveMedia({ name: `ScreenCast_${Date.now()}.webm`, type: 'video', blob, mimeType: 'video/webm', album: 'Broadcast' }); } catch (_) {}
+        }
+        toast('🎬 Screen+Facecam video exported & saved to Gallery!', 'success');
+      };
+      bc.rec.start(); bc.recording = true;
+      const b = document.getElementById('v5ScreenRecBtn');
+      if (b) b.textContent = '⏹ Stop & Save Video';
+      toast('⏺ Recording Screen + Facecam...', 'info');
+    } catch (err) { toast('Record error: ' + (err.message || err), 'error'); }
+  }
+
+  async function startPrompterCamera() {
+    stopBroadcastStreams();
+    try {
+      bc.camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
+      const v = document.getElementById('v5PrompterVid');
+      if (v) { v.srcObject = bc.camStream; v.muted = true; await v.play().catch(() => {}); }
+      toast('📹 Teleprompter Camera Ready!', 'success');
+    } catch (err) { toast('Camera error: ' + (err.message || err), 'error'); }
+  }
+
+  function runPrompterScrollLoop() {
+    cancelAnimationFrame(bc.raf);
+    let last = performance.now();
+    const tick = (now) => {
+      const box = document.getElementById('v5PrompterScrollBox');
+      if (!box || !bc.scrolling) return;
+      const dt = (now - last) / 1000; last = now;
+      box.scrollTop += bc.speed * dt;
+      bc.raf = requestAnimationFrame(tick);
+    };
+    bc.raf = requestAnimationFrame(tick);
+  }
+
+  async function startStopMotionCam() {
+    stopBroadcastStreams();
+    try {
+      bc.camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+      const v = document.getElementById('v5SmVid');
+      if (v) { v.srcObject = bc.camStream; v.muted = true; await v.play().catch(() => {}); }
+      toast('🎞️ Stop-Motion Camera Ready! Tap Capture Frame.', 'success');
+    } catch (err) { toast('Camera error: ' + (err.message || err), 'error'); }
+  }
+
+  function captureStopMotionFrame() {
+    const v = document.getElementById('v5SmVid');
+    if (!v || !v.videoWidth) { toast('Pehle Stop-Motion Camera start karein!', 'error'); return; }
+    const c = document.createElement('canvas'); c.width = 720; c.height = Math.round(720 * (v.videoHeight / v.videoWidth));
+    c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+    const dataUrl = c.toDataURL('image/jpeg', 0.9);
+    bc.smFrames.push(dataUrl);
+    const ghost = document.getElementById('v5SmGhostImg');
+    if (ghost) { ghost.src = dataUrl; ghost.style.opacity = String(bc.onionAlpha); ghost.classList.remove('hidden'); }
+    const cnt = document.getElementById('v5SmCount');
+    if (cnt) cnt.textContent = `${bc.smFrames.length} frames captured`;
+    toast(`📸 Frame #${bc.smFrames.length} captured (Onion-Skin updated!)`, 'success');
+  }
+
+  async function exportStopMotionVideo() {
+    if (bc.smFrames.length < 2) { toast('Kam se kam 2 frames capture karein!', 'error'); return; }
+    const c = document.createElement('canvas'); c.width = 720; c.height = 720;
+    const ctx = c.getContext('2d');
+    const imgs = await Promise.all(bc.smFrames.map((src) => new Promise((res) => { const im = new Image(); im.onload = () => res(im); im.src = src; })));
+    const stream = c.captureStream(12);
+    const rec = new MediaRecorder(stream, { mimeType: 'video/webm' });
+    const chunks = [];
+    rec.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+    rec.onstop = async () => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `MahaAI_StopMotion_${Date.now()}.webm`; a.click();
+      if (typeof StudioStorage !== 'undefined' && StudioStorage.saveMedia) {
+        try { await StudioStorage.saveMedia({ name: `StopMotion_${Date.now()}.webm`, type: 'video', blob, mimeType: 'video/webm', album: 'Stop-Motion' }); } catch (_) {}
+      }
+      toast('🎬 Stop-Motion video exported & saved to Gallery!', 'success');
+    };
+    rec.start();
+    for (const im of imgs) {
+      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, c.width, c.height);
+      const sc = Math.min(c.width / im.width, c.height / im.height);
+      ctx.drawImage(im, (c.width - im.width * sc) / 2, (c.height - im.height * sc) / 2, im.width * sc, im.height * sc);
+      await new Promise((r) => setTimeout(r, 180));
+    }
+    rec.stop();
+  }
+
+  function renderBroadcastUI() {
+    const root = document.getElementById('v5BroadcastRoot');
+    if (!root) return;
+    root.innerHTML = `
+      <div class="space-y-4 fade-in">
+        <div>
+          <h2 class="text-xl font-extrabold text-white">🎥 Broadcast, Screen+Facecam, Teleprompter &amp; Stop-Motion Studio</h2>
+          <p class="text-xs text-slate-400">Tutorials ke liye Screen+Facecam PiP record karein, Teleprompter se bina atke shoot karein, ya Onion-Skin Stop-Motion animation banayein.</p>
+        </div>
+        <div class="grid grid-cols-3 gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl text-xs">
+          <button type="button" data-bc-tab="screen" class="ng-tab-btn py-2 rounded-xl font-bold ${bc.tab==='screen'?'active':'text-slate-300'}">🖥️ Screen + Facecam</button>
+          <button type="button" data-bc-tab="prompter" class="ng-tab-btn py-2 rounded-xl font-bold ${bc.tab==='prompter'?'active':'text-slate-300'}">📜 AI Teleprompter</button>
+          <button type="button" data-bc-tab="stopmotion" class="ng-tab-btn py-2 rounded-xl font-bold ${bc.tab==='stopmotion'?'active':'text-slate-300'}">🎞️ Stop-Motion / Time-Lapse</button>
+        </div>
+
+        ${bc.tab === 'screen' ? `
+          <div class="ng-card p-3.5 space-y-3 text-xs">
+            <div class="flex flex-wrap gap-2">
+              <button type="button" id="v5ScreenStartBtn" class="btn-primary px-3.5 py-2 rounded-xl font-bold">🖥️ Start Screen + Facecam</button>
+              <button type="button" id="v5ScreenRecBtn" class="px-3.5 py-2 rounded-xl font-bold bg-rose-600 hover:bg-rose-500 text-white">⏺ Start Recording</button>
+              <button type="button" id="v5ScreenPenBtn" class="btn-secondary px-3 py-2 rounded-xl font-bold">✏️ Draw Pen: ${bc.penOn?'ON':'OFF'}</button>
+              <button type="button" id="v5ScreenClearPenBtn" class="btn-secondary px-3 py-2 rounded-xl">Clear Ink</button>
+            </div>
+            <div class="bg-black rounded-2xl overflow-hidden border border-white/10">
+              <canvas id="v5ScreenCanvas" width="1280" height="720" class="w-full aspect-video object-contain cursor-crosshair"></canvas>
+            </div>
+          </div>
+        ` : bc.tab === 'prompter' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 text-xs">
+            <div class="lg:col-span-7 ng-card p-3 space-y-2">
+              <div class="relative bg-black rounded-2xl overflow-hidden aspect-video">
+                <video id="v5PrompterVid" playsinline autoplay muted class="w-full h-full object-cover"></video>
+                <div id="v5PrompterScrollBox" class="absolute inset-x-4 top-2 h-[52%] overflow-y-auto bg-black/55 backdrop-blur-sm rounded-xl p-4 text-center font-bold text-white leading-relaxed pointer-events-none" style="font-size:${bc.fontSize}px;transform:${bc.mirror?'scaleX(-1)':'none'};">${bc.script.replace(/\n/g,'<br/>')}</div>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" id="v5PrompCamBtn" class="btn-primary px-3 py-2 rounded-xl font-bold">📹 Start Camera</button>
+                <button type="button" id="v5PrompPlayBtn" class="btn-secondary px-3 py-2 rounded-xl font-bold text-emerald-300">${bc.scrolling?'⏸ Pause Scroll':'▶ Start Auto-Scroll'}</button>
+                <button type="button" id="v5PrompRecBtn" class="px-3 py-2 rounded-xl font-bold bg-rose-600 text-white">⏺ Record Take</button>
+              </div>
+            </div>
+            <div class="lg:col-span-5 ng-card p-3.5 space-y-2.5">
+              <label class="block text-slate-300 font-semibold">Apni Script Likhein
+                <textarea id="v5PrompScriptInp" rows="6" class="mt-1 w-full bg-slate-900 border border-white/15 rounded-xl p-2.5 text-white">${bc.script}</textarea>
+              </label>
+              <label class="block">Scroll Speed (${bc.speed} px/s) <input id="v5PrompSpdInp" type="range" min="15" max="110" value="${bc.speed}" class="w-full studio-slider"/></label>
+              <label class="block">Font Size (${bc.fontSize}px) <input id="v5PrompSizeInp" type="range" min="18" max="48" value="${bc.fontSize}" class="w-full studio-slider"/></label>
+              <label class="flex items-center gap-2 cursor-pointer"><input id="v5PrompMirrorChk" type="checkbox" ${bc.mirror?'checked':''} class="accent-indigo-500"/> Mirror Text (Pro Teleprompter Glass Mode)</label>
+            </div>
+          </div>
+        ` : `
+          <div class="ng-card p-3.5 space-y-3 text-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex flex-wrap gap-2">
+                <button type="button" id="v5SmCamBtn" class="btn-primary px-3 py-2 rounded-xl font-bold">📹 Start Camera</button>
+                <button type="button" id="v5SmCapBtn" class="px-3 py-2 rounded-xl font-bold bg-amber-500 text-black">📸 Capture Frame</button>
+                <button type="button" id="v5SmTlBtn" class="btn-secondary px-3 py-2 rounded-xl font-bold text-cyan-300">⏱️ Auto Time-Lapse (2s)</button>
+                <button type="button" id="v5SmExpBtn" class="px-3 py-2 rounded-xl font-bold bg-emerald-600 text-white">🎬 Export Video</button>
+              </div>
+              <span id="v5SmCount" class="font-bold text-amber-300">${bc.smFrames.length} frames captured</span>
+            </div>
+            <div class="relative bg-black rounded-2xl overflow-hidden aspect-video max-h-[52dvh] mx-auto">
+              <video id="v5SmVid" playsinline autoplay muted class="w-full h-full object-cover"></video>
+              <img id="v5SmGhostImg" class="hidden absolute inset-0 w-full h-full object-cover pointer-events-none" style="opacity:${bc.onionAlpha};"/>
+            </div>
+            <label class="block">Onion-Skin Ghost Opacity (${Math.round(bc.onionAlpha*100)}%) <input id="v5SmGhostInp" type="range" min="0" max="0.85" step="0.05" value="${bc.onionAlpha}" class="w-full studio-slider"/></label>
+          </div>
+        `}
+      </div>
+    `;
+    bindScreenPenCanvas();
+  }
+
+  function bindScreenPenCanvas() {
+    const c = document.getElementById('v5ScreenCanvas');
+    if (!c || c._penBound) return;
+    c._penBound = true;
+    let cur = null;
+    const pt = (e) => { const r = c.getBoundingClientRect(); const p = e.touches ? e.touches[0] : e; return { x: ((p.clientX - r.left)/r.width)*c.width, y: ((p.clientY - r.top)/r.height)*c.height }; };
+    c.addEventListener('mousedown', (e) => { if (!bc.penOn) return; cur = [pt(e)]; bc.penStrokes.push(cur); });
+    window.addEventListener('mousemove', (e) => { if (cur) cur.push(pt(e)); });
+    window.addEventListener('mouseup', () => { cur = null; });
+  }
+
+  /* ==========================================================================
+     MODULE 31: LIVING PHOTO (CINEMAGRAPH) & "STEAL THE LOOK" COLOR MATCHER
+     ========================================================================== */
+  const cm = {
+    tab: 'cinemagraph', // cinemagraph | colormatch
+    img: null,
+    maskCanvas: null,
+    fxType: 'water', // water | clouds | sparkle | pulse
+    speed: 1.2,
+    raf: null,
+    t0: performance.now(),
+    // Color Matcher
+    refImg: null,
+    tgtImg: null,
+    matchStrength: 85,
+    swatches: []
+  };
+
+  function startCinemagraphLoop() {
+    cancelAnimationFrame(cm.raf);
+    const loop = () => {
+      const c = document.getElementById('v5CinemaCanvas');
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, c.width, c.height);
+      if (!cm.img) {
+        ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.fillStyle = '#94a3b8'; ctx.font = '700 20px system-ui'; ctx.textAlign = 'center';
+        ctx.fillText('Upload a Photo & Paint the area you want to animate!', c.width / 2, c.height / 2);
+        cm.raf = requestAnimationFrame(loop); return;
+      }
+      ctx.drawImage(cm.img, 0, 0, c.width, c.height);
+      if (cm.maskCanvas) {
+        const sec = ((performance.now() - cm.t0) / 1000) * cm.speed;
+        const mov = document.createElement('canvas'); mov.width = c.width; mov.height = c.height;
+        const mctx = mov.getContext('2d');
+        if (cm.fxType === 'water') {
+          const shift = Math.sin(sec * 2.5) * 10;
+          mctx.drawImage(cm.img, shift, Math.cos(sec * 2) * 5, c.width, c.height);
+          mctx.globalAlpha = 0.28;
+          mctx.fillStyle = '#38bdf8';
+          for (let i = 0; i < 18; i++) {
+            const rx = ((i * 53 + sec * 65) % c.width);
+            const ry = ((i * 41 + sec * 35) % c.height);
+            mctx.fillRect(rx, ry, 28, 3);
+          }
+        } else if (cm.fxType === 'clouds') {
+          const sx = (sec * 28) % 60 - 30;
+          mctx.drawImage(cm.img, sx, 0, c.width + 60, c.height);
+        } else if (cm.fxType === 'sparkle') {
+          mctx.drawImage(cm.img, 0, 0, c.width, c.height);
+          for (let i = 0; i < 32; i++) {
+            const a = Math.abs(Math.sin(sec * 3 + i));
+            mctx.fillStyle = `rgba(253,224,71,${(a * 0.85).toFixed(2)})`;
+            mctx.beginPath(); mctx.arc((i * 89) % c.width, (i * 67) % c.height, 2 + a * 3, 0, Math.PI * 2); mctx.fill();
+          }
+        } else {
+          const sc = 1 + Math.sin(sec * 3.5) * 0.035;
+          mctx.translate(c.width / 2, c.height / 2); mctx.scale(sc, sc);
+          mctx.drawImage(cm.img, -c.width / 2, -c.height / 2, c.width, c.height);
+        }
+        mctx.globalCompositeOperation = 'destination-in';
+        mctx.drawImage(cm.maskCanvas, 0, 0, c.width, c.height);
+        ctx.drawImage(mov, 0, 0);
+      }
+      cm.raf = requestAnimationFrame(loop);
+    };
+    cm.raf = requestAnimationFrame(loop);
+  }
+
+  function bindCinemagraphBrush() {
+    const c = document.getElementById('v5CinemaCanvas');
+    if (!c || c._cmBound) return;
+    c._cmBound = true;
+    let down = false;
+    const paint = (e) => {
+      if (!cm.img) return;
+      const r = c.getBoundingClientRect();
+      const pt = e.touches ? e.touches[0] : e;
+      const x = ((pt.clientX - r.left) / r.width) * c.width;
+      const y = ((pt.clientY - r.top) / r.height) * c.height;
+      if (!cm.maskCanvas) { cm.maskCanvas = document.createElement('canvas'); cm.maskCanvas.width = c.width; cm.maskCanvas.height = c.height; }
+      const mctx = cm.maskCanvas.getContext('2d');
+      const gr = mctx.createRadialGradient(x, y, 8, x, y, 36);
+      gr.addColorStop(0, 'rgba(255,255,255,0.95)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+      mctx.fillStyle = gr; mctx.beginPath(); mctx.arc(x, y, 36, 0, Math.PI * 2); mctx.fill();
+    };
+    c.addEventListener('mousedown', (e) => { down = true; paint(e); });
+    window.addEventListener('mousemove', (e) => { if (down) paint(e); });
+    window.addEventListener('mouseup', () => { down = false; });
+    c.addEventListener('touchstart', (e) => { down = true; paint(e); }, { passive: true });
+    c.addEventListener('touchmove', (e) => { if (down) paint(e); }, { passive: true });
+    c.addEventListener('touchend', () => { down = false; });
+  }
+
+  function runStealTheLookColorTransfer() {
+    const c = document.getElementById('v5ColorMatchCanvas');
+    if (!c || !cm.refImg || !cm.tgtImg) { toast('Reference Movie Photo aur Apni Target Photo dono upload karein!', 'error'); return; }
+    const stats = (im) => {
+      const tc = document.createElement('canvas'); tc.width = 160; tc.height = 160;
+      const tctx = tc.getContext('2d'); tctx.drawImage(im, 0, 0, 160, 160);
+      const d = tctx.getImageData(0, 0, 160, 160).data;
+      let mr = 0, mg = 0, mb = 0, n = d.length / 4;
+      for (let i = 0; i < d.length; i += 4) { mr += d[i]; mg += d[i+1]; mb += d[i+2]; }
+      mr /= n; mg /= n; mb /= n;
+      let sr = 0, sg = 0, sb = 0;
+      for (let i = 0; i < d.length; i += 4) { sr += (d[i]-mr)**2; sg += (d[i+1]-mg)**2; sb += (d[i+2]-mb)**2; }
+      sr = Math.sqrt(sr / n) || 1; sg = Math.sqrt(sg / n) || 1; sb = Math.sqrt(sb / n) || 1;
+      // Extract 5 sample palette colors
+      const pal = [];
+      for (let k = 0; k < 5; k++) {
+        const idx = Math.floor((k + 0.5) * (n / 5)) * 4;
+        pal.push(`rgb(${d[idx]},${d[idx+1]},${d[idx+2]})`);
+      }
+      return { mr, mg, mb, sr, sg, sb, pal };
+    };
+    const rs = stats(cm.refImg), ts = stats(cm.tgtImg);
+    cm.swatches = rs.pal;
+    const swBox = document.getElementById('v5ColorSwatches');
+    if (swBox) swBox.innerHTML = rs.pal.map((col) => `<span class="w-8 h-8 rounded-lg border border-white/25 inline-block" style="background:${col};"></span>`).join('');
+
+    c.width = Math.min(1080, cm.tgtImg.width);
+    c.height = Math.round(c.width * (cm.tgtImg.height / cm.tgtImg.width));
+    const ctx = c.getContext('2d');
+    ctx.drawImage(cm.tgtImg, 0, 0, c.width, c.height);
+    const img = ctx.getImageData(0, 0, c.width, c.height);
+    const d = img.data;
+    const alpha = cm.matchStrength / 100;
+    for (let i = 0; i < d.length; i += 4) {
+      const nr = (d[i] - ts.mr) * (rs.sr / ts.sr) + rs.mr;
+      const ng = (d[i+1] - ts.mg) * (rs.sg / ts.sg) + rs.mg;
+      const nb = (d[i+2] - ts.mb) * (rs.sb / ts.sb) + rs.mb;
+      d[i] = Math.max(0, Math.min(255, d[i] * (1 - alpha) + nr * alpha));
+      d[i+1] = Math.max(0, Math.min(255, d[i+1] * (1 - alpha) + ng * alpha));
+      d[i+2] = Math.max(0, Math.min(255, d[i+2] * (1 - alpha) + nb * alpha));
+    }
+    ctx.putImageData(img, 0, 0);
+    toast('🎨 Movie Reference Color Look transferred successfully!', 'success');
+  }
+
+  function renderCinemaColorUI() {
+    const root = document.getElementById('v5CinemaColorRoot');
+    if (!root) return;
+    root.innerHTML = `
+      <div class="space-y-4 fade-in">
+        <div>
+          <h2 class="text-xl font-extrabold text-white">✨ Living Photo (Cinemagraph) &amp; "Steal-the-Look" Color AI</h2>
+          <p class="text-xs text-slate-400">Photo ke sirf ek hisse ko zinda animate karein ya kisi bhi movie still ka exact color grade apni photo par 1-tap apply karein.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl text-xs">
+          <button type="button" data-cm-tab="cinemagraph" class="ng-tab-btn py-2 rounded-xl font-bold ${cm.tab==='cinemagraph'?'active':'text-slate-300'}">🌊 Living Photo (Cinemagraph)</button>
+          <button type="button" data-cm-tab="colormatch" class="ng-tab-btn py-2 rounded-xl font-bold ${cm.tab==='colormatch'?'active':'text-slate-300'}">🎨 Steal-the-Look Color Match</button>
+        </div>
+
+        ${cm.tab === 'cinemagraph' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 text-xs">
+            <div class="lg:col-span-7 ng-card p-3">
+              <canvas id="v5CinemaCanvas" width="720" height="720" class="w-full max-h-[56dvh] object-contain rounded-xl bg-black cursor-crosshair touch-none"></canvas>
+            </div>
+            <div class="lg:col-span-5 ng-card p-3.5 space-y-3">
+              <label class="btn-primary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">📂 Upload Photo<input id="v5CmImgInp" type="file" accept="image/*" class="hidden"/></label>
+              <p class="text-[11px] text-cyan-200">🖌️ Photo par finger/mouse se us hisse ko paint karein jise aap animate karna chahte hain (paani, clouds, lights).</p>
+              <select id="v5CmFxSel" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white">
+                <option value="water" ${cm.fxType==='water'?'selected':''}>🌊 Flowing Water / Shimmer</option>
+                <option value="clouds" ${cm.fxType==='clouds'?'selected':''}>☁️ Drifting Sky Clouds</option>
+                <option value="sparkle" ${cm.fxType==='sparkle'?'selected':''}>✨ Golden Sparkle Breeze</option>
+                <option value="pulse" ${cm.fxType==='pulse'?'selected':''}>💫 Neon Pulse Motion</option>
+              </select>
+              <label class="block">Motion Speed (${cm.speed}x) <input id="v5CmSpdInp" type="range" min="0.4" max="3" step="0.1" value="${cm.speed}" class="w-full studio-slider"/></label>
+              <div class="flex gap-2">
+                <button type="button" id="v5CmClearMaskBtn" class="btn-secondary flex-1 py-2 rounded-xl font-bold">Clear Mask</button>
+                <button type="button" id="v5CmExportVidBtn" class="btn-primary flex-1 py-2 rounded-xl font-bold">🎬 Export 5s Video</button>
+              </div>
+            </div>
+          </div>
+        ` : `
+          <div class="ng-card p-4 space-y-3 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label class="p-3 rounded-2xl bg-white/5 border border-indigo-400/35 text-center cursor-pointer font-bold text-indigo-200">🎬 1. Upload Movie / Reference Photo<input id="v5RefImgInp" type="file" accept="image/*" class="hidden"/></label>
+              <label class="p-3 rounded-2xl bg-white/5 border border-emerald-400/35 text-center cursor-pointer font-bold text-emerald-200">📸 2. Upload Your Target Photo<input id="v5TgtImgInp" type="file" accept="image/*" class="hidden"/></label>
+            </div>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2"><span>Extracted Palette:</span><div id="v5ColorSwatches" class="flex gap-1.5"></div></div>
+              <label class="flex items-center gap-2">Intensity (${cm.matchStrength}%) <input id="v5MatchStrInp" type="range" min="15" max="100" value="${cm.matchStrength}" class="w-32 studio-slider"/></label>
+              <button type="button" id="v5RunMatchBtn" class="btn-primary px-4 py-2 rounded-xl font-bold">✨ Transfer Look Now</button>
+              <button type="button" id="v5DownloadMatchBtn" class="btn-secondary px-3 py-2 rounded-xl font-bold">⬇ Download PNG</button>
+            </div>
+            <canvas id="v5ColorMatchCanvas" width="720" height="480" class="w-full max-h-[52dvh] object-contain rounded-xl bg-black border border-white/10"></canvas>
+          </div>
+        `}
+      </div>
+    `;
+    if (cm.tab === 'cinemagraph') { bindCinemagraphBrush(); startCinemagraphLoop(); }
+  }
+
+  /* ==========================================================================
+     MODULE 32: E-COMMERCE PRODUCT STUDIO, OLD PHOTO RESTORER & CLOUD AI / PWA
+     ========================================================================== */
+  const ec = {
+    tab: 'product', // product | restore | aipwa
+    prodImg: null,
+    podium: 'white', // white | marble | wood | velvet
+    prodTitle: 'PREMIUM EDITION',
+    prodPrice: '₹499 • Free Delivery',
+    restImg: null,
+    colorizeAmt: 55,
+    contrastAmt: 70,
+    sttActive: false,
+    sttRec: null,
+    sttText: ''
+  };
+
+  function renderProductCanvas() {
+    const c = document.getElementById('v5ProdCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const w = c.width, h = c.height;
+    if (ec.podium === 'white') {
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h);
+      const pg = ctx.createLinearGradient(0, h * 0.72, 0, h);
+      pg.addColorStop(0, '#f1f5f9'); pg.addColorStop(1, '#e2e8f0');
+      ctx.fillStyle = pg; ctx.fillRect(0, h * 0.72, w, h * 0.28);
+    } else if (ec.podium === 'marble') {
+      const g = ctx.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#f8fafc'); g.addColorStop(1, '#cbd5e1');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = '#e2e8f0'; ctx.fillRect(0, h * 0.72, w, h * 0.28);
+    } else if (ec.podium === 'wood') {
+      const g = ctx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#fef3c7'); g.addColorStop(0.72, '#fde68a'); g.addColorStop(0.72, '#92400e'); g.addColorStop(1, '#451a03');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    } else {
+      const g = ctx.createRadialGradient(w / 2, h * 0.4, 40, w / 2, h / 2, w * 0.7);
+      g.addColorStop(0, '#312e81'); g.addColorStop(1, '#09090b');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    }
+
+    // Soft realistic contact shadow
+    ctx.save();
+    const sh = ctx.createRadialGradient(w / 2, h * 0.75, 10, w / 2, h * 0.75, w * 0.28);
+    sh.addColorStop(0, 'rgba(0,0,0,0.42)'); sh.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = sh; ctx.fillRect(w * 0.15, h * 0.65, w * 0.7, h * 0.2);
+    ctx.restore();
+
+    if (ec.prodImg) {
+      const sc = Math.min((w * 0.62) / ec.prodImg.width, (h * 0.58) / ec.prodImg.height);
+      const dw = ec.prodImg.width * sc, dh = ec.prodImg.height * sc;
+      ctx.drawImage(ec.prodImg, (w - dw) / 2, h * 0.73 - dh, dw, dh);
+    } else {
+      ctx.fillStyle = ec.podium === 'velvet' ? '#e2e8f0' : '#475569';
+      ctx.font = '700 26px system-ui'; ctx.textAlign = 'center';
+      ctx.fillText('Upload Product Photo for Studio Podium', w / 2, h * 0.45);
+    }
+
+    // Marketplace Badges
+    ctx.fillStyle = '#111827';
+    ctx.beginPath(); ctx.roundRect(36, 36, 360, 62, 16); ctx.fill();
+    ctx.fillStyle = '#fbbf24'; ctx.font = '900 30px system-ui'; ctx.textAlign = 'left';
+    ctx.fillText('⭐ ' + ec.prodTitle, 56, 77);
+
+    ctx.fillStyle = '#10b981';
+    ctx.beginPath(); ctx.roundRect(36, h - 102, 340, 64, 16); ctx.fill();
+    ctx.fillStyle = '#ffffff'; ctx.font = '900 30px system-ui';
+    ctx.fillText(ec.prodPrice, 56, h - 60);
+  }
+
+  function runOldPhotoRestore() {
+    const c = document.getElementById('v5RestoreCanvas');
+    if (!c || !ec.restImg) { toast('Pehle purani ya B&W photo upload karein!', 'error'); return; }
+    c.width = Math.min(1080, ec.restImg.width);
+    c.height = Math.round(c.width * (ec.restImg.height / ec.restImg.width));
+    const ctx = c.getContext('2d');
+    ctx.drawImage(ec.restImg, 0, 0, c.width, c.height);
+    const img = ctx.getImageData(0, 0, c.width, c.height);
+    const d = img.data;
+    // Auto histogram stretch (un-fade old photos)
+    let lo = 255, hi = 0;
+    for (let i = 0; i < d.length; i += 4) {
+      const l = 0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2];
+      if (l < lo) lo = l; if (l > hi) hi = l;
+    }
+    const span = Math.max(20, hi - lo);
+    const cStr = ec.contrastAmt / 100;
+    const colStr = ec.colorizeAmt / 100;
+    for (let i = 0; i < d.length; i += 4) {
+      let r = ((d[i] - lo) / span) * 255;
+      let g = ((d[i+1] - lo) / span) * 255;
+      let b = ((d[i+2] - lo) / span) * 255;
+      r = d[i] * (1 - cStr) + r * cStr;
+      g = d[i+1] * (1 - cStr) + g * cStr;
+      b = d[i+2] * (1 - cStr) + b * cStr;
+      // Natural warm skin + sky-tint colorizer for B&W photos
+      const lum = (r + g + b) / 3;
+      const nr = Math.min(255, r + colStr * (lum > 110 ? 28 : 10));
+      const ng = Math.min(255, g + colStr * (lum > 110 ? 12 : 4));
+      const nb = Math.max(0, Math.min(255, b + colStr * (lum > 180 ? 18 : -16)));
+      d[i] = Math.max(0, Math.min(255, nr));
+      d[i+1] = Math.max(0, Math.min(255, ng));
+      d[i+2] = Math.max(0, Math.min(255, nb));
+    }
+    ctx.putImageData(img, 0, 0);
+    toast('✨ Old Photo Restored & Naturally Colorized!', 'success');
+  }
+
+  function downloadPwaFiles() {
+    const manifest = {
+      name: 'Maha AI STUDIO — Next-Gen Suite',
+      short_name: 'Maha AI',
+      start_url: './v1.html',
+      display: 'standalone',
+      background_color: '#07080d',
+      theme_color: '#07080d',
+      icons: [{ src: 'icon-512.png', sizes: '512x512', type: 'image/png' }]
+    };
+    const a1 = document.createElement('a');
+    a1.href = URL.createObjectURL(new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' }));
+    a1.download = 'manifest.json'; a1.click();
+    const swCode = `const CACHE='maha-ai-v5';self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./','./v1.html']))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+    setTimeout(() => {
+      const a2 = document.createElement('a');
+      a2.href = URL.createObjectURL(new Blob([swCode], { type: 'application/javascript' }));
+      a2.download = 'sw.js'; a2.click();
+    }, 350);
+    toast('📦 Downloaded manifest.json + sw.js! Put both beside v1.html for 100% Offline PWA Install.', 'success');
+  }
+
+  function renderEcomRestoreUI() {
+    const root = document.getElementById('v5EcomRestoreRoot');
+    if (!root) return;
+    let savedKeys = { gemini: '', removebg: '', endpoint: '' };
+    try { savedKeys = { ...savedKeys, ...JSON.parse(localStorage.getItem('maha_cloud_ai_keys_v5') || '{}') }; } catch (_) {}
+
+    root.innerHTML = `
+      <div class="space-y-4 fade-in">
+        <div>
+          <h2 class="text-xl font-extrabold text-white">🛍️ E-Commerce Product Studio, Old Photo Restorer &amp; Cloud AI / PWA Hub</h2>
+          <p class="text-xs text-slate-400">Amazon/Flipkart/Meesho product shots banayein, purani B&amp;W photos restore karein, Hindi/EN live subtitles generate karein aur offline PWA export karein.</p>
+        </div>
+        <div class="grid grid-cols-3 gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl text-xs">
+          <button type="button" data-ec-tab="product" class="ng-tab-btn py-2 rounded-xl font-bold ${ec.tab==='product'?'active':'text-slate-300'}">🛍️ Product Studio</button>
+          <button type="button" data-ec-tab="restore" class="ng-tab-btn py-2 rounded-xl font-bold ${ec.tab==='restore'?'active':'text-slate-300'}">🕰️ Old Photo Restorer</button>
+          <button type="button" data-ec-tab="aipwa" class="ng-tab-btn py-2 rounded-xl font-bold ${ec.tab==='aipwa'?'active':'text-slate-300'}">☁️ AI Keys, STT &amp; PWA</button>
+        </div>
+
+        ${ec.tab === 'product' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 text-xs">
+            <div class="lg:col-span-7 ng-card p-3 flex justify-center">
+              <canvas id="v5ProdCanvas" width="900" height="900" class="max-w-full max-h-[56dvh] rounded-xl border border-white/10"></canvas>
+            </div>
+            <div class="lg:col-span-5 ng-card p-3.5 space-y-2.5">
+              <label class="btn-primary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">📂 Upload Product Photo<input id="v5ProdImgInp" type="file" accept="image/*" class="hidden"/></label>
+              <div class="grid grid-cols-2 gap-1.5">
+                ${[['white','⬜ Pure White'],['marble','🏛️ Luxury Marble'],['wood','🪵 Warm Wood'],['velvet','👑 Dark Velvet']].map(([k,lbl]) => `
+                  <button type="button" data-ec-pod="${k}" class="py-2 rounded-xl font-bold border ${ec.podium===k?'bg-indigo-600 border-indigo-300 text-white':'bg-white/5 border-white/10 text-slate-300'}">${lbl}</button>
+                `).join('')}
+              </div>
+              <input id="v5ProdTitleInp" type="text" value="${ec.prodTitle}" placeholder="Top Badge" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="v5ProdPriceInp" type="text" value="${ec.prodPrice}" placeholder="Price / Offer Tag" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <button type="button" id="v5ProdExpBtn" class="btn-primary w-full py-2.5 rounded-xl font-extrabold">⬇ Export Marketplace HD PNG</button>
+            </div>
+          </div>
+        ` : ec.tab === 'restore' ? `
+          <div class="ng-card p-4 space-y-3 text-xs">
+            <div class="flex flex-wrap items-center gap-2">
+              <label class="btn-primary px-3.5 py-2 rounded-xl font-bold cursor-pointer">📂 Upload Old / B&amp;W Photo<input id="v5RestImgInp" type="file" accept="image/*" class="hidden"/></label>
+              <button type="button" id="v5RunRestBtn" class="px-3.5 py-2 rounded-xl font-bold bg-emerald-600 text-white">✨ Restore &amp; Colorize</button>
+              <button type="button" id="v5DownRestBtn" class="btn-secondary px-3 py-2 rounded-xl font-bold">⬇ Download Restored PNG</button>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <label>Un-Fade Contrast (${ec.contrastAmt}%) <input id="v5RestConInp" type="range" min="10" max="100" value="${ec.contrastAmt}" class="w-full studio-slider"/></label>
+              <label>Natural Colorize (${ec.colorizeAmt}%) <input id="v5RestColInp" type="range" min="0" max="100" value="${ec.colorizeAmt}" class="w-full studio-slider"/></label>
+            </div>
+            <canvas id="v5RestoreCanvas" width="720" height="480" class="w-full max-h-[52dvh] object-contain rounded-xl bg-black border border-white/10"></canvas>
+          </div>
+        ` : `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="ng-card p-4 space-y-2.5">
+              <div class="font-extrabold text-white text-sm">🎙️ Auto Hindi/English Speech-to-Text Subtitles</div>
+              <p class="text-slate-400">Mic par bolein — live Hindi/EN captions banenge jinhe aap direct Video Karaoke Captions mein paste kar sakte hain!</p>
+              <button type="button" id="v5SttToggleBtn" class="btn-primary w-full py-2 rounded-xl font-bold">${ec.sttActive?'⏹ Stop Listening':'🎙️ Start Live Hindi/EN Subtitles'}</button>
+              <textarea id="v5SttOut" rows="4" class="w-full bg-slate-900 border border-white/15 rounded-xl p-2.5 text-white" placeholder="Aapki boli hui captions yahan aayengi...">${ec.sttText}</textarea>
+            </div>
+            <div class="ng-card p-4 space-y-2.5">
+              <div class="font-extrabold text-white text-sm">☁️ Cloud AI Connectors &amp; 100% Offline PWA Kit</div>
+              <input id="v5KeyGemini" type="password" value="${savedKeys.gemini}" placeholder="Optional Gemini API Key" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="v5KeyRemBg" type="password" value="${savedKeys.removebg}" placeholder="Optional Remove.bg API Key" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="v5KeyEndp" type="text" value="${savedKeys.endpoint}" placeholder="Custom AI Endpoint URL (https://...)" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <div class="flex gap-2">
+                <button type="button" id="v5SaveKeysBtn" class="btn-primary flex-1 py-2 rounded-xl font-bold">💾 Save AI Keys</button>
+                <button type="button" id="v5DownPwaBtn" class="btn-secondary flex-1 py-2 rounded-xl font-bold text-amber-200">📦 Download PWA Kit</button>
+              </div>
+            </div>
+          </div>
+        `}
+      </div>
+    `;
+    if (ec.tab === 'product') renderProductCanvas();
+  }
+
+  /* ==========================================================================
+     GLOBAL EVENT DELEGATION FOR v5 MODULES
+     ========================================================================== */
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+
+    // Module 30 Broadcast
+    const bt = t.closest('[data-bc-tab]');
+    if (bt) { stopBroadcastStreams(); bc.tab = bt.getAttribute('data-bc-tab'); renderBroadcastUI(); return; }
+    if (t.closest('#v5ScreenStartBtn')) { startScreenFacecamPreview(); return; }
+    if (t.closest('#v5ScreenRecBtn')) { toggleScreenRecording(); return; }
+    if (t.closest('#v5ScreenPenBtn')) { bc.penOn = !bc.penOn; renderBroadcastUI(); return; }
+    if (t.closest('#v5ScreenClearPenBtn')) { bc.penStrokes = []; return; }
+    if (t.closest('#v5PrompCamBtn')) { startPrompterCamera(); return; }
+    if (t.closest('#v5PrompPlayBtn')) {
+      bc.scrolling = !bc.scrolling;
+      const b = document.getElementById('v5PrompPlayBtn');
+      if (b) b.textContent = bc.scrolling ? '⏸ Pause Scroll' : '▶ Start Auto-Scroll';
+      if (bc.scrolling) runPrompterScrollLoop();
+      return;
+    }
+    if (t.closest('#v5PrompRecBtn')) {
+      if (!bc.camStream) { toast('Pehle Start Camera dabayein!', 'error'); return; }
+      if (bc.recording && bc.rec) { bc.rec.stop(); bc.recording = false; toast('🎬 Teleprompter Take saved!', 'success'); return; }
+      bc.chunks = []; bc.rec = new MediaRecorder(bc.camStream, { mimeType: 'video/webm' });
+      bc.rec.ondataavailable = (ev) => { if (ev.data.size) bc.chunks.push(ev.data); };
+      bc.rec.onstop = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(bc.chunks, { type: 'video/webm' })); a.download = `Teleprompter_${Date.now()}.webm`; a.click(); };
+      bc.rec.start(); bc.recording = true; toast('⏺ Recording Teleprompter Video... Tap again to stop.', 'info');
+      return;
+    }
+    if (t.closest('#v5SmCamBtn')) { startStopMotionCam(); return; }
+    if (t.closest('#v5SmCapBtn')) { captureStopMotionFrame(); return; }
+    if (t.closest('#v5SmTlBtn')) {
+      if (bc.tlTimer) { clearInterval(bc.tlTimer); bc.tlTimer = null; toast('Time-Lapse stopped', 'info'); }
+      else { bc.tlTimer = setInterval(captureStopMotionFrame, 2000); toast('⏱️ Auto Time-Lapse ON (every 2s)!', 'success'); }
+      return;
+    }
+    if (t.closest('#v5SmExpBtn')) { exportStopMotionVideo(); return; }
+
+    // Module 31 Cinemagraph & Color Match
+    const ct = t.closest('[data-cm-tab]');
+    if (ct) { cm.tab = ct.getAttribute('data-cm-tab'); renderCinemaColorUI(); return; }
+    if (t.closest('#v5CmClearMaskBtn')) { cm.maskCanvas = null; toast('Mask cleared', 'info'); return; }
+    if (t.closest('#v5CmExportVidBtn')) {
+      const c = document.getElementById('v5CinemaCanvas');
+      if (!c || typeof MediaRecorder === 'undefined') return;
+      const rec = new MediaRecorder(c.captureStream(30), { mimeType: 'video/webm' });
+      const ch = []; rec.ondataavailable = (ev) => { if (ev.data.size) ch.push(ev.data); };
+      rec.onstop = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(ch, { type: 'video/webm' })); a.download = `LivingPhoto_${Date.now()}.webm`; a.click(); toast('🌊 5s Living Photo Video exported!', 'success'); };
+      rec.start(); toast('⏺ Recording 5s Living Photo...', 'info');
+      setTimeout(() => { if (rec.state === 'recording') rec.stop(); }, 5000);
+      return;
+    }
+    if (t.closest('#v5RunMatchBtn')) { runStealTheLookColorTransfer(); return; }
+    if (t.closest('#v5DownloadMatchBtn')) {
+      const c = document.getElementById('v5ColorMatchCanvas');
+      if (c) { const a = document.createElement('a'); a.download = `ColorMatched_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); }
+      return;
+    }
+
+    // Module 32 E-Commerce, Restorer & AI/PWA
+    const et = t.closest('[data-ec-tab]');
+    if (et) { ec.tab = et.getAttribute('data-ec-tab'); renderEcomRestoreUI(); return; }
+    const ep = t.closest('[data-ec-pod]');
+    if (ep) { ec.podium = ep.getAttribute('data-ec-pod'); renderEcomRestoreUI(); return; }
+    if (t.closest('#v5ProdExpBtn')) {
+      const c = document.getElementById('v5ProdCanvas');
+      if (c) { const a = document.createElement('a'); a.download = `Marketplace_Product_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); toast('🛍️ HD Marketplace Product PNG exported!', 'success'); }
+      return;
+    }
+    if (t.closest('#v5RunRestBtn')) { runOldPhotoRestore(); return; }
+    if (t.closest('#v5DownRestBtn')) {
+      const c = document.getElementById('v5RestoreCanvas');
+      if (c) { const a = document.createElement('a'); a.download = `Restored_Photo_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); }
+      return;
+    }
+    if (t.closest('#v5SttToggleBtn')) {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { toast('Live Speech-to-Text works in Chrome / Edge over HTTPS.', 'error'); return; }
+      if (ec.sttActive && ec.sttRec) { ec.sttRec.stop(); ec.sttActive = false; renderEcomRestoreUI(); return; }
+      ec.sttRec = new SR(); ec.sttRec.lang = 'hi-IN'; ec.sttRec.continuous = true; ec.sttRec.interimResults = true;
+      ec.sttRec.onresult = (ev) => {
+        let txt = '';
+        for (let i = 0; i < ev.results.length; i++) txt += ev.results[i][0].transcript + ' ';
+        ec.sttText = txt.trim();
+        const box = document.getElementById('v5SttOut'); if (box) box.value = ec.sttText;
+      };
+      ec.sttRec.onend = () => { ec.sttActive = false; };
+      ec.sttRec.start(); ec.sttActive = true; renderEcomRestoreUI();
+      toast('🎙️ Listening in Hindi/English...', 'success');
+      return;
+    }
+    if (t.closest('#v5SaveKeysBtn')) {
+      const obj = {
+        gemini: document.getElementById('v5KeyGemini')?.value || '',
+        removebg: document.getElementById('v5KeyRemBg')?.value || '',
+        endpoint: document.getElementById('v5KeyEndp')?.value || ''
+      };
+      try { localStorage.setItem('maha_cloud_ai_keys_v5', JSON.stringify(obj)); } catch (_) {}
+      toast('☁️ Cloud AI Connectors saved locally!', 'success');
+      return;
+    }
+    if (t.closest('#v5DownPwaBtn')) { downloadPwaFiles(); return; }
+  });
+
+  document.addEventListener('input', (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 'v5PrompScriptInp') { bc.script = el.value; const b = document.getElementById('v5PrompterScrollBox'); if (b) b.innerHTML = bc.script.replace(/\n/g,'<br/>'); }
+    if (el.id === 'v5PrompSpdInp') bc.speed = Number(el.value);
+    if (el.id === 'v5PrompSizeInp') { bc.fontSize = Number(el.value); const b = document.getElementById('v5PrompterScrollBox'); if (b) b.style.fontSize = bc.fontSize + 'px'; }
+    if (el.id === 'v5SmGhostInp') { bc.onionAlpha = Number(el.value); const g = document.getElementById('v5SmGhostImg'); if (g) g.style.opacity = String(bc.onionAlpha); }
+    if (el.id === 'v5CmSpdInp') cm.speed = Number(el.value);
+    if (el.id === 'v5MatchStrInp') cm.matchStrength = Number(el.value);
+    if (el.id === 'v5ProdTitleInp') { ec.prodTitle = el.value; renderProductCanvas(); }
+    if (el.id === 'v5ProdPriceInp') { ec.prodPrice = el.value; renderProductCanvas(); }
+    if (el.id === 'v5RestConInp') ec.contrastAmt = Number(el.value);
+    if (el.id === 'v5RestColInp') ec.colorizeAmt = Number(el.value);
+  });
+
+  document.addEventListener('change', (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 'v5PrompMirrorChk') { bc.mirror = el.checked; const b = document.getElementById('v5PrompterScrollBox'); if (b) b.style.transform = bc.mirror ? 'scaleX(-1)' : 'none'; }
+    if (el.id === 'v5CmFxSel') cm.fxType = el.value;
+    if (el.id === 'v5CmImgInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => { cm.img = im; cm.maskCanvas = null; }; im.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'v5RefImgInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => { cm.refImg = im; toast('🎬 Movie Reference loaded!', 'success'); }; im.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'v5TgtImgInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => { cm.tgtImg = im; toast('📸 Target Photo loaded! Tap Transfer Look.', 'success'); }; im.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'v5ProdImgInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => { ec.prodImg = im; renderProductCanvas(); }; im.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'v5RestImgInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => { ec.restImg = im; runOldPhotoRestore(); }; im.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+  });
+
+  function syncV5Mounts() {
+    const bRoot = document.getElementById('v5BroadcastRoot');
+    if (bRoot && !bRoot.dataset.v5m) { bRoot.dataset.v5m = '1'; renderBroadcastUI(); }
+    const cRoot = document.getElementById('v5CinemaColorRoot');
+    if (cRoot && !cRoot.dataset.v5m) { cRoot.dataset.v5m = '1'; renderCinemaColorUI(); }
+    const eRoot = document.getElementById('v5EcomRestoreRoot');
+    if (eRoot && !eRoot.dataset.v5m) { eRoot.dataset.v5m = '1'; renderEcomRestoreUI(); }
+  }
+
+  const mo = new MutationObserver(() => requestAnimationFrame(syncV5Mounts));
+  mo.observe(document.body, { childList: true, subtree: true });
+  setInterval(syncV5Mounts, 750);
+  syncV5Mounts();
 })();
 </script>
 
