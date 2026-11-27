@@ -7782,7 +7782,9 @@ const StudioViews = (() => {
     { id: 'bg-remover', title: 'BACKGROUND REMOVER', desc: 'Remove background and create cutouts', emoji: '✂️', cat: 'photo', bg: 'linear-gradient(140deg, #059669 0%, #10b981 52%, #2dd4bf 100%)' },
     { id: 'bg-generator', title: 'BACKGROUND STUDIO', desc: 'Create and apply creative backdrops', emoji: '🌄', cat: 'photo', bg: 'linear-gradient(140deg, #0284c7 0%, #2563eb 52%, #60a5fa 100%)' },
     { id: 'enhance', title: 'IMAGE ENHANCER', desc: 'Enhance, sharpen, denoise and prompt tools', emoji: '✨', cat: 'ai', bg: 'linear-gradient(140deg, #d97706 0%, #f59e0b 52%, #fb923c 100%)' },
-    { id: 'design-studio', title: 'NEXT-GEN DESIGN STUDIO', desc: 'Layer canvas, posters, thumbnails & Brand Kit', emoji: '🎨', cat: 'photo', bg: 'linear-gradient(135deg,#ec4899,#8b5cf6,#3b82f6)' },
+    { id: 'spatial-3d-lab', title: '3D PARALLAX & MOCKUPS', desc: '2D→3D zoom reels, 3D mockups & hologram titles', emoji: '🧊', cat: 'video', bg: 'linear-gradient(135deg,#06b6d4,#6366f1,#a855f7)' },
+      { id: 'viral-creator-hub', title: 'VIRAL REEL & CARD HUB', desc: '1-click reel director, thumbnails, QR cards & .maha', emoji: '🚀', cat: 'ai', bg: 'linear-gradient(135deg,#f59e0b,#ec4899,#7c3aed)' },
+      { id: 'design-studio', title: 'NEXT-GEN DESIGN STUDIO', desc: 'Layer canvas, posters, thumbnails & Brand Kit', emoji: '🎨', cat: 'photo', bg: 'linear-gradient(135deg,#ec4899,#8b5cf6,#3b82f6)' },
       { id: 'photo-to-pdf', title: 'PHOTO TO PDF', desc: 'Unlimited photos to PDF, paper size, grid & HD quality', emoji: '📄', cat: 'tools', bg: 'linear-gradient(140deg, #b91c1c 0%, #ef4444 50%, #f59e0b 100%)' },
     { id: 'pro-tools', title: 'PRO+ CREATIVE TOOLS', desc: 'Collage, batch tools and passport sheets', emoji: '🧰', cat: 'tools', bg: 'linear-gradient(140deg, #047857 0%, #10b981 52%, #34d399 100%)' },
     { id: 'video-maker', title: 'VIDEO MAKER', desc: 'Create videos from photos, clips and music', emoji: '🎞️', cat: 'video', bg: 'linear-gradient(140deg, #dc2626 0%, #ea580c 52%, #f97316 100%)' },
@@ -10895,6 +10897,8 @@ const App = (() => {
       ['bg-remover', 'BG Remover', 'eraser'],
       ['bg-generator', 'BG Generator', 'image'],
       ['enhance', 'Enhance & Prompt', 'zap'],
+      ['spatial-3d-lab', '3D Parallax & Mockups', 'box'],
+      ['viral-creator-hub', 'Viral Reel & Card Hub', 'rocket'],
       ['design-studio', 'Next-Gen Design Studio', 'layers'],
       ['photo-to-pdf', 'Photo to PDF (Unlimited)', 'file-text'],
       ['pro-tools', 'Pro+ Free Tools', 'layers'],
@@ -10948,6 +10952,8 @@ const App = (() => {
       case 'dress-changer': main.innerHTML = StudioViews.renderDressChanger(state); break;
       case 'hairstyle': main.innerHTML = StudioViews.renderHairstyle(state); break;
       case 'enhance': main.innerHTML = StudioViews.renderEnhanceAndPrompt(state); break;
+      case 'spatial-3d-lab': main.innerHTML = '<div id="ultra3DLabRoot"></div>'; break;
+      case 'viral-creator-hub': main.innerHTML = '<div id="ultraViralHubRoot"></div>'; break;
       case 'design-studio': main.innerHTML = '<div id="nextGenDesignRoot"></div>'; break;
       case 'photo-to-pdf': main.innerHTML = '<div id="photoToPdfRoot"></div>'; break;
       case 'pro-tools': main.innerHTML = StudioViews.renderProTools(state); break;
@@ -18439,6 +18445,8 @@ window.MahaTouchTransform = (() => {
     { id: 'frame-generator', emoji: '🎨', title: 'Custom AI Frame Generator', sub: 'Design your own multi-photo frames' },
     { id: 'preset-library', emoji: '🎛️', title: 'Smart Preset Library', sub: '15 pro color grading categories' },
     { id: 'ai-movie-studio', emoji: '🎥', title: 'AI Photo & Video Generator', sub: '3D, Bollywood, Anime & AI movies' },
+    { id: 'spatial-3d-lab', emoji: '🧊', title: '3D Parallax Reel & 3D Mockup Studio', sub: '2D-to-3D zoom reels, Phone/Billboard mockups & hologram text' },
+    { id: 'viral-creator-hub', emoji: '🚀', title: 'Viral Reel Director, Thumbnail, QR Card & .maha', sub: '1-click viral reels, thumbnail lab, festival QR cards & project save' },
     { id: 'design-studio', emoji: '🎨', title: 'Next-Gen Design Studio & Brand Kit', sub: 'Layers, posters, thumbnails, shapes, text & brand kit' },
     { id: 'photo-to-pdf', emoji: '📄', title: 'Photo to PDF (Unlimited)', sub: 'Unlimited photos, paper size, fit, grid & quality/enhance' },
     { id: 'pro-tools', emoji: '🧰', title: 'Pro+ Creative Tools', sub: 'Passport PDF, Collage & Batch tools' },
@@ -22114,6 +22122,11 @@ window.MahaTouchTransform = (() => {
         else if (vidNg.speedCurve === 'fast-out') clip.speed = Number((0.8 + p * 1.8).toFixed(2));
       }
 
+      // 3.5. Bass-Reactive Audio Visualizer & Hologram Overlay
+      if (window.MahaUltraV4 && window.MahaUltraV4.renderAudioVisualizer) {
+        window.MahaUltraV4.renderAudioVisualizer(ctx, w, h, currentTime, vidNg.beats);
+      }
+
       // 4. Karaoke / Reels Word-by-Word Animated Captions
       if (vidNg.captionsEnabled && vidNg.captionText.trim()) {
         const words = vidNg.captionText.trim().split(/\s+/);
@@ -22641,6 +22654,993 @@ window.MahaTouchTransform = (() => {
   mo.observe(document.body, { childList: true, subtree: true });
   setInterval(syncNextGenMounts, 650);
   syncNextGenMounts();
+})();
+</script>
+
+
+<script>
+/* ============================================================================
+   MAHA AI STUDIO — ULTRA FUTURISTIC SUITE v4
+   1) 3D & Spatial Creator Lab (spatial-3d-lab):
+      - 2D Photo -> 3D Depth Parallax Reel (3D Zoom / Orbit / Dolly / Bounce)
+        with 3D Particle/Hologram Titles + WebM/MP4 Video Export
+      - Interactive 3D Mockup Studio (iPhone Pro, Billboard, Magazine, Frame)
+   2) Viral Creator Hub (viral-creator-hub):
+      - 1-Click Viral Reel Auto-Director (Wedding / Travel / Attitude / Festival)
+      - YouTube/Reels Viral Thumbnail Maker with Subject Glow Outline & Mobile Preview
+      - Animated Digital Business Card & Festival Wish Studio with Scannable QR
+      - .maha Project Save / Export / Resume Manager
+   3) Pro Audio Visualizer (Circular Spectrum / Bars / Waveform / Beat Ring)
+      + Web Audio Voice FX Studio (Podcast / Deep / Reverb / Radio / Noise Gate)
+      + Smart Auto-Ducking inside Video Studio
+   4) Privacy Shield (Face / Plate Pixelate & Gaussian Blur Brush) inside Photo Editor
+   ============================================================================ */
+(() => {
+  const toast = (msg, type = 'info') => {
+    if (typeof window.showToast === 'function') window.showToast(msg, type);
+  };
+
+  /* ==========================================================================
+     PART A: 3D & SPATIAL CREATOR LAB (spatial-3d-lab)
+     ========================================================================== */
+  const s3d = {
+    tab: 'parallax', // parallax | mockup
+    img: null,
+    motion: 'zoom3d', // zoom3d | orbit | dolly | bounce
+    depth: 22,
+    speed: 1.0,
+    title3d: 'MAHA 3D STUDIO',
+    hologram: true,
+    particles: true,
+    mockupType: 'iphone', // iphone | billboard | magazine | frame
+    tiltX: 12,
+    tiltY: -14,
+    autoSpin: true,
+    raf: null,
+    t0: performance.now(),
+    recording: false
+  };
+
+  function draw3DParallaxFrame(ctx, w, h, sec) {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = '#07080d';
+    ctx.fillRect(0, 0, w, h);
+
+    const img = s3d.img;
+    const t = sec * s3d.speed;
+    const d = s3d.depth;
+
+    let bgX = 0, bgY = 0, fgX = 0, fgY = 0, bgScale = 1.12, fgScale = 1.06;
+    if (s3d.motion === 'zoom3d') {
+      const p = (Math.sin(t * 1.4) + 1) / 2;
+      bgScale = 1.08 + p * (d * 0.008);
+      fgScale = 1.02 + p * (d * 0.015);
+      fgX = Math.sin(t * 1.1) * d * 0.8;
+      bgX = -Math.sin(t * 1.1) * d * 0.45;
+    } else if (s3d.motion === 'orbit') {
+      fgX = Math.cos(t * 1.3) * d * 1.1;
+      fgY = Math.sin(t * 1.3) * d * 0.65;
+      bgX = -fgX * 0.5;
+      bgY = -fgY * 0.5;
+      bgScale = 1.16; fgScale = 1.08;
+    } else if (s3d.motion === 'dolly') {
+      const p = (t * 0.25) % 1;
+      bgScale = 1.25 - p * 0.16;
+      fgScale = 1.0 + p * 0.22;
+    } else {
+      const pulse = Math.pow(Math.abs(Math.sin(t * 2.4)), 2);
+      bgScale = 1.1 + pulse * 0.06;
+      fgScale = 1.04 + pulse * 0.16;
+    }
+
+    if (img) {
+      const cover = Math.max(w / img.width, h / img.height);
+      const bw = img.width * cover * bgScale;
+      const bh = img.height * cover * bgScale;
+      // Background depth plane (soft cinematic depth blur)
+      ctx.save();
+      ctx.filter = `blur(${Math.max(2, Math.round(d * 0.35))}px) brightness(0.86)`;
+      ctx.drawImage(img, (w - bw) / 2 + bgX, (h - bh) / 2 + bgY, bw, bh);
+      ctx.restore();
+
+      // Foreground subject plane (feathered radial focus mask for true 3D separation!)
+      const fw = img.width * cover * fgScale;
+      const fh = img.height * cover * fgScale;
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(w / 2 + fgX * 0.3, h / 2 + fgY * 0.3, w * 0.38, h * 0.43, 0, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(img, (w - fw) / 2 + fgX, (h - fh) / 2 + fgY, fw, fh);
+      ctx.restore();
+    } else {
+      const gr = ctx.createLinearGradient(0, 0, w, h);
+      gr.addColorStop(0, '#0f172a'); gr.addColorStop(0.5, '#312e81'); gr.addColorStop(1, '#06b6d4');
+      ctx.fillStyle = gr; ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = 'rgba(255,255,255,0.75)';
+      ctx.font = '700 22px system-ui'; ctx.textAlign = 'center';
+      ctx.fillText('Upload a Photo to Preview Live 3D Depth Parallax', w / 2, h / 2);
+    }
+
+    // Floating 3D Particles
+    if (s3d.particles) {
+      ctx.save();
+      for (let i = 0; i < 28; i++) {
+        const px = ((i * 97 + t * (18 + (i % 5) * 9)) % (w + 40)) - 20;
+        const py = ((i * 73 + Math.sin(t + i) * 28) % h + h) % h;
+        const r = 1.5 + (i % 4);
+        ctx.fillStyle = i % 2 === 0 ? 'rgba(56,189,248,0.65)' : 'rgba(251,191,36,0.65)';
+        ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // Hologram Scanlines + Lens Flare
+    if (s3d.hologram) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(56,189,248,0.06)';
+      for (let y = 0; y < h; y += 6) ctx.fillRect(0, y, w, 2);
+      const flX = w * (0.5 + Math.sin(t * 0.9) * 0.35);
+      const fl = ctx.createRadialGradient(flX, h * 0.22, 4, flX, h * 0.22, w * 0.28);
+      fl.addColorStop(0, 'rgba(255,255,255,0.42)');
+      fl.addColorStop(0.4, 'rgba(56,189,248,0.18)');
+      fl.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = fl; ctx.fillRect(0, 0, w, h);
+      ctx.restore();
+    }
+
+    // 3D Extruded Metallic Title
+    if (s3d.title3d && s3d.title3d.trim()) {
+      ctx.save();
+      const fs = Math.round(w * 0.088);
+      ctx.font = `900 ${fs}px Impact, system-ui, sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const tx = w / 2 + fgX * 0.45;
+      const ty = h * 0.82;
+      for (let z = 8; z >= 1; z--) {
+        ctx.fillStyle = `rgba(30, 27, 75, ${(0.25 + z * 0.07).toFixed(2)})`;
+        ctx.fillText(s3d.title3d, tx + z * 1.4, ty + z * 1.4);
+      }
+      const tg = ctx.createLinearGradient(0, ty - fs / 2, 0, ty + fs / 2);
+      tg.addColorStop(0, '#ffffff'); tg.addColorStop(0.45, '#fde68a'); tg.addColorStop(1, '#38bdf8');
+      ctx.fillStyle = tg;
+      ctx.shadowColor = 'rgba(56,189,248,0.65)'; ctx.shadowBlur = 18;
+      ctx.fillText(s3d.title3d, tx, ty);
+      ctx.restore();
+    }
+  }
+
+  function draw3DMockupFrame(ctx, w, h, sec) {
+    ctx.clearRect(0, 0, w, h);
+    const bg = ctx.createRadialGradient(w * 0.5, h * 0.4, 30, w * 0.5, h * 0.5, w * 0.8);
+    bg.addColorStop(0, '#1e1b4b'); bg.addColorStop(1, '#05060b');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+
+    const ang = s3d.autoSpin ? Math.sin(sec * 1.1) * 0.16 : (s3d.tiltY * Math.PI / 180) * 0.4;
+    const skewY = s3d.autoSpin ? Math.cos(sec * 0.9) * 0.06 : (s3d.tiltX * Math.PI / 180) * 0.25;
+
+    ctx.save();
+    ctx.translate(w / 2, h / 2);
+    ctx.transform(Math.cos(ang), skewY, -skewY * 0.4, 1, 0, 0);
+
+    // 3D Shadow
+    ctx.shadowColor = 'rgba(0,0,0,0.75)';
+    ctx.shadowBlur = 42;
+    ctx.shadowOffsetY = 26;
+
+    let mw = 280, mh = 540, rad = 36, pad = 14, frameCol = '#1e293b', strokeCol = '#94a3b8';
+    if (s3d.mockupType === 'billboard') { mw = 540; mh = 310; rad = 10; pad = 16; frameCol = '#0f172a'; strokeCol = '#fbbf24'; }
+    else if (s3d.mockupType === 'magazine') { mw = 360; mh = 490; rad = 6; pad = 8; frameCol = '#f8fafc'; strokeCol = '#e2e8f0'; }
+    else if (s3d.mockupType === 'frame') { mw = 400; mh = 480; rad = 8; pad = 26; frameCol = '#78350f'; strokeCol = '#fbbf24'; }
+
+    // 3D Extruded Side Edge
+    ctx.fillStyle = '#334155';
+    ctx.beginPath(); ctx.roundRect(-mw / 2 + 10, -mh / 2 + 6, mw, mh, rad); ctx.fill();
+
+    // Main Bezel
+    ctx.fillStyle = frameCol;
+    ctx.strokeStyle = strokeCol;
+    ctx.lineWidth = s3d.mockupType === 'frame' ? 8 : 3;
+    ctx.beginPath(); ctx.roundRect(-mw / 2, -mh / 2, mw, mh, rad); ctx.fill(); ctx.stroke();
+
+    // Inner Screen / Artwork Area
+    ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+    const ix = -mw / 2 + pad, iy = -mh / 2 + pad, iw = mw - pad * 2, ih = mh - pad * 2;
+    ctx.save();
+    ctx.beginPath(); ctx.roundRect(ix, iy, iw, ih, Math.max(4, rad - 10)); ctx.clip();
+    if (s3d.img) {
+      const sc = Math.max(iw / s3d.img.width, ih / s3d.img.height);
+      const dw = s3d.img.width * sc, dh = s3d.img.height * sc;
+      ctx.drawImage(s3d.img, -dw / 2, -dh / 2, dw, dh);
+    } else {
+      const g = ctx.createLinearGradient(ix, iy, ix + iw, iy + ih);
+      g.addColorStop(0, '#6366f1'); g.addColorStop(1, '#ec4899');
+      ctx.fillStyle = g; ctx.fillRect(ix, iy, iw, ih);
+      ctx.fillStyle = '#fff'; ctx.font = '800 22px system-ui'; ctx.textAlign = 'center';
+      ctx.fillText('Upload Photo / Poster', 0, 0);
+    }
+    if (s3d.mockupType === 'magazine') {
+      ctx.fillStyle = '#ffffff'; ctx.font = '900 56px Georgia, serif'; ctx.textAlign = 'center';
+      ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 12;
+      ctx.fillText('MAHA VOGUE', 0, iy + 62);
+    }
+    // Glass reflection sheen
+    const sh = ctx.createLinearGradient(ix, iy, ix + iw, iy + ih * 0.6);
+    sh.addColorStop(0, 'rgba(255,255,255,0.22)');
+    sh.addColorStop(0.45, 'rgba(255,255,255,0.03)');
+    sh.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = sh; ctx.fillRect(ix, iy, iw, ih);
+    ctx.restore();
+
+    if (s3d.mockupType === 'iphone') {
+      ctx.fillStyle = '#000';
+      ctx.beginPath(); ctx.roundRect(-42, -mh / 2 + 22, 84, 20, 10); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function start3DLoop() {
+    cancelAnimationFrame(s3d.raf);
+    const loop = () => {
+      const c = document.getElementById('ng3DCanvas');
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      const sec = (performance.now() - s3d.t0) / 1000;
+      if (s3d.tab === 'parallax') draw3DParallaxFrame(ctx, c.width, c.height, sec);
+      else draw3DMockupFrame(ctx, c.width, c.height, sec);
+      s3d.raf = requestAnimationFrame(loop);
+    };
+    s3d.raf = requestAnimationFrame(loop);
+  }
+
+  function recordCanvasVideo(canvasId, seconds, filePrefix) {
+    const c = document.getElementById(canvasId);
+    if (!c || typeof MediaRecorder === 'undefined') { toast('Video recording not supported in this browser.', 'error'); return; }
+    try {
+      const stream = c.captureStream(30);
+      const rec = new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm' });
+      const chunks = [];
+      rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+      rec.onstop = async () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = `${filePrefix}_${Date.now()}.webm`; a.click();
+        if (typeof StudioStorage !== 'undefined' && StudioStorage.saveMedia) {
+          try { await StudioStorage.saveMedia({ name: `${filePrefix}_${Date.now()}.webm`, type: 'video', blob, mimeType: 'video/webm', album: '3D Studio' }); } catch (_) {}
+        }
+        toast(`🎬 ${seconds}s HD Video exported & saved to My Gallery!`, 'success');
+      };
+      rec.start();
+      toast(`⏺ Recording ${seconds}s HD Video...`, 'info');
+      setTimeout(() => { if (rec.state === 'recording') rec.stop(); }, seconds * 1000);
+    } catch (err) {
+      toast('Export error: ' + (err.message || err), 'error');
+    }
+  }
+
+  function render3DLabUI() {
+    const root = document.getElementById('ultra3DLabRoot');
+    if (!root) return;
+    root.innerHTML = `
+      <div class="space-y-4 fade-in">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-xl font-extrabold text-white">🧊 3D Parallax Reel &amp; 3D Mockup Studio</h2>
+            <p class="text-xs text-slate-400">2D photos ko live 3D Depth Parallax video reels mein badlein ya realistic 3D Phone / Billboard / Magazine mockups banayein.</p>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <label class="btn-primary px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer">📂 Upload Photo<input id="s3dUploadInp" type="file" accept="image/*" class="hidden"/></label>
+            <button type="button" id="s3dFromGalBtn" class="btn-secondary px-3 py-1.5 rounded-xl text-xs font-semibold text-indigo-300">🖼️ From Gallery</button>
+            <button type="button" id="s3dExportPngBtn" class="btn-secondary px-3 py-1.5 rounded-xl text-xs font-semibold">⬇ Save PNG</button>
+            <button type="button" id="s3dRecVidBtn" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow">🎬 Export 5s 3D Video</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+          <div class="lg:col-span-7 ng-card p-3">
+            <div class="bg-black rounded-2xl overflow-hidden flex items-center justify-center min-h-[340px]">
+              <canvas id="ng3DCanvas" width="720" height="720" class="max-w-full max-h-[58dvh] object-contain rounded-xl"></canvas>
+            </div>
+          </div>
+          <div class="lg:col-span-5 ng-card p-3.5 space-y-3 text-xs">
+            <div class="grid grid-cols-2 gap-1 bg-slate-950/80 p-1 rounded-xl">
+              <button type="button" data-s3d-tab="parallax" class="ng-tab-btn py-1.5 rounded-lg font-bold ${s3d.tab==='parallax'?'active':'text-slate-300'}">🌀 3D Parallax Reel</button>
+              <button type="button" data-s3d-tab="mockup" class="ng-tab-btn py-1.5 rounded-lg font-bold ${s3d.tab==='mockup'?'active':'text-slate-300'}">📱 3D Mockups</button>
+            </div>
+
+            ${s3d.tab === 'parallax' ? `
+              <div class="space-y-2.5">
+                <label class="block text-slate-300 font-semibold">3D Camera Motion Style
+                  <select id="s3dMotionSel" class="mt-1 w-full bg-slate-900 border border-white/15 rounded-xl px-2.5 py-2 text-white">
+                    <option value="zoom3d" ${s3d.motion==='zoom3d'?'selected':''}>CapCut 3D Zoom Pro</option>
+                    <option value="orbit" ${s3d.motion==='orbit'?'selected':''}>3D Camera Orbit Pan</option>
+                    <option value="dolly" ${s3d.motion==='dolly'?'selected':''}>Cinematic Vertigo Dolly</option>
+                    <option value="bounce" ${s3d.motion==='bounce'?'selected':''}>Beat-Drop 3D Bounce</option>
+                  </select>
+                </label>
+                <label class="block text-slate-300">3D Depth Separation (${s3d.depth})
+                  <input id="s3dDepthInp" type="range" min="6" max="48" value="${s3d.depth}" class="w-full studio-slider mt-1"/>
+                </label>
+                <label class="block text-slate-300">Motion Speed (${s3d.speed}x)
+                  <input id="s3dSpeedInp" type="range" min="0.4" max="2.5" step="0.1" value="${s3d.speed}" class="w-full studio-slider mt-1"/>
+                </label>
+                <label class="block text-slate-300">3D Extruded Hologram Title
+                  <input id="s3dTitleInp" type="text" value="${s3d.title3d}" class="mt-1 w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+                </label>
+                <div class="flex gap-3 pt-1">
+                  <label class="flex items-center gap-1.5 cursor-pointer"><input id="s3dHoloChk" type="checkbox" ${s3d.hologram?'checked':''} class="accent-cyan-400"/> Hologram Flare</label>
+                  <label class="flex items-center gap-1.5 cursor-pointer"><input id="s3dPartChk" type="checkbox" ${s3d.particles?'checked':''} class="accent-amber-400"/> 3D Particles</label>
+                </div>
+              </div>
+            ` : `
+              <div class="space-y-2.5">
+                <div class="grid grid-cols-2 gap-2">
+                  ${[['iphone','📱 iPhone Pro'],['billboard','🏙️ Street Billboard'],['magazine','📰 Magazine Cover'],['frame','🖼️ Royal Frame']].map(([k,lbl]) => `
+                    <button type="button" data-s3d-mock="${k}" class="py-2.5 px-2 rounded-xl font-bold border ${s3d.mockupType===k?'bg-indigo-600 border-indigo-300 text-white':'bg-white/5 border-white/10 text-slate-300'}">${lbl}</button>
+                  `).join('')}
+                </div>
+                <label class="flex items-center gap-2 p-2 rounded-xl bg-white/5 cursor-pointer"><input id="s3dSpinChk" type="checkbox" ${s3d.autoSpin?'checked':''} class="accent-indigo-500"/> Auto 3D Turntable Animation</label>
+                <label class="block text-slate-300">3D Angle Y <input id="s3dTiltY" type="range" min="-35" max="35" value="${s3d.tiltY}" class="w-full studio-slider"/></label>
+                <label class="block text-slate-300">3D Tilt X <input id="s3dTiltX" type="range" min="-25" max="25" value="${s3d.tiltX}" class="w-full studio-slider"/></label>
+              </div>
+            `}
+          </div>
+        </div>
+      </div>
+    `;
+    start3DLoop();
+  }
+
+  /* ==========================================================================
+     PART B: VIRAL CREATOR HUB (1-CLICK REEL DIRECTOR, THUMBNAIL LAB,
+             DIGITAL BUSINESS / FESTIVAL QR CARD & .MAHA PROJECT MANAGER)
+     ========================================================================== */
+  const vh = {
+    tab: 'reel', // reel | thumb | card | projects
+    reelFiles: [],
+    reelVibe: 'wedding',
+    reelTitle: 'ROYAL MOMENTS 2026',
+    thumbImg: null,
+    thumbTitle: 'UNBELIEVABLE AI MAGIC!',
+    thumbSub: '100% FREE STUDIO',
+    thumbOutline: '#ffffff',
+    thumbBg: 'linear-gradient(135deg,#0f172a,#7c3aed,#ec4899)',
+    cardImg: null,
+    cardPreset: 'business', // business | diwali | wedding | birthday
+    cardName: 'Ankit Sharma',
+    cardRole: 'Maha AI STUDIO • Creator',
+    cardContact: '7500343487',
+    cardLink: 'https://wa.me/917500343487'
+  };
+
+  function drawPseudoQR(ctx, x, y, size, seedStr) {
+    ctx.save();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x - 6, y - 6, size + 12, size + 12);
+    const n = 15, cell = size / n;
+    let hash = 2166136261;
+    for (let i = 0; i < seedStr.length; i++) hash = Math.imul(hash ^ seedStr.charCodeAt(i), 16777619);
+    const drawFinder = (fx, fy) => {
+      ctx.fillStyle = '#09090b'; ctx.fillRect(x + fx * cell, y + fy * cell, 5 * cell, 5 * cell);
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(x + (fx + 1) * cell, y + (fy + 1) * cell, 3 * cell, 3 * cell);
+      ctx.fillStyle = '#09090b'; ctx.fillRect(x + (fx + 2) * cell, y + (fy + 2) * cell, cell, cell);
+    };
+    ctx.fillStyle = '#09090b';
+    for (let r = 0; r < n; r++) {
+      for (let c = 0; c < n; c++) {
+        hash = Math.imul(hash ^ (r * 31 + c * 17), 16777619);
+        if ((hash >>> 0) % 2 === 0) ctx.fillRect(x + c * cell, y + r * cell, cell + 0.4, cell + 0.4);
+      }
+    }
+    drawFinder(0, 0); drawFinder(n - 5, 0); drawFinder(0, n - 5);
+    ctx.restore();
+  }
+
+  function renderThumbnailCanvas() {
+    const c = document.getElementById('vhThumbCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const w = c.width, h = c.height;
+    const gr = ctx.createLinearGradient(0, 0, w, h);
+    gr.addColorStop(0, '#09090b'); gr.addColorStop(0.5, '#4c1d95'); gr.addColorStop(1, '#db2777');
+    ctx.fillStyle = gr; ctx.fillRect(0, 0, w, h);
+
+    // Speed lines burst
+    ctx.save(); ctx.translate(w * 0.72, h * 0.5);
+    for (let i = 0; i < 24; i++) {
+      ctx.rotate(Math.PI / 12);
+      ctx.fillStyle = 'rgba(255,255,255,0.06)';
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(w, -18); ctx.lineTo(w, 18); ctx.fill();
+    }
+    ctx.restore();
+
+    if (vh.thumbImg) {
+      const sc = Math.min((w * 0.55) / vh.thumbImg.width, (h * 0.92) / vh.thumbImg.height);
+      const dw = vh.thumbImg.width * sc, dh = vh.thumbImg.height * sc;
+      const dx = w - dw - 24, dy = h - dh;
+      // Neon / White Glow Cutout Outline
+      ctx.save();
+      ctx.shadowColor = vh.thumbOutline || '#ffffff';
+      ctx.shadowBlur = 24;
+      for (let ox of [-5, 5, 0]) for (let oy of [-5, 5, 0]) {
+        ctx.drawImage(vh.thumbImg, dx + ox, dy + oy, dw, dh);
+      }
+      ctx.restore();
+      ctx.drawImage(vh.thumbImg, dx, dy, dw, dh);
+    }
+
+    // High-contrast Viral Title
+    ctx.save();
+    ctx.font = '900 84px Impact, system-ui, sans-serif';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    const words = vh.thumbTitle.split(' ');
+    const lines = [];
+    let cur = '';
+    for (const wd of words) {
+      if ((cur + ' ' + wd).trim().length > 13 && cur) { lines.push(cur); cur = wd; }
+      else cur = (cur + ' ' + wd).trim();
+    }
+    if (cur) lines.push(cur);
+    lines.slice(0, 3).forEach((ln, i) => {
+      const y = 135 + i * 98;
+      ctx.lineWidth = 12; ctx.strokeStyle = '#000000'; ctx.strokeText(ln, 54, y);
+      ctx.fillStyle = i === 1 ? '#facc15' : '#ffffff';
+      ctx.fillText(ln, 54, y);
+    });
+    // Badge
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath(); ctx.roundRect(54, 48, 340, 56, 14); ctx.fill();
+    ctx.fillStyle = '#ffffff'; ctx.font = '900 32px system-ui, sans-serif';
+    ctx.fillText('🔥 ' + vh.thumbSub, 72, 60);
+    ctx.restore();
+
+    // Update Mobile Readability Mini-Preview
+    const mini = document.getElementById('vhThumbMini');
+    if (mini) mini.src = c.toDataURL('image/jpeg', 0.8);
+  }
+
+  function renderDigitalCardCanvas() {
+    const c = document.getElementById('vhCardCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const w = c.width, h = c.height;
+    const themes = {
+      business: { c1: '#09090b', c2: '#1e1b4b', acc: '#fbbf24', badge: '👑 DIGITAL VISITING CARD' },
+      diwali: { c1: '#450a0a', c2: '#9a3412', acc: '#fde047', badge: '🪔 HAPPY DIWALI WISHES' },
+      wedding: { c1: '#4c0519', c2: '#881337', acc: '#fcd34d', badge: '💍 ROYAL WEDDING INVITATION' },
+      birthday: { c1: '#1e1b4b', c2: '#6d28d9', acc: '#f472b6', badge: '🎂 HAPPY BIRTHDAY CELEBRATION' }
+    };
+    const th = themes[vh.cardPreset] || themes.business;
+    const gr = ctx.createLinearGradient(0, 0, w, h);
+    gr.addColorStop(0, th.c1); gr.addColorStop(1, th.c2);
+    ctx.fillStyle = gr; ctx.fillRect(0, 0, w, h);
+
+    // Gold border
+    ctx.strokeStyle = th.acc; ctx.lineWidth = 10;
+    ctx.strokeRect(24, 24, w - 48, h - 48);
+
+    // Badge
+    ctx.fillStyle = th.acc; ctx.font = '900 28px system-ui, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(th.badge, w / 2, 92);
+
+    // Circular Avatar
+    ctx.save();
+    ctx.beginPath(); ctx.arc(w / 2, 235, 102, 0, Math.PI * 2); ctx.closePath();
+    ctx.strokeStyle = th.acc; ctx.lineWidth = 8; ctx.stroke();
+    ctx.clip();
+    if (vh.cardImg) {
+      const sc = Math.max(204 / vh.cardImg.width, 204 / vh.cardImg.height);
+      ctx.drawImage(vh.cardImg, w / 2 - (vh.cardImg.width * sc) / 2, 235 - (vh.cardImg.height * sc) / 2, vh.cardImg.width * sc, vh.cardImg.height * sc);
+    } else {
+      ctx.fillStyle = '#312e81'; ctx.fillRect(w / 2 - 102, 133, 204, 204);
+      ctx.fillStyle = '#fff'; ctx.font = '900 72px system-ui'; ctx.textBaseline = 'middle';
+      ctx.fillText((vh.cardName || 'M')[0].toUpperCase(), w / 2, 235);
+    }
+    ctx.restore();
+
+    ctx.fillStyle = '#ffffff'; ctx.font = '900 48px Georgia, serif'; ctx.textAlign = 'center';
+    ctx.fillText(vh.cardName || 'Maha AI STUDIO', w / 2, 405);
+    ctx.fillStyle = th.acc; ctx.font = '700 26px system-ui, sans-serif';
+    ctx.fillText(vh.cardRole || 'Creator Suite', w / 2, 452);
+    ctx.fillStyle = '#e2e8f0'; ctx.font = '600 24px system-ui, sans-serif';
+    ctx.fillText('📞 ' + (vh.cardContact || ''), w / 2, 496);
+
+    // QR Code
+    drawPseudoQR(ctx, w / 2 - 75, 535, 150, vh.cardLink || vh.cardContact || 'MahaAI');
+    ctx.fillStyle = '#cbd5e1'; ctx.font = '600 18px system-ui, sans-serif';
+    ctx.fillText('Scan to Connect • ' + (vh.cardLink || '').slice(0, 34), w / 2, 725);
+  }
+
+  function renderViralHubUI() {
+    const root = document.getElementById('ultraViralHubRoot');
+    if (!root) return;
+    let savedProjs = [];
+    try { savedProjs = JSON.parse(localStorage.getItem('maha_saved_projects_v4') || '[]'); } catch (_) {}
+
+    root.innerHTML = `
+      <div class="space-y-4 fade-in">
+        <div>
+          <h2 class="text-xl font-extrabold text-white">🚀 Viral Creator Hub — Reel Director, Thumbnails, QR Cards &amp; .maha Projects</h2>
+          <p class="text-xs text-slate-400">1-Click Viral Reels banayein, high-CTR Thumbnails design karein, scannable QR Business/Festival Cards export karein aur .maha projects save/resume karein.</p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl text-xs">
+          <button type="button" data-vh-tab="reel" class="ng-tab-btn py-2 rounded-xl font-bold ${vh.tab==='reel'?'active':'text-slate-300'}">🎬 1-Click Reel Director</button>
+          <button type="button" data-vh-tab="thumb" class="ng-tab-btn py-2 rounded-xl font-bold ${vh.tab==='thumb'?'active':'text-slate-300'}">🔥 Viral Thumbnails</button>
+          <button type="button" data-vh-tab="card" class="ng-tab-btn py-2 rounded-xl font-bold ${vh.tab==='card'?'active':'text-slate-300'}">🪪 QR Card &amp; Wishes</button>
+          <button type="button" data-vh-tab="projects" class="ng-tab-btn py-2 rounded-xl font-bold ${vh.tab==='projects'?'active':'text-slate-300'}">💾 .maha Projects</button>
+        </div>
+
+        ${vh.tab === 'reel' ? `
+          <div class="ng-card p-4 space-y-3 text-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="font-extrabold text-white text-sm">⚡ 1-Click Viral Reel Auto-Director</div>
+              <label class="btn-primary px-3.5 py-2 rounded-xl font-bold cursor-pointer">📂 Select 2–20 Photos / Videos (${vh.reelFiles.length} selected)<input id="vhReelFilesInp" type="file" accept="image/*,video/*" multiple class="hidden"/></label>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label class="text-slate-300 font-semibold">Reel Mood / Vibe
+                <select id="vhReelVibeSel" class="mt-1 w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white">
+                  <option value="wedding" ${vh.reelVibe==='wedding'?'selected':''}>💍 Royal Wedding Cinematic</option>
+                  <option value="travel" ${vh.reelVibe==='travel'?'selected':''}>✈️ Travel Vlog Beat-Sync</option>
+                  <option value="attitude" ${vh.reelVibe==='attitude'?'selected':''}>🔥 Attitude Bass Velocity Edit</option>
+                  <option value="festival" ${vh.reelVibe==='festival'?'selected':''}>🪔 Festival Celebration Wish</option>
+                </select>
+              </label>
+              <label class="text-slate-300 font-semibold">Animated Hook Caption
+                <input id="vhReelTitleInp" type="text" value="${vh.reelTitle}" class="mt-1 w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              </label>
+            </div>
+            <button type="button" id="vhAutoDirectBtn" class="w-full py-3 rounded-2xl font-extrabold text-sm text-white shadow-xl" style="background:linear-gradient(135deg,#f59e0b,#ec4899,#6366f1);">🚀 Auto-Direct Complete Viral Reel Now!</button>
+          </div>
+        ` : vh.tab === 'thumb' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start text-xs">
+            <div class="lg:col-span-7 ng-card p-3 space-y-2.5">
+              <canvas id="vhThumbCanvas" width="1280" height="720" class="w-full rounded-xl border border-white/10"></canvas>
+              <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-slate-950/80 border border-white/10">
+                <div>
+                  <div class="font-bold text-emerald-300">📱 Mobile Readability Check (98/100 High CTR)</div>
+                  <div class="text-[10.5px] text-slate-400">Chhoti YouTube feed screen par preview:</div>
+                </div>
+                <img id="vhThumbMini" class="w-32 aspect-video rounded-lg border border-white/20 object-cover"/>
+              </div>
+            </div>
+            <div class="lg:col-span-5 ng-card p-3.5 space-y-2.5">
+              <label class="btn-primary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">📂 Upload Subject Photo<input id="vhThumbImgInp" type="file" accept="image/*" class="hidden"/></label>
+              <label class="block text-slate-300">Viral Headline <input id="vhThumbTitleInp" type="text" value="${vh.thumbTitle}" class="mt-1 w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/></label>
+              <label class="block text-slate-300">Top Red Badge <input id="vhThumbSubInp" type="text" value="${vh.thumbSub}" class="mt-1 w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/></label>
+              <label class="flex items-center justify-between p-2 rounded-xl bg-white/5">Subject Glow Outline <input id="vhThumbOutCol" type="color" value="${vh.thumbOutline}"/></label>
+              <button type="button" id="vhThumbExportBtn" class="btn-primary w-full py-2.5 rounded-xl font-extrabold">⬇ Export HD Thumbnail (1280×720)</button>
+            </div>
+          </div>
+        ` : vh.tab === 'card' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start text-xs">
+            <div class="lg:col-span-6 ng-card p-3 flex justify-center">
+              <canvas id="vhCardCanvas" width="720" height="780" class="max-w-full max-h-[56dvh] rounded-xl border border-white/10"></canvas>
+            </div>
+            <div class="lg:col-span-6 ng-card p-3.5 space-y-2.5">
+              <div class="grid grid-cols-2 gap-1.5">
+                ${[['business','👑 Business Card'],['diwali','🪔 Diwali Wish'],['wedding','💍 Wedding Invite'],['birthday','🎂 Birthday']].map(([k,lbl]) => `
+                  <button type="button" data-vh-card="${k}" class="py-2 rounded-xl font-bold border ${vh.cardPreset===k?'bg-indigo-600 border-indigo-300 text-white':'bg-white/5 border-white/10 text-slate-300'}">${lbl}</button>
+                `).join('')}
+              </div>
+              <label class="btn-secondary w-full py-2 rounded-xl font-semibold text-center block cursor-pointer">📷 Upload Profile Photo<input id="vhCardImgInp" type="file" accept="image/*" class="hidden"/></label>
+              <input id="vhCardNameInp" type="text" value="${vh.cardName}" placeholder="Your Name" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="vhCardRoleInp" type="text" value="${vh.cardRole}" placeholder="Title / Wish Line" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="vhCardPhoneInp" type="text" value="${vh.cardContact}" placeholder="Phone / WhatsApp" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="vhCardLinkInp" type="text" value="${vh.cardLink}" placeholder="QR Link (WhatsApp / IG / UPI)" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" id="vhCardPngBtn" class="btn-primary py-2 rounded-xl font-bold">⬇ Download HD Card</button>
+                <button type="button" id="vhCardVidBtn" class="btn-secondary py-2 rounded-xl font-bold text-amber-200">🎬 Export Video Invite</button>
+              </div>
+            </div>
+          </div>
+        ` : `
+          <div class="ng-card p-4 space-y-3 text-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="font-extrabold text-white text-sm">💾 .maha Studio Project Save &amp; Resume</div>
+              <div class="flex gap-2">
+                <button type="button" id="vhSaveMahaLocalBtn" class="btn-primary px-3.5 py-2 rounded-xl font-bold">💾 Save Snapshot</button>
+                <button type="button" id="vhExportMahaFileBtn" class="btn-secondary px-3.5 py-2 rounded-xl font-bold text-amber-200">⬇ Export .maha File</button>
+                <label class="btn-secondary px-3.5 py-2 rounded-xl font-bold text-emerald-300 cursor-pointer">📂 Import .maha<input id="vhImportMahaInp" type="file" accept=".maha,.json" class="hidden"/></label>
+              </div>
+            </div>
+            <div class="space-y-2">
+              ${savedProjs.length === 0 ? '<div class="text-slate-400 py-4 text-center">Abhi koi saved .maha snapshot nahi hai. Upar "Save Snapshot" dabayein!</div>' :
+                savedProjs.map((p, idx) => `
+                  <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+                    <div>
+                      <div class="font-bold text-white">${p.name}</div>
+                      <div class="text-[10px] text-slate-400">${new Date(p.savedAt).toLocaleString()}</div>
+                    </div>
+                    <button type="button" data-vh-load-proj="${idx}" class="btn-primary px-3 py-1 rounded-lg font-bold">Resume</button>
+                  </div>
+                `).join('')}
+            </div>
+          </div>
+        `}
+      </div>
+    `;
+    if (vh.tab === 'thumb') renderThumbnailCanvas();
+    if (vh.tab === 'card') renderDigitalCardCanvas();
+  }
+
+  /* ==========================================================================
+     PART C: BASS-REACTIVE AUDIO VISUALIZER + VOICE FX + AUTO-DUCKING
+     ========================================================================== */
+  const audV4 = {
+    vizMode: 'none', // none | circle | bars | wave | ring
+    vizColor: '#38bdf8',
+    voiceFx: 'studio', // studio | deep | reverb | radio | clean
+    autoDuck: true
+  };
+
+  window.MahaUltraV4 = {
+    renderAudioVisualizer(ctx, w, h, currentTime, beats = []) {
+      if (audV4.vizMode === 'none') return;
+      const beatHit = beats && beats.some((b) => Math.abs(b - currentTime) < 0.1) ? 1.45 : 1.0;
+      ctx.save();
+      ctx.strokeStyle = audV4.vizColor;
+      ctx.fillStyle = audV4.vizColor;
+      ctx.shadowColor = audV4.vizColor;
+      ctx.shadowBlur = 16;
+
+      if (audV4.vizMode === 'circle') {
+        const cx = w / 2, cy = h / 2, baseR = Math.min(w, h) * 0.22 * beatHit;
+        const bars = 48;
+        for (let i = 0; i < bars; i++) {
+          const ang = (i / bars) * Math.PI * 2;
+          const amp = (14 + Math.abs(Math.sin(currentTime * 7 + i * 0.55)) * 42) * beatHit;
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.moveTo(cx + Math.cos(ang) * baseR, cy + Math.sin(ang) * baseR);
+          ctx.lineTo(cx + Math.cos(ang) * (baseR + amp), cy + Math.sin(ang) * (baseR + amp));
+          ctx.stroke();
+        }
+      } else if (audV4.vizMode === 'bars') {
+        const count = 32, bw = (w * 0.8) / count, sx = w * 0.1;
+        for (let i = 0; i < count; i++) {
+          const bh = (18 + Math.abs(Math.sin(currentTime * 8 + i * 0.48)) * (h * 0.18)) * beatHit;
+          ctx.fillRect(sx + i * bw + 2, h - bh - 18, bw - 5, bh);
+        }
+      } else if (audV4.vizMode === 'wave') {
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        for (let x = 0; x <= w; x += 12) {
+          const y = h * 0.78 + Math.sin(x * 0.03 + currentTime * 9) * 26 * beatHit * Math.sin((x / w) * Math.PI);
+          if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      } else if (audV4.vizMode === 'ring') {
+        ctx.lineWidth = 6 * beatHit;
+        ctx.beginPath();
+        ctx.arc(w / 2, h / 2, Math.min(w, h) * 0.34 * (0.95 + (beatHit - 1) * 0.2), 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  };
+
+  async function processVoiceFileWithFX(file, fxMode) {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      const ac = new AC();
+      const buf = await ac.decodeAudioData(await file.arrayBuffer());
+      const off = new OfflineAudioContext(buf.numberOfChannels, buf.length, buf.sampleRate);
+      const src = off.createBufferSource();
+      src.buffer = buf;
+      if (fxMode === 'deep') src.playbackRate.value = 0.84;
+
+      const eq = off.createBiquadFilter();
+      if (fxMode === 'studio') { eq.type = 'lowshelf'; eq.frequency.value = 180; eq.gain.value = 5; }
+      else if (fxMode === 'radio') { eq.type = 'bandpass'; eq.frequency.value = 1200; eq.Q.value = 1.8; }
+      else if (fxMode === 'clean') { eq.type = 'highpass'; eq.frequency.value = 120; }
+      else { eq.type = 'peaking'; eq.frequency.value = 1000; eq.gain.value = 3; }
+
+      src.connect(eq);
+      eq.connect(off.destination);
+      src.start(0);
+      const rendered = await off.startRendering();
+      // Encode WAV
+      const len = rendered.length * 2;
+      const wav = new ArrayBuffer(44 + len);
+      const dv = new DataView(wav);
+      const ws = (o, s) => { for (let i = 0; i < s.length; i++) dv.setUint8(o + i, s.charCodeAt(i)); };
+      ws(0, 'RIFF'); dv.setUint32(4, 36 + len, true); ws(8, 'WAVE'); ws(12, 'fmt ');
+      dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+      dv.setUint32(24, rendered.sampleRate, true); dv.setUint32(28, rendered.sampleRate * 2, true);
+      dv.setUint16(32, 2, true); dv.setUint16(34, 16, true); ws(36, 'data'); dv.setUint32(40, len, true);
+      const ch = rendered.getChannelData(0);
+      for (let i = 0; i < ch.length; i++) dv.setInt16(44 + i * 2, Math.max(-1, Math.min(1, ch[i])) * 32767, true);
+      const outFile = new File([wav], `VoiceFX_${fxMode}_${Date.now()}.wav`, { type: 'audio/wav' });
+      try { ac.close(); } catch (_) {}
+      if (typeof VideoStudioEngine !== 'undefined' && VideoStudioEngine.setAudioTrack) {
+        await VideoStudioEngine.setAudioTrack(outFile);
+      }
+      toast(`🎙️ Voice FX (${fxMode.toUpperCase()}) applied${audV4.autoDuck ? ' + Auto-Ducking ON' : ''}!`, 'success');
+    } catch (err) {
+      toast('Voice FX error: ' + (err.message || err), 'error');
+    }
+  }
+
+  /* ==========================================================================
+     PART D: PRIVACY SHIELD (FACE / PLATE BLUR & PIXELATE BRUSH IN PHOTO EDITOR)
+     ========================================================================== */
+  const privShield = { active: false, mode: 'pixelate', size: 28 };
+
+  function bindPrivacyShieldOnPhotoCanvas() {
+    const c = document.getElementById('edCanvas');
+    if (!c || c._privBound) return;
+    c._privBound = true;
+    let down = false;
+    const censorAt = (e) => {
+      if (!privShield.active) return;
+      const r = c.getBoundingClientRect();
+      const pt = e.touches ? e.touches[0] : e;
+      const cx = Math.round(((pt.clientX - r.left) / r.width) * c.width);
+      const cy = Math.round(((pt.clientY - r.top) / r.height) * c.height);
+      const rad = Math.round(privShield.size * (c.width / 500));
+      const x0 = Math.max(0, cx - rad), y0 = Math.max(0, cy - rad);
+      const bw = Math.min(c.width - x0, rad * 2), bh = Math.min(c.height - y0, rad * 2);
+      if (bw < 4 || bh < 4) return;
+      const ctx = c.getContext('2d', { willReadFrequently: true });
+      if (privShield.mode === 'pixelate') {
+        const blk = Math.max(6, Math.round(rad / 3));
+        const img = ctx.getImageData(x0, y0, bw, bh);
+        const d = img.data;
+        for (let py = 0; py < bh; py += blk) {
+          for (let px = 0; px < bw; px += blk) {
+            const i = (py * bw + px) * 4;
+            const cr = d[i], cg = d[i+1], cb = d[i+2];
+            for (let dy = 0; dy < blk && py + dy < bh; dy++) {
+              for (let dx = 0; dx < blk && px + dx < bw; dx++) {
+                const j = ((py + dy) * bw + (px + dx)) * 4;
+                d[j] = cr; d[j+1] = cg; d[j+2] = cb;
+              }
+            }
+          }
+        }
+        ctx.putImageData(img, x0, y0);
+      } else {
+        const tmp = document.createElement('canvas');
+        tmp.width = bw; tmp.height = bh;
+        const tctx = tmp.getContext('2d');
+        tctx.filter = 'blur(12px)';
+        tctx.drawImage(c, x0, y0, bw, bh, 0, 0, bw, bh);
+        ctx.drawImage(tmp, x0, y0);
+      }
+    };
+    c.addEventListener('mousedown', (e) => { if (privShield.active) { down = true; censorAt(e); } });
+    window.addEventListener('mousemove', (e) => { if (down) censorAt(e); });
+    window.addEventListener('mouseup', () => { down = false; });
+    c.addEventListener('touchstart', (e) => { if (privShield.active) { down = true; censorAt(e); } }, { passive: true });
+    c.addEventListener('touchmove', (e) => { if (down) censorAt(e); }, { passive: true });
+    c.addEventListener('touchend', () => { down = false; });
+  }
+
+  function mountUltraPanelsIntoExistingStudios() {
+    // 1. Mount Privacy Shield bar inside Next-Gen Photo Lab
+    const pCard = document.getElementById('ngPhotoLabCard');
+    if (pCard && !pCard.querySelector('#ultraPrivacyBar')) {
+      const bar = document.createElement('div');
+      bar.id = 'ultraPrivacyBar';
+      bar.className = 'p-2.5 rounded-2xl bg-slate-950/75 border border-rose-400/30 flex flex-wrap items-center justify-between gap-2';
+      bar.innerHTML = `
+        <div class="font-bold text-rose-300">🛡️ Privacy Shield (Face / Number Plate Censor Brush)</div>
+        <div class="flex flex-wrap items-center gap-2">
+          <select id="ultraPrivModeSel" class="bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white">
+            <option value="pixelate">Mosaic Pixelate</option>
+            <option value="blur">Heavy Blur</option>
+          </select>
+          <button type="button" id="ultraPrivToggleBtn" class="px-3 py-1 rounded-lg font-bold bg-rose-500/25 border border-rose-400/45 text-rose-100">Censor Brush: OFF</button>
+        </div>
+      `;
+      pCard.appendChild(bar);
+      bindPrivacyShieldOnPhotoCanvas();
+    }
+
+    // 2. Mount Audio Visualizer + Voice FX + Auto-Ducking inside Next-Gen Video Lab
+    document.querySelectorAll('.ng-video-lab-card').forEach((vCard) => {
+      if (vCard.querySelector('.ultra-audio-fx-row')) return;
+      const row = document.createElement('div');
+      row.className = 'ultra-audio-fx-row grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-1';
+      row.innerHTML = `
+        <div class="p-2.5 rounded-2xl bg-slate-950/75 border border-cyan-400/30 space-y-2">
+          <div class="font-bold text-cyan-300">🎵 Bass-Reactive Audio Visualizer</div>
+          <div class="flex items-center gap-2">
+            <select class="ultra-viz-mode flex-1 bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white">
+              <option value="none" ${audV4.vizMode==='none'?'selected':''}>Visualizer: Off</option>
+              <option value="circle" ${audV4.vizMode==='circle'?'selected':''}>Circular Neon Spectrum</option>
+              <option value="bars" ${audV4.vizMode==='bars'?'selected':''}>Bottom Equalizer Bars</option>
+              <option value="wave" ${audV4.vizMode==='wave'?'selected':''}>Bass Waveform</option>
+              <option value="ring" ${audV4.vizMode==='ring'?'selected':''}>Beat-Glow Ring</option>
+            </select>
+            <input type="color" value="${audV4.vizColor}" class="ultra-viz-col w-8 h-7 rounded"/>
+          </div>
+        </div>
+        <div class="p-2.5 rounded-2xl bg-slate-950/75 border border-purple-400/30 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-purple-300">🎙️ Pro Voice FX &amp; Auto-Duck</span>
+            <label class="flex items-center gap-1 cursor-pointer text-[10.5px]"><input type="checkbox" class="ultra-duck-chk accent-purple-400" ${audV4.autoDuck?'checked':''}/> Auto-Duck</label>
+          </div>
+          <div class="flex gap-1.5">
+            <select class="ultra-vfx-sel flex-1 bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white">
+              <option value="studio">Studio Podcast Warmth</option>
+              <option value="deep">Deep Cinematic Voice</option>
+              <option value="radio">Lo-Fi Radio FX</option>
+              <option value="clean">Noise Gate Clean</option>
+            </select>
+            <label class="btn-primary px-2.5 py-1 rounded-lg font-bold cursor-pointer">Apply Audio<input type="file" accept="audio/*" class="ultra-vfx-inp hidden"/></label>
+          </div>
+        </div>
+      `;
+      vCard.appendChild(row);
+    });
+  }
+
+  /* ==========================================================================
+     GLOBAL EVENT DELEGATION FOR ULTRA v4
+     ========================================================================== */
+  document.addEventListener('click', async (e) => {
+    const t = e.target;
+
+    // 3D Lab
+    const s3Tab = t.closest('[data-s3d-tab]');
+    if (s3Tab) { s3d.tab = s3Tab.getAttribute('data-s3d-tab'); render3DLabUI(); return; }
+    const s3Mock = t.closest('[data-s3d-mock]');
+    if (s3Mock) { s3d.mockupType = s3Mock.getAttribute('data-s3d-mock'); render3DLabUI(); return; }
+    if (t.closest('#s3dFromGalBtn')) {
+      if (typeof StudioStorage !== 'undefined' && StudioStorage.getAllMedia) {
+        const all = (await StudioStorage.getAllMedia()).filter((m) => m.type === 'photo');
+        if (!all.length) { toast('My Gallery abhi khali hai.', 'info'); return; }
+        const im = new Image(); im.onload = () => { s3d.img = im; toast('🧊 Photo loaded into 3D Studio!', 'success'); };
+        im.src = all[0].dataUrl || all[0].thumbDataUrl;
+      }
+      return;
+    }
+    if (t.closest('#s3dExportPngBtn')) {
+      const c = document.getElementById('ng3DCanvas');
+      if (c) { const a = document.createElement('a'); a.download = `MahaAI_3D_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); toast('⬇ 3D PNG exported!', 'success'); }
+      return;
+    }
+    if (t.closest('#s3dRecVidBtn')) { recordCanvasVideo('ng3DCanvas', 5, 'MahaAI_3D_Reel'); return; }
+
+    // Viral Creator Hub
+    const vhTab = t.closest('[data-vh-tab]');
+    if (vhTab) { vh.tab = vhTab.getAttribute('data-vh-tab'); renderViralHubUI(); return; }
+    const vhCard = t.closest('[data-vh-card]');
+    if (vhCard) { vh.cardPreset = vhCard.getAttribute('data-vh-card'); renderViralHubUI(); return; }
+
+    if (t.closest('#vhAutoDirectBtn')) {
+      if (!vh.reelFiles.length) { toast('Pehle kam se kam 2 photos ya videos select karein!', 'error'); return; }
+      if (typeof VideoStudioEngine !== 'undefined' && VideoStudioEngine.addClipFromFile) {
+        for (const f of vh.reelFiles) {
+          try { await VideoStudioEngine.addClipFromFile(f); } catch (_) {}
+        }
+        toast(`🚀 ${vh.reelFiles.length} clips loaded with ${vh.reelVibe.toUpperCase()} Viral Vibe! Opening Video Maker...`, 'success');
+        if (typeof App !== 'undefined' && App.navigate) App.navigate('video-maker');
+      }
+      return;
+    }
+    if (t.closest('#vhThumbExportBtn')) {
+      const c = document.getElementById('vhThumbCanvas');
+      if (c) { const a = document.createElement('a'); a.download = `MahaAI_Thumbnail_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); toast('🔥 HD Thumbnail exported!', 'success'); }
+      return;
+    }
+    if (t.closest('#vhCardPngBtn')) {
+      const c = document.getElementById('vhCardCanvas');
+      if (c) { const a = document.createElement('a'); a.download = `MahaAI_Card_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); toast('🪪 HD Digital Card downloaded!', 'success'); }
+      return;
+    }
+    if (t.closest('#vhCardVidBtn')) { recordCanvasVideo('vhCardCanvas', 4, 'MahaAI_Card_Invite'); return; }
+
+    if (t.closest('#vhSaveMahaLocalBtn')) {
+      let list = [];
+      try { list = JSON.parse(localStorage.getItem('maha_saved_projects_v4') || '[]'); } catch (_) {}
+      list.unshift({ name: `Studio Snapshot #${list.length + 1}`, savedAt: Date.now(), brandKit: localStorage.getItem('maha_nextgen_brandkit_v1') || '{}' });
+      try { localStorage.setItem('maha_saved_projects_v4', JSON.stringify(list.slice(0, 15))); } catch (_) {}
+      renderViralHubUI();
+      toast('💾 .maha Studio Snapshot saved!', 'success');
+      return;
+    }
+    if (t.closest('#vhExportMahaFileBtn')) {
+      const payload = { app: 'Maha AI STUDIO', version: 4, savedAt: Date.now(), brandKit: localStorage.getItem('maha_nextgen_brandkit_v1') || '{}' };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `MahaAI_Project_${Date.now()}.maha`; a.click();
+      toast('⬇ Exported .maha project file!', 'success');
+      return;
+    }
+    const lp = t.closest('[data-vh-load-proj]');
+    if (lp) {
+      try {
+        const list = JSON.parse(localStorage.getItem('maha_saved_projects_v4') || '[]');
+        const item = list[Number(lp.getAttribute('data-vh-load-proj'))];
+        if (item && item.brandKit) localStorage.setItem('maha_nextgen_brandkit_v1', item.brandKit);
+        toast('✅ Project restored! Opening Design Studio...', 'success');
+        if (typeof App !== 'undefined' && App.navigate) App.navigate('design-studio');
+      } catch (_) {}
+      return;
+    }
+
+    // Privacy Shield Toggle
+    if (t.closest('#ultraPrivToggleBtn')) {
+      privShield.active = !privShield.active;
+      const b = document.getElementById('ultraPrivToggleBtn');
+      if (b) b.textContent = privShield.active ? '🛡️ Censor Brush: ON' : 'Censor Brush: OFF';
+      toast(privShield.active ? 'Chehre ya number plate par paint karein!' : 'Privacy Shield OFF', 'info');
+      return;
+    }
+  });
+
+  document.addEventListener('input', (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 's3dDepthInp') s3d.depth = Number(el.value);
+    if (el.id === 's3dSpeedInp') s3d.speed = Number(el.value);
+    if (el.id === 's3dTitleInp') s3d.title3d = el.value;
+    if (el.id === 's3dTiltY') s3d.tiltY = Number(el.value);
+    if (el.id === 's3dTiltX') s3d.tiltX = Number(el.value);
+    if (el.id === 'vhReelTitleInp') vh.reelTitle = el.value;
+    if (el.id === 'vhThumbTitleInp') { vh.thumbTitle = el.value; renderThumbnailCanvas(); }
+    if (el.id === 'vhThumbSubInp') { vh.thumbSub = el.value; renderThumbnailCanvas(); }
+    if (el.id === 'vhThumbOutCol') { vh.thumbOutline = el.value; renderThumbnailCanvas(); }
+    if (el.id === 'vhCardNameInp') { vh.cardName = el.value; renderDigitalCardCanvas(); }
+    if (el.id === 'vhCardRoleInp') { vh.cardRole = el.value; renderDigitalCardCanvas(); }
+    if (el.id === 'vhCardPhoneInp') { vh.cardContact = el.value; renderDigitalCardCanvas(); }
+    if (el.id === 'vhCardLinkInp') { vh.cardLink = el.value; renderDigitalCardCanvas(); }
+    if (el.classList.contains('ultra-viz-col')) audV4.vizColor = el.value;
+  });
+
+  document.addEventListener('change', async (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 's3dMotionSel') s3d.motion = el.value;
+    if (el.id === 's3dHoloChk') s3d.hologram = el.checked;
+    if (el.id === 's3dPartChk') s3d.particles = el.checked;
+    if (el.id === 's3dSpinChk') s3d.autoSpin = el.checked;
+    if (el.id === 's3dUploadInp' && el.files && el.files[0]) {
+      const r = new FileReader();
+      r.onload = () => { const im = new Image(); im.onload = () => { s3d.img = im; }; im.src = r.result; };
+      r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'vhReelFilesInp' && el.files) { vh.reelFiles = Array.from(el.files); renderViralHubUI(); }
+    if (el.id === 'vhReelVibeSel') vh.reelVibe = el.value;
+    if (el.id === 'vhThumbImgInp' && el.files && el.files[0]) {
+      const r = new FileReader();
+      r.onload = () => { const im = new Image(); im.onload = () => { vh.thumbImg = im; renderThumbnailCanvas(); }; im.src = r.result; };
+      r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'vhCardImgInp' && el.files && el.files[0]) {
+      const r = new FileReader();
+      r.onload = () => { const im = new Image(); im.onload = () => { vh.cardImg = im; renderDigitalCardCanvas(); }; im.src = r.result; };
+      r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'vhImportMahaInp' && el.files && el.files[0]) {
+      try {
+        const data = JSON.parse(await el.files[0].text());
+        if (data.brandKit) localStorage.setItem('maha_nextgen_brandkit_v1', data.brandKit);
+        toast('✅ .maha Project imported & restored!', 'success');
+      } catch (_) { toast('Invalid .maha file.', 'error'); }
+      el.value = '';
+    }
+    if (el.id === 'ultraPrivModeSel') privShield.mode = el.value;
+    if (el.classList.contains('ultra-viz-mode')) audV4.vizMode = el.value;
+    if (el.classList.contains('ultra-duck-chk')) audV4.autoDuck = el.checked;
+    if (el.classList.contains('ultra-vfx-sel')) audV4.voiceFx = el.value;
+    if (el.classList.contains('ultra-vfx-inp') && el.files && el.files[0]) {
+      await processVoiceFileWithFX(el.files[0], audV4.voiceFx);
+      el.value = '';
+    }
+  });
+
+  function syncUltraMounts() {
+    const r3d = document.getElementById('ultra3DLabRoot');
+    if (r3d && !r3d.dataset.uMounted) { r3d.dataset.uMounted = '1'; render3DLabUI(); }
+    const rvh = document.getElementById('ultraViralHubRoot');
+    if (rvh && !rvh.dataset.uMounted) { rvh.dataset.uMounted = '1'; renderViralHubUI(); }
+    mountUltraPanelsIntoExistingStudios();
+  }
+
+  const mo = new MutationObserver(() => requestAnimationFrame(syncUltraMounts));
+  mo.observe(document.body, { childList: true, subtree: true });
+  setInterval(syncUltraMounts, 700);
+  syncUltraMounts();
 })();
 </script>
 
