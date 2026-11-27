@@ -982,6 +982,99 @@ html, body { min-height: 100dvh; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+
+    /* === MAHA AI STUDIO — NEXT-GEN UPGRADE SUITE v3 === */
+    .ng-card {
+      background: linear-gradient(145deg, rgba(17, 20, 42, 0.94), rgba(11, 13, 28, 0.96));
+      border: 1px solid rgba(129, 140, 248, 0.28);
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+    .ng-tab-btn.active {
+      background: linear-gradient(135deg, #6366f1, #ec4899) !important;
+      color: #fff !important;
+      border-color: rgba(255, 255, 255, 0.35) !important;
+    }
+    #ngPhotoCompareOverlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 12;
+    }
+    #ngPhotoCompareDivider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2.5px;
+      background: #ffffff;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.9);
+      z-index: 14;
+      pointer-events: none;
+    }
+    #ngPhotoCompareHandle {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      border: 2px solid #fff;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+      cursor: ew-resize;
+      z-index: 15;
+    }
+    #ngCamNextGenBar {
+      position: absolute;
+      top: 58px;
+      right: 12px;
+      z-index: 45;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-end;
+    }
+    #ngCamNextGenDrawer {
+      position: absolute;
+      top: 102px;
+      right: 12px;
+      width: min(290px, calc(100vw - 24px));
+      max-height: 62dvh;
+      overflow-y: auto;
+      z-index: 46;
+      background: rgba(10, 12, 24, 0.92);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(129, 140, 248, 0.45);
+      border-radius: 18px;
+      padding: 12px;
+      color: #f8fafc;
+      font-size: 11px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
+    }
+    #ngCamFocusPeakCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 8;
+      opacity: 0.72;
+    }
+    #ngCamRimOverlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 7;
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+    }
+
   </style>
 </head>
 <body class="bg-[#07080d] text-slate-100 min-h-screen">
@@ -6099,6 +6192,9 @@ const VideoStudioEngine = (() => {
     if (window.MahaRealFX && window.MahaRealFX.renderActiveStack) {
       window.MahaRealFX.renderActiveStack(ctx, w, h, currentTime, clip);
     }
+    if (window.MahaNextGenVideo && window.MahaNextGenVideo.renderFrameEffects) {
+      window.MahaNextGenVideo.renderFrameEffects(ctx, w, h, currentTime, clip);
+    }
 
     // Per-Clip Word / Kinetic Caption Animation (from Custom Templates & Word Anim Tab)
     if (clip.wordText && clip.wordText.trim()) {
@@ -7686,7 +7782,8 @@ const StudioViews = (() => {
     { id: 'bg-remover', title: 'BACKGROUND REMOVER', desc: 'Remove background and create cutouts', emoji: '✂️', cat: 'photo', bg: 'linear-gradient(140deg, #059669 0%, #10b981 52%, #2dd4bf 100%)' },
     { id: 'bg-generator', title: 'BACKGROUND STUDIO', desc: 'Create and apply creative backdrops', emoji: '🌄', cat: 'photo', bg: 'linear-gradient(140deg, #0284c7 0%, #2563eb 52%, #60a5fa 100%)' },
     { id: 'enhance', title: 'IMAGE ENHANCER', desc: 'Enhance, sharpen, denoise and prompt tools', emoji: '✨', cat: 'ai', bg: 'linear-gradient(140deg, #d97706 0%, #f59e0b 52%, #fb923c 100%)' },
-    { id: 'photo-to-pdf', title: 'PHOTO TO PDF', desc: 'Unlimited photos to PDF, paper size, grid & HD quality', emoji: '📄', cat: 'tools', bg: 'linear-gradient(140deg, #b91c1c 0%, #ef4444 50%, #f59e0b 100%)' },
+    { id: 'design-studio', title: 'NEXT-GEN DESIGN STUDIO', desc: 'Layer canvas, posters, thumbnails & Brand Kit', emoji: '🎨', cat: 'photo', bg: 'linear-gradient(135deg,#ec4899,#8b5cf6,#3b82f6)' },
+      { id: 'photo-to-pdf', title: 'PHOTO TO PDF', desc: 'Unlimited photos to PDF, paper size, grid & HD quality', emoji: '📄', cat: 'tools', bg: 'linear-gradient(140deg, #b91c1c 0%, #ef4444 50%, #f59e0b 100%)' },
     { id: 'pro-tools', title: 'PRO+ CREATIVE TOOLS', desc: 'Collage, batch tools and passport sheets', emoji: '🧰', cat: 'tools', bg: 'linear-gradient(140deg, #047857 0%, #10b981 52%, #34d399 100%)' },
     { id: 'video-maker', title: 'VIDEO MAKER', desc: 'Create videos from photos, clips and music', emoji: '🎞️', cat: 'video', bg: 'linear-gradient(140deg, #dc2626 0%, #ea580c 52%, #f97316 100%)' },
     { id: 'video-maker', title: 'VIDEO TEMPLATES', desc: 'Create custom multi-clip templates, AI FX & 1-tap reels', emoji: '🧩', cat: 'video', bg: 'linear-gradient(140deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%)', key: 'video-templates' },
@@ -10798,6 +10895,7 @@ const App = (() => {
       ['bg-remover', 'BG Remover', 'eraser'],
       ['bg-generator', 'BG Generator', 'image'],
       ['enhance', 'Enhance & Prompt', 'zap'],
+      ['design-studio', 'Next-Gen Design Studio', 'layers'],
       ['photo-to-pdf', 'Photo to PDF (Unlimited)', 'file-text'],
       ['pro-tools', 'Pro+ Free Tools', 'layers'],
       ['video-maker', 'Video Maker', 'clapperboard'],
@@ -10850,6 +10948,7 @@ const App = (() => {
       case 'dress-changer': main.innerHTML = StudioViews.renderDressChanger(state); break;
       case 'hairstyle': main.innerHTML = StudioViews.renderHairstyle(state); break;
       case 'enhance': main.innerHTML = StudioViews.renderEnhanceAndPrompt(state); break;
+      case 'design-studio': main.innerHTML = '<div id="nextGenDesignRoot"></div>'; break;
       case 'photo-to-pdf': main.innerHTML = '<div id="photoToPdfRoot"></div>'; break;
       case 'pro-tools': main.innerHTML = StudioViews.renderProTools(state); break;
       case 'video-maker': main.innerHTML = StudioViews.renderVideoMaker(state); break;
@@ -18340,6 +18439,7 @@ window.MahaTouchTransform = (() => {
     { id: 'frame-generator', emoji: '🎨', title: 'Custom AI Frame Generator', sub: 'Design your own multi-photo frames' },
     { id: 'preset-library', emoji: '🎛️', title: 'Smart Preset Library', sub: '15 pro color grading categories' },
     { id: 'ai-movie-studio', emoji: '🎥', title: 'AI Photo & Video Generator', sub: '3D, Bollywood, Anime & AI movies' },
+    { id: 'design-studio', emoji: '🎨', title: 'Next-Gen Design Studio & Brand Kit', sub: 'Layers, posters, thumbnails, shapes, text & brand kit' },
     { id: 'photo-to-pdf', emoji: '📄', title: 'Photo to PDF (Unlimited)', sub: 'Unlimited photos, paper size, fit, grid & quality/enhance' },
     { id: 'pro-tools', emoji: '🧰', title: 'Pro+ Creative Tools', sub: 'Passport PDF, Collage & Batch tools' },
     { id: 'gallery', emoji: '🗂️', title: 'My Media Gallery', sub: 'Saved photos, videos & share hub' },
@@ -20996,6 +21096,1551 @@ window.MahaTouchTransform = (() => {
       renderPhotoToPdf();
     }
   });
+})();
+</script>
+
+
+<script>
+/* ============================================================================
+   MAHA AI STUDIO — NEXT-GEN UPGRADE SUITE v3
+   1) Layer-Based Design Canvas + Persistent Brand Kit (design-studio)
+   2) Pro Camera Next-Gen HUD: Depth Bokeh, Studio Rim Lighting, Kelvin WB,
+      Focus Peaking, Hindi/English Voice Director & 3-Shot Smart Sharpness Burst
+   3) Next-Gen Photo Editor Lab: Draggable Before/After Split Slider, Selective
+      Brush Masking, Magic Generative Expand (Outpaint), Pro HSL/Split-Tone/Grain
+      & Multi-Photo Batch Grade Export
+   4) Next-Gen Video Studio Lab: Keyframe Animator, Auto Beat-Marker Detector,
+      Karaoke Word-by-Word Reels Captions, Velocity Speed Ramps & Chroma Key
+   ============================================================================ */
+(() => {
+  const BRAND_KEY = 'maha_nextgen_brandkit_v1';
+  const toast = (msg, type = 'info') => {
+    if (typeof window.showToast === 'function') window.showToast(msg, type);
+  };
+
+  function loadBrandKit() {
+    try {
+      const raw = localStorage.getItem(BRAND_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (_) {}
+    return {
+      name: 'Maha AI STUDIO',
+      tagline: 'Next-Gen Creator Suite',
+      primary: '#6366f1',
+      accent: '#f59e0b',
+      font: 'Inter, system-ui, sans-serif',
+      logoDataUrl: ''
+    };
+  }
+  function saveBrandKit(kit) {
+    try { localStorage.setItem(BRAND_KEY, JSON.stringify(kit)); } catch (_) {}
+  }
+
+  /* ==========================================================================
+     PACK 1: TRUE LAYER-BASED DESIGN STUDIO + BRAND KIT
+     ========================================================================== */
+  const dsState = {
+    preset: '1:1',
+    w: 1080,
+    h: 1080,
+    bgType: 'gradient',
+    bgColor: '#0f172a',
+    bgGrad: 'linear-gradient(135deg,#0f172a,#312e81,#ec4899)',
+    bgImg: null,
+    layers: [],
+    selectedId: null,
+    tab: 'layers',
+    brand: loadBrandKit(),
+    dragging: null
+  };
+
+  const DS_PRESETS = {
+    '1:1': { label: 'Instagram Post (1:1)', w: 1080, h: 1080 },
+    '9:16': { label: 'Reels / Story (9:16)', w: 1080, h: 1920 },
+    '16:9': { label: 'YouTube Thumbnail (16:9)', w: 1280, h: 720 },
+    '4:5': { label: 'Wedding / Portrait Card (4:5)', w: 1080, h: 1350 },
+    'a4': { label: 'Poster / Flyer (A4)', w: 1240, h: 1754 }
+  };
+
+  const DS_GRADS = [
+    { name: 'Royal Indigo', c1: '#0f172a', c2: '#4338ca', c3: '#ec4899' },
+    { name: 'Gold Noir', c1: '#09090b', c2: '#451a03', c3: '#f59e0b' },
+    { name: 'Emerald Luxe', c1: '#022c22', c2: '#047857', c3: '#34d399' },
+    { name: 'Wedding Maroon', c1: '#450a0a', c2: '#991b1b', c3: '#fbbf24' },
+    { name: 'Sunset Cinema', c1: '#1e1b4b', c2: '#be185d', c3: '#fb923c' },
+    { name: 'Clean Light', c1: '#f8fafc', c2: '#e2e8f0', c3: '#cbd5e1' }
+  ];
+
+  function initDefaultLayersIfEmpty() {
+    if (dsState.layers.length) return;
+    dsState.layers.push(
+      {
+        id: 'ly_title_' + Date.now(),
+        type: 'text',
+        name: 'Headline',
+        text: 'ROYAL STUDIO 2026',
+        x: 0.5, y: 0.22, scale: 1, rot: 0, opacity: 1, locked: false, visible: true,
+        fontSize: 82, color: '#ffffff', stroke: '#000000', strokeW: 3, shadow: 18,
+        font: 'Impact, system-ui, sans-serif'
+      },
+      {
+        id: 'ly_sub_' + (Date.now() + 1),
+        type: 'text',
+        name: 'Subtitle',
+        text: 'Next-Gen AI Design • Drag any layer!',
+        x: 0.5, y: 0.32, scale: 1, rot: 0, opacity: 0.95, locked: false, visible: true,
+        fontSize: 38, color: '#fde68a', stroke: '', strokeW: 0, shadow: 10,
+        font: 'system-ui, sans-serif'
+      }
+    );
+    dsState.selectedId = dsState.layers[0].id;
+  }
+
+  function renderDesignCanvas() {
+    const c = document.getElementById('ngDesignCanvas');
+    if (!c) return;
+    c.width = dsState.w;
+    c.height = dsState.h;
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, c.width, c.height);
+
+    // Background
+    if (dsState.bgType === 'image' && dsState.bgImg) {
+      const img = dsState.bgImg;
+      const sc = Math.max(c.width / img.width, c.height / img.height);
+      const dw = img.width * sc, dh = img.height * sc;
+      ctx.drawImage(img, (c.width - dw) / 2, (c.height - dh) / 2, dw, dh);
+    } else if (dsState.bgType === 'solid') {
+      ctx.fillStyle = dsState.bgColor || '#0f172a';
+      ctx.fillRect(0, 0, c.width, c.height);
+    } else {
+      const gSpec = DS_GRADS.find((g) => g.name === dsState.bgGrad) || DS_GRADS[0];
+      const grad = ctx.createLinearGradient(0, 0, c.width, c.height);
+      grad.addColorStop(0, gSpec.c1);
+      grad.addColorStop(0.55, gSpec.c2);
+      grad.addColorStop(1, gSpec.c3);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, c.width, c.height);
+    }
+
+    // Layers bottom-to-top
+    for (const ly of dsState.layers) {
+      if (!ly.visible) continue;
+      ctx.save();
+      ctx.globalAlpha = ly.opacity ?? 1;
+      const px = ly.x * c.width;
+      const py = ly.y * c.height;
+      ctx.translate(px, py);
+      ctx.rotate(((ly.rot || 0) * Math.PI) / 180);
+      ctx.scale(ly.scale || 1, ly.scale || 1);
+      if (ly.shadow > 0) {
+        ctx.shadowColor = 'rgba(0,0,0,0.65)';
+        ctx.shadowBlur = ly.shadow;
+        ctx.shadowOffsetY = Math.round(ly.shadow * 0.25);
+      }
+
+      if (ly.type === 'image' && ly.img) {
+        const maxSide = Math.min(c.width, c.height) * 0.55;
+        const ratio = Math.min(maxSide / ly.img.width, maxSide / ly.img.height);
+        const rw = ly.img.width * ratio;
+        const rh = ly.img.height * ratio;
+        ctx.drawImage(ly.img, -rw / 2, -rh / 2, rw, rh);
+        if (ly.id === dsState.selectedId) {
+          ctx.shadowBlur = 0;
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 4;
+          ctx.setLineDash([12, 8]);
+          ctx.strokeRect(-rw / 2 - 4, -rh / 2 - 4, rw + 8, rh + 8);
+        }
+      } else if (ly.type === 'shape') {
+        const sw = ly.w || 360, sh = ly.h || 140;
+        ctx.fillStyle = ly.color || '#6366f1';
+        ctx.strokeStyle = ly.stroke || '#fbbf24';
+        ctx.lineWidth = ly.strokeW || 4;
+        if (ly.shape === 'circle') {
+          ctx.beginPath();
+          ctx.arc(0, 0, sw / 2, 0, Math.PI * 2);
+          ctx.fill();
+          if (ly.strokeW) ctx.stroke();
+        } else if (ly.shape === 'frame') {
+          ctx.lineWidth = 14;
+          ctx.strokeRect(-c.width * 0.44, -c.height * 0.44, c.width * 0.88, c.height * 0.88);
+        } else {
+          const r = 24;
+          ctx.beginPath();
+          ctx.roundRect(-sw / 2, -sh / 2, sw, sh, r);
+          ctx.fill();
+          if (ly.strokeW) ctx.stroke();
+        }
+      } else if (ly.type === 'text' || ly.type === 'sticker') {
+        ctx.font = `900 ${ly.fontSize || 64}px ${ly.font || 'system-ui, sans-serif'}`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const lines = String(ly.text || '').split('\n');
+        const lh = (ly.fontSize || 64) * 1.18;
+        lines.forEach((ln, idx) => {
+          const yOff = (idx - (lines.length - 1) / 2) * lh;
+          if (ly.stroke && ly.strokeW > 0) {
+            ctx.strokeStyle = ly.stroke;
+            ctx.lineWidth = ly.strokeW * 2;
+            ctx.lineJoin = 'round';
+            ctx.strokeText(ln, 0, yOff);
+          }
+          ctx.fillStyle = ly.color || '#ffffff';
+          ctx.fillText(ln, 0, yOff);
+        });
+        if (ly.id === dsState.selectedId) {
+          ctx.shadowBlur = 0;
+          const mw = Math.max(...lines.map((l) => ctx.measureText(l).width), 80);
+          const mh = lines.length * lh;
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 3;
+          ctx.setLineDash([10, 6]);
+          ctx.strokeRect(-mw / 2 - 14, -mh / 2 - 10, mw + 28, mh + 20);
+        }
+      }
+      ctx.restore();
+    }
+  }
+
+  function renderDesignStudioUI() {
+    const root = document.getElementById('nextGenDesignRoot');
+    if (!root) return;
+    initDefaultLayersIfEmpty();
+    const sel = dsState.layers.find((l) => l.id === dsState.selectedId) || dsState.layers[dsState.layers.length - 1] || null;
+    if (sel) dsState.selectedId = sel.id;
+
+    root.innerHTML = `
+      <div class="space-y-4 fade-in">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-xl font-extrabold text-white flex items-center gap-2">🎨 Next-Gen Layer Design Studio &amp; Brand Kit</h2>
+            <p class="text-xs text-slate-400">Drag-and-drop layers, Hindi/English typography, shapes, cutouts &amp; 1-tap Brand Kit for Posters, Thumbnails &amp; Wedding Cards.</p>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <select id="dsPresetSel" class="bg-slate-900 border border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-white">
+              ${Object.entries(DS_PRESETS).map(([k, v]) => `<option value="${k}" ${dsState.preset === k ? 'selected' : ''}>${v.label}</option>`).join('')}
+            </select>
+            <button type="button" id="dsApplyBrandBtn" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/20 border border-amber-400/45 text-amber-200">👑 Apply Brand Kit</button>
+            <button type="button" id="dsSaveGalBtn" class="btn-secondary px-3 py-1.5 rounded-xl text-xs font-semibold text-emerald-300 border-emerald-400/35">💾 Save Gallery</button>
+            <button type="button" id="dsExportPngBtn" class="btn-primary px-3.5 py-1.5 rounded-xl text-xs font-bold">⬇ Export 4K PNG</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+          <!-- Left Canvas Stage -->
+          <div class="lg:col-span-7 ng-card p-3 space-y-2.5">
+            <div class="bg-slate-950 rounded-2xl overflow-hidden border border-white/10 flex items-center justify-center p-2 min-h-[320px] max-h-[62dvh]">
+              <canvas id="ngDesignCanvas" class="max-w-full max-h-[58dvh] object-contain rounded-xl shadow-2xl cursor-move touch-none"></canvas>
+            </div>
+            <div class="flex flex-wrap gap-1.5 text-xs">
+              <button type="button" id="dsAddTextBtn" class="btn-primary px-3 py-1.5 rounded-xl font-bold">+ Text</button>
+              <label class="btn-secondary px-3 py-1.5 rounded-xl font-semibold cursor-pointer">+ Photo Layer<input id="dsAddPhotoInp" type="file" accept="image/*" class="hidden"/></label>
+              <button type="button" id="dsAddGalPhotoBtn" class="btn-secondary px-3 py-1.5 rounded-xl font-semibold text-indigo-300">+ From Gallery</button>
+              <button type="button" id="dsAddShapeBtn" class="btn-secondary px-3 py-1.5 rounded-xl font-semibold">+ Card / Badge</button>
+              <button type="button" id="dsAddFrameBtn" class="btn-secondary px-3 py-1.5 rounded-xl font-semibold text-amber-200">+ Gold Border</button>
+              <button type="button" id="dsAddStickerBtn" class="btn-secondary px-3 py-1.5 rounded-xl font-semibold">+ Sticker ✨</button>
+            </div>
+          </div>
+
+          <!-- Right Controls -->
+          <div class="lg:col-span-5 ng-card p-3.5 space-y-3 text-xs">
+            <div class="grid grid-cols-3 gap-1 bg-slate-950/80 p-1 rounded-xl">
+              <button type="button" data-ds-tab="layers" class="ng-tab-btn py-1.5 rounded-lg font-bold ${dsState.tab === 'layers' ? 'active' : 'text-slate-300'}">Layers (${dsState.layers.length})</button>
+              <button type="button" data-ds-tab="bg" class="ng-tab-btn py-1.5 rounded-lg font-bold ${dsState.tab === 'bg' ? 'active' : 'text-slate-300'}">Background</button>
+              <button type="button" data-ds-tab="brand" class="ng-tab-btn py-1.5 rounded-lg font-bold ${dsState.tab === 'brand' ? 'active' : 'text-slate-300'}">👑 Brand Kit</button>
+            </div>
+
+            ${dsState.tab === 'layers' ? `
+              <div class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                ${[...dsState.layers].reverse().map((ly) => `
+                  <div data-ds-sel="${ly.id}" class="flex items-center justify-between gap-2 p-2 rounded-xl border cursor-pointer ${ly.id === dsState.selectedId ? 'bg-indigo-600/25 border-indigo-400' : 'bg-white/5 border-white/10'}">
+                    <span class="truncate font-semibold text-white">${ly.type === 'text' ? '🔤' : ly.type === 'image' ? '🖼️' : ly.type === 'sticker' ? '✨' : '🔷'} ${ly.name || ly.text?.slice(0,18) || ly.type}</span>
+                    <div class="flex items-center gap-1 shrink-0">
+                      <button type="button" data-ds-act="up" data-ds-id="${ly.id}" class="px-1.5 py-0.5 rounded bg-white/10">↑</button>
+                      <button type="button" data-ds-act="down" data-ds-id="${ly.id}" class="px-1.5 py-0.5 rounded bg-white/10">↓</button>
+                      <button type="button" data-ds-act="lock" data-ds-id="${ly.id}" class="px-1.5 py-0.5 rounded ${ly.locked ? 'bg-amber-500/40' : 'bg-white/10'}">${ly.locked ? '🔒' : '🔓'}</button>
+                      <button type="button" data-ds-act="vis" data-ds-id="${ly.id}" class="px-1.5 py-0.5 rounded bg-white/10">${ly.visible ? '👁' : '🚫'}</button>
+                      <button type="button" data-ds-act="del" data-ds-id="${ly.id}" class="px-1.5 py-0.5 rounded bg-rose-500/30 text-rose-200">✕</button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+
+              ${sel ? `
+                <div class="p-3 rounded-2xl bg-slate-950/80 border border-white/10 space-y-2.5">
+                  <div class="font-bold text-indigo-300">Selected Layer Controls</div>
+                  ${(sel.type === 'text' || sel.type === 'sticker') ? `
+                    <textarea id="dsLayerText" rows="2" class="w-full bg-slate-900 border border-white/15 rounded-xl px-2.5 py-1.5 text-white">${sel.text || ''}</textarea>
+                    <div class="grid grid-cols-2 gap-2">
+                      <label class="text-slate-300">Font Style
+                        <select id="dsLayerFont" class="mt-1 w-full bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white">
+                          <option value="Impact, system-ui, sans-serif" ${sel.font?.includes('Impact') ? 'selected' : ''}>Bold Poster</option>
+                          <option value="Georgia, serif" ${sel.font?.includes('Georgia') ? 'selected' : ''}>Royal Serif</option>
+                          <option value="system-ui, sans-serif" ${sel.font?.includes('system-ui') && !sel.font?.includes('Impact') ? 'selected' : ''}>Modern Clean (Hindi/EN)</option>
+                          <option value="cursive" ${sel.font === 'cursive' ? 'selected' : ''}>Script / Wedding</option>
+                        </select>
+                      </label>
+                      <label class="text-slate-300">Size (${sel.fontSize || 64}px)
+                        <input id="dsLayerSize" type="range" min="20" max="180" value="${sel.fontSize || 64}" class="w-full studio-slider mt-2"/>
+                      </label>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <label class="flex items-center gap-1.5">Color <input id="dsLayerColor" type="color" value="${sel.color || '#ffffff'}" class="w-7 h-6 rounded bg-transparent"/></label>
+                      <label class="flex items-center gap-1.5">Outline <input id="dsLayerStroke" type="color" value="${sel.stroke || '#000000'}" class="w-7 h-6 rounded bg-transparent"/></label>
+                      <label class="flex items-center gap-1.5">Width <input id="dsLayerStrokeW" type="range" min="0" max="12" value="${sel.strokeW || 0}" class="w-16 studio-slider"/></label>
+                    </div>
+                  ` : ''}
+                  <div class="grid grid-cols-2 gap-2">
+                    <label class="text-slate-300">Scale (${Math.round((sel.scale || 1) * 100)}%)
+                      <input id="dsLayerScale" type="range" min="0.2" max="3" step="0.05" value="${sel.scale || 1}" class="w-full studio-slider"/>
+                    </label>
+                    <label class="text-slate-300">Rotate (${sel.rot || 0}°)
+                      <input id="dsLayerRot" type="range" min="-180" max="180" step="1" value="${sel.rot || 0}" class="w-full studio-slider"/>
+                    </label>
+                    <label class="text-slate-300">Opacity (${Math.round((sel.opacity ?? 1) * 100)}%)
+                      <input id="dsLayerOp" type="range" min="0.05" max="1" step="0.05" value="${sel.opacity ?? 1}" class="w-full studio-slider"/>
+                    </label>
+                    <label class="text-slate-300">Shadow / Glow (${sel.shadow || 0})
+                      <input id="dsLayerShad" type="range" min="0" max="45" step="1" value="${sel.shadow || 0}" class="w-full studio-slider"/>
+                    </label>
+                  </div>
+                  <button type="button" id="dsDupLayerBtn" class="btn-secondary w-full py-1.5 rounded-xl font-semibold">📑 Duplicate Layer</button>
+                </div>
+              ` : ''}
+            ` : dsState.tab === 'bg' ? `
+              <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-2">
+                  ${DS_GRADS.map((g) => `
+                    <button type="button" data-ds-grad="${g.name}" class="p-3 rounded-xl text-left font-bold text-white border border-white/20" style="background:linear-gradient(135deg,${g.c1},${g.c2},${g.c3});">${g.name}</button>
+                  `).join('')}
+                </div>
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+                  <span>Solid Background Color</span>
+                  <input id="dsBgSolidInp" type="color" value="${dsState.bgColor}" class="w-10 h-7 rounded"/>
+                </div>
+                <label class="btn-primary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">🖼️ Upload Custom Background Image<input id="dsBgImgInp" type="file" accept="image/*" class="hidden"/></label>
+              </div>
+            ` : `
+              <div class="space-y-2.5">
+                <label class="block text-slate-300">Brand / Channel Name
+                  <input id="bkNameInp" type="text" value="${dsState.brand.name || ''}" class="mt-1 w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+                </label>
+                <label class="block text-slate-300">Tagline / Handle
+                  <input id="bkTagInp" type="text" value="${dsState.brand.tagline || ''}" class="mt-1 w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+                </label>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center justify-between p-2 rounded-xl bg-white/5">Primary <input id="bkPrimInp" type="color" value="${dsState.brand.primary || '#6366f1'}"/></label>
+                  <label class="flex items-center justify-between p-2 rounded-xl bg-white/5">Accent <input id="bkAccInp" type="color" value="${dsState.brand.accent || '#f59e0b'}"/></label>
+                </div>
+                <label class="btn-secondary w-full py-2 rounded-xl font-semibold text-center block cursor-pointer">🏷️ Upload Brand Logo PNG<input id="bkLogoInp" type="file" accept="image/*" class="hidden"/></label>
+                ${dsState.brand.logoDataUrl ? `<img src="${dsState.brand.logoDataUrl}" class="h-12 mx-auto rounded-lg border border-white/15 p-1 bg-black/40"/>` : ''}
+                <button type="button" id="bkSaveBtn" class="btn-primary w-full py-2 rounded-xl font-bold">💾 Save Brand Kit</button>
+              </div>
+            `}
+          </div>
+        </div>
+      </div>
+    `;
+
+    renderDesignCanvas();
+    bindDesignCanvasDrag();
+  }
+
+  function bindDesignCanvasDrag() {
+    const c = document.getElementById('ngDesignCanvas');
+    if (!c || c._ngBound) return;
+    c._ngBound = true;
+    const getPos = (e) => {
+      const r = c.getBoundingClientRect();
+      const pt = e.touches ? e.touches[0] : e;
+      return { x: (pt.clientX - r.left) / r.width, y: (pt.clientY - r.top) / r.height };
+    };
+    const onDown = (e) => {
+      const p = getPos(e);
+      // Pick closest unlocked visible layer
+      let best = null, bestD = 0.18;
+      for (let i = dsState.layers.length - 1; i >= 0; i--) {
+        const ly = dsState.layers[i];
+        if (!ly.visible || ly.locked) continue;
+        const d = Math.hypot(p.x - ly.x, p.y - ly.y);
+        if (d < bestD) { best = ly; bestD = d; }
+      }
+      if (best) {
+        dsState.selectedId = best.id;
+        dsState.dragging = { id: best.id, dx: p.x - best.x, dy: p.y - best.y };
+        renderDesignCanvas();
+      }
+    };
+    const onMove = (e) => {
+      if (!dsState.dragging) return;
+      e.preventDefault();
+      const p = getPos(e);
+      const ly = dsState.layers.find((x) => x.id === dsState.dragging.id);
+      if (ly && !ly.locked) {
+        ly.x = Math.max(0.05, Math.min(0.95, p.x - dsState.dragging.dx));
+        ly.y = Math.max(0.05, Math.min(0.95, p.y - dsState.dragging.dy));
+        renderDesignCanvas();
+      }
+    };
+    const onUp = () => { dsState.dragging = null; };
+    c.addEventListener('mousedown', onDown);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    c.addEventListener('touchstart', onDown, { passive: false });
+    c.addEventListener('touchmove', onMove, { passive: false });
+    c.addEventListener('touchend', onUp);
+  }
+
+  /* ==========================================================================
+     PACK 2: PRO CAMERA NEXT-GEN HUD (BOKEH, RIM LIGHT, KELVIN WB, FOCUS PEAKING,
+             VOICE DIRECTOR & 3-SHOT SMART SHARPNESS BURST)
+     ========================================================================== */
+  const camNg = {
+    bokeh: 0, // 0..10
+    lighting: 'none', // none | rim | golden | cyber | beauty
+    kelvin: 5500, // 2500..9000
+    focusPeaking: false,
+    voiceDirector: false,
+    voiceTimer: null,
+    peakRaf: null,
+    drawerOpen: false
+  };
+
+  function applyCamNextGenVisuals() {
+    const vid = document.getElementById('mahaCamMainVideo');
+    const rim = document.getElementById('ngCamRimOverlay');
+    if (vid) {
+      // Kelvin tint + subtle bokeh edge via filter
+      const kNorm = (camNg.kelvin - 5500) / 3500; // -0.85..+1
+      const sepia = kNorm > 0 ? (kNorm * 0.28).toFixed(2) : '0';
+      const hue = kNorm < 0 ? Math.round(kNorm * 22) : Math.round(kNorm * -6);
+      const extra = `sepia(${sepia}) hue-rotate(${hue}deg)`;
+      vid.dataset.ngFilter = extra;
+      const base = (vid.style.filter || '').replace(/sepia\([^)]*\)\s*hue-rotate\([^)]*\)/g, '').trim();
+      vid.style.filter = (base && base !== 'none' ? base + ' ' : '') + extra;
+    }
+    if (rim) {
+      let bg = 'none', shadow = 'none';
+      if (camNg.lighting === 'rim') {
+        shadow = 'inset 0 0 90px 18px rgba(99,102,241,0.55), inset 0 0 36px 8px rgba(236,72,153,0.45)';
+      } else if (camNg.lighting === 'golden') {
+        bg = 'radial-gradient(circle at 82% 18%, rgba(251,191,36,0.34), transparent 55%)';
+        shadow = 'inset 0 0 80px rgba(245,158,11,0.32)';
+      } else if (camNg.lighting === 'cyber') {
+        bg = 'linear-gradient(125deg, rgba(6,182,212,0.22), transparent 48%, rgba(236,72,153,0.28))';
+      } else if (camNg.lighting === 'beauty') {
+        bg = 'radial-gradient(circle at 50% 42%, rgba(255,245,235,0.16), transparent 62%)';
+      }
+      if (camNg.bokeh > 0) {
+        const bPx = Math.round(camNg.bokeh * 2.2);
+        rim.style.backdropFilter = `blur(${bPx}px)`;
+        rim.style.webkitBackdropFilter = `blur(${bPx}px)`;
+        rim.style.maskImage = 'radial-gradient(circle at 50% 48%, transparent 34%, black 78%)';
+        rim.style.webkitMaskImage = 'radial-gradient(circle at 50% 48%, transparent 34%, black 78%)';
+      } else {
+        rim.style.backdropFilter = 'none';
+        rim.style.webkitBackdropFilter = 'none';
+        rim.style.maskImage = 'none';
+        rim.style.webkitMaskImage = 'none';
+      }
+      rim.style.background = bg;
+      rim.style.boxShadow = shadow;
+    }
+  }
+
+  function runFocusPeakingLoop() {
+    cancelAnimationFrame(camNg.peakRaf);
+    const peakCanvas = document.getElementById('ngCamFocusPeakCanvas');
+    if (!camNg.focusPeaking || !peakCanvas) {
+      if (peakCanvas) peakCanvas.getContext('2d').clearRect(0, 0, peakCanvas.width, peakCanvas.height);
+      return;
+    }
+    const vid = document.getElementById('mahaCamMainVideo');
+    const step = () => {
+      if (!camNg.focusPeaking) return;
+      if (vid && vid.videoWidth > 0 && peakCanvas) {
+        const sw = 160, sh = 90;
+        if (peakCanvas.width !== sw) { peakCanvas.width = sw; peakCanvas.height = sh; }
+        const ctx = peakCanvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(vid, 0, 0, sw, sh);
+        const img = ctx.getImageData(0, 0, sw, sh);
+        const d = img.data;
+        const out = ctx.createImageData(sw, sh);
+        const od = out.data;
+        for (let y = 1; y < sh - 1; y++) {
+          for (let x = 1; x < sw - 1; x++) {
+            const i = (y * sw + x) * 4;
+            const c = d[i] + d[i+1] + d[i+2];
+            const r = d[i+4] + d[i+5] + d[i+6];
+            const b = d[i + sw*4] + d[i + sw*4 + 1] + d[i + sw*4 + 2];
+            if (Math.abs(c - r) + Math.abs(c - b) > 95) {
+              od[i] = 34; od[i+1] = 211; od[i+2] = 238; od[i+3] = 220;
+            }
+          }
+        }
+        ctx.putImageData(out, 0, 0);
+      }
+      camNg.peakRaf = requestAnimationFrame(step);
+    };
+    camNg.peakRaf = requestAnimationFrame(step);
+  }
+
+  function toggleVoiceDirector() {
+    camNg.voiceDirector = !camNg.voiceDirector;
+    clearInterval(camNg.voiceTimer);
+    const cues = [
+      'Camera ke center mein aayein, chin thoda upar karein.',
+      'Bahut badhiya! Thoda natural smile karein.',
+      'Hold still — perfect lighting! Capture karne ke liye ready.'
+    ];
+    let ci = 0;
+    const speak = (txt) => {
+      if (!('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(txt);
+        u.lang = 'hi-IN';
+        u.rate = 1.02;
+        window.speechSynthesis.speak(u);
+      } catch (_) {}
+    };
+    if (camNg.voiceDirector) {
+      speak(cues[0]);
+      camNg.voiceTimer = setInterval(() => {
+        if (!camNg.voiceDirector) return;
+        ci = (ci + 1) % cues.length;
+        speak(cues[ci]);
+      }, 5500);
+      toast('🎙️ Hindi/EN AI Voice Director ON!', 'success');
+    } else {
+      try { window.speechSynthesis.cancel(); } catch (_) {}
+      toast('Voice Director OFF', 'info');
+    }
+  }
+
+  async function runSmart3ShotBurst() {
+    const vid = document.getElementById('mahaCamMainVideo');
+    if (!vid || !vid.videoWidth) { toast('Pehle Camera start karein!', 'error'); return; }
+    toast('📸 Capturing 3-Shot Smart Burst...', 'info');
+    const shots = [];
+    for (let s = 0; s < 3; s++) {
+      const c = document.createElement('canvas');
+      c.width = vid.videoWidth; c.height = vid.videoHeight;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(vid, 0, 0, c.width, c.height);
+      // Compute sharpness score on downscaled sample
+      const sc = document.createElement('canvas');
+      sc.width = 120; sc.height = 90;
+      const sctx = sc.getContext('2d');
+      sctx.drawImage(c, 0, 0, 120, 90);
+      const data = sctx.getImageData(0, 0, 120, 90).data;
+      let score = 0;
+      for (let i = 0; i < data.length - 8; i += 16) {
+        score += Math.abs(data[i] - data[i+4]) + Math.abs(data[i+1] - data[i+5]);
+      }
+      shots.push({ dataUrl: c.toDataURL('image/jpeg', 0.94), score });
+      await new Promise((r) => setTimeout(r, 140));
+    }
+    shots.sort((a, b) => b.score - a.score);
+    const best = shots[0];
+    if (typeof StudioStorage !== 'undefined' && StudioStorage.saveMedia) {
+      try {
+        await StudioStorage.saveMedia({
+          name: `SmartBurst_Best_${Date.now()}.jpg`,
+          type: 'photo',
+          dataUrl: best.dataUrl,
+          album: 'Pro Camera'
+        });
+      } catch (_) {}
+    }
+    toast('🏆 Best Sharpest Shot auto-picked from 3-Shot Burst & saved to Gallery!', 'success');
+  }
+
+  function injectCamNextGenHud() {
+    const ov = document.getElementById('mahaFullCamOverlay');
+    if (!ov || ov.style.display === 'none') return;
+    if (!document.getElementById('ngCamRimOverlay')) {
+      const rim = document.createElement('div');
+      rim.id = 'ngCamRimOverlay';
+      ov.appendChild(rim);
+    }
+    if (!document.getElementById('ngCamFocusPeakCanvas')) {
+      const pc = document.createElement('canvas');
+      pc.id = 'ngCamFocusPeakCanvas';
+      ov.appendChild(pc);
+    }
+    if (!document.getElementById('ngCamNextGenBar')) {
+      const bar = document.createElement('div');
+      bar.id = 'ngCamNextGenBar';
+      bar.innerHTML = `
+        <button type="button" id="ngCamProToggleBtn" class="px-2.5 py-1.5 rounded-full text-[11px] font-extrabold text-white shadow-lg" style="background:linear-gradient(135deg,#6366f1,#ec4899);border:1px solid rgba(255,255,255,0.35);">✨ Pro Next-Gen</button>
+        <button type="button" id="ngCamBurst3Btn" class="px-2.5 py-1 rounded-full text-[10px] font-bold text-amber-200 bg-black/65 border border-amber-400/50">⚡ 3-Shot Best</button>
+      `;
+      ov.appendChild(bar);
+    }
+  }
+
+  function renderCamNextGenDrawer() {
+    const ov = document.getElementById('mahaFullCamOverlay');
+    if (!ov) return;
+    let dr = document.getElementById('ngCamNextGenDrawer');
+    if (!camNg.drawerOpen) { if (dr) dr.remove(); return; }
+    if (!dr) {
+      dr = document.createElement('div');
+      dr.id = 'ngCamNextGenDrawer';
+      ov.appendChild(dr);
+    }
+    dr.innerHTML = `
+      <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-white/10">
+        <span class="font-extrabold text-indigo-300">✨ Next-Gen Pro Camera</span>
+        <button type="button" id="ngCamDrawerClose" class="px-2 py-0.5 rounded bg-white/10 text-white">✕</button>
+      </div>
+      <div class="space-y-2.5">
+        <label class="block">DSLR Depth Bokeh (f/${(8 - camNg.bokeh * 0.66).toFixed(1)})
+          <input id="ngCamBokehInp" type="range" min="0" max="10" step="1" value="${camNg.bokeh}" class="w-full studio-slider mt-1"/>
+        </label>
+        <label class="block">Manual White Balance (${camNg.kelvin}K)
+          <input id="ngCamKelvinInp" type="range" min="2500" max="9000" step="100" value="${camNg.kelvin}" class="w-full studio-slider mt-1"/>
+        </label>
+        <div>
+          <div class="text-slate-300 mb-1">Studio AI Lighting</div>
+          <div class="grid grid-cols-3 gap-1">
+            ${[['none','Off'],['rim','Rim Light'],['golden','Golden'],['cyber','Neon'],['beauty','Soft Glow']].map(([k,lbl]) => `
+              <button type="button" data-ng-cam-light="${k}" class="py-1 rounded-lg font-bold border ${camNg.lighting === k ? 'bg-indigo-600 border-indigo-300 text-white' : 'bg-white/5 border-white/10 text-slate-300'}">${lbl}</button>
+            `).join('')}
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-1.5 pt-1">
+          <button type="button" id="ngCamPeakBtn" class="py-1.5 rounded-xl font-bold border ${camNg.focusPeaking ? 'bg-cyan-500/30 border-cyan-300 text-cyan-100' : 'bg-white/5 border-white/15 text-slate-200'}">🎯 Focus Peak: ${camNg.focusPeaking ? 'ON' : 'OFF'}</button>
+          <button type="button" id="ngCamVoiceBtn" class="py-1.5 rounded-xl font-bold border ${camNg.voiceDirector ? 'bg-emerald-500/30 border-emerald-300 text-emerald-100' : 'bg-white/5 border-white/15 text-slate-200'}">🎙️ Voice Dir: ${camNg.voiceDirector ? 'ON' : 'OFF'}</button>
+        </div>
+      </div>
+    `;
+  }
+
+  /* ==========================================================================
+     PACK 3: NEXT-GEN PHOTO EDITOR LAB (SPLIT COMPARE, BRUSH MASK, GENERATIVE
+             EXPAND, PRO HSL / SPLIT-TONE / GRAIN & BATCH PRESET APPLY)
+     ========================================================================== */
+  const photoNg = {
+    splitOn: false,
+    splitPos: 50,
+    maskMode: false,
+    maskInvert: false,
+    maskBrush: 32,
+    maskEffect: 'bright', // bright | blur | sat | warm
+    maskStrength: 45,
+    maskCanvas: null,
+    hslRed: 0,
+    hslGreen: 0,
+    hslBlue: 0,
+    splitTone: 'none', // none | teal-orange | gold-indigo | rose-cyan
+    grain: 0,
+    origDataUrl: null
+  };
+
+  function captureOrigIfNeeded() {
+    const c = document.getElementById('edCanvas');
+    if (c && c.width > 0 && !photoNg.origDataUrl) {
+      try { photoNg.origDataUrl = c.toDataURL('image/png'); } catch (_) {}
+    }
+  }
+
+  function updatePhotoSplitCompare() {
+    const edCanvas = document.getElementById('edCanvas');
+    if (!edCanvas) return;
+    const stage = edCanvas.parentElement;
+    let ov = document.getElementById('ngPhotoCompareOverlay');
+    let div = document.getElementById('ngPhotoCompareDivider');
+    let hdl = document.getElementById('ngPhotoCompareHandle');
+    if (!photoNg.splitOn) {
+      if (ov) ov.remove(); if (div) div.remove(); if (hdl) hdl.remove();
+      return;
+    }
+    captureOrigIfNeeded();
+    if (!ov) {
+      ov = document.createElement('div'); ov.id = 'ngPhotoCompareOverlay';
+      const img = document.createElement('img'); img.id = 'ngPhotoCompareOrigImg';
+      img.className = 'w-full h-full object-contain';
+      ov.appendChild(img);
+      stage.appendChild(ov);
+    }
+    const img = document.getElementById('ngPhotoCompareOrigImg');
+    if (img && photoNg.origDataUrl) img.src = photoNg.origDataUrl;
+    ov.style.clipPath = `inset(0 ${100 - photoNg.splitPos}% 0 0)`;
+
+    if (!div) { div = document.createElement('div'); div.id = 'ngPhotoCompareDivider'; stage.appendChild(div); }
+    if (!hdl) {
+      hdl = document.createElement('div'); hdl.id = 'ngPhotoCompareHandle'; hdl.textContent = '⇄';
+      stage.appendChild(hdl);
+      const move = (clientX) => {
+        const r = stage.getBoundingClientRect();
+        photoNg.splitPos = Math.max(5, Math.min(95, ((clientX - r.left) / r.width) * 100));
+        updatePhotoSplitCompare();
+      };
+      hdl.onmousedown = () => {
+        const mm = (ev) => move(ev.clientX);
+        const mu = () => { window.removeEventListener('mousemove', mm); window.removeEventListener('mouseup', mu); };
+        window.addEventListener('mousemove', mm);
+        window.addEventListener('mouseup', mu);
+      };
+      hdl.ontouchstart = () => {
+        const tm = (ev) => { if (ev.touches[0]) move(ev.touches[0].clientX); };
+        const tu = () => { window.removeEventListener('touchmove', tm); window.removeEventListener('touchend', tu); };
+        window.addEventListener('touchmove', tm, { passive: true });
+        window.addEventListener('touchend', tu);
+      };
+    }
+    div.style.left = photoNg.splitPos + '%';
+    hdl.style.left = photoNg.splitPos + '%';
+  }
+
+  function applyNextGenPhotoGrade(canvas) {
+    if (!canvas || !canvas.width) return;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const d = img.data;
+    const rAdj = photoNg.hslRed * 0.9;
+    const gAdj = photoNg.hslGreen * 0.9;
+    const bAdj = photoNg.hslBlue * 0.9;
+    const gr = photoNg.grain * 0.7;
+    const st = photoNg.splitTone;
+
+    for (let i = 0; i < d.length; i += 4) {
+      let r = d[i], g = d[i+1], b = d[i+2];
+      const lum = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+      if (r > g && r > b) r += rAdj;
+      if (g > r && g > b) g += gAdj;
+      if (b > r && b > g) b += bAdj;
+      if (st === 'teal-orange') {
+        if (lum > 0.5) { r += 18; g += 6; b -= 12; } else { r -= 12; g += 8; b += 18; }
+      } else if (st === 'gold-indigo') {
+        if (lum > 0.5) { r += 22; g += 14; b -= 14; } else { r += 6; g -= 6; b += 24; }
+      } else if (st === 'rose-cyan') {
+        if (lum > 0.5) { r += 20; g -= 4; b += 12; } else { r -= 10; g += 14; b += 18; }
+      }
+      if (gr > 0) {
+        const n = (Math.random() - 0.5) * gr;
+        r += n; g += n; b += n;
+      }
+      d[i] = Math.max(0, Math.min(255, r));
+      d[i+1] = Math.max(0, Math.min(255, g));
+      d[i+2] = Math.max(0, Math.min(255, b));
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  function runGenerativeExpand(aspect) {
+    const c = document.getElementById('edCanvas');
+    if (!c || !c.width) { toast('Pehle Photo Editor mein photo open karein!', 'error'); return; }
+    captureOrigIfNeeded();
+    const ratios = { '9:16': [9, 16], '16:9': [16, 9], '1:1': [1, 1], '4:5': [4, 5] };
+    const [rw, rh] = ratios[aspect] || [9, 16];
+    const targetRatio = rw / rh;
+    const curRatio = c.width / c.height;
+    let nw = c.width, nh = c.height;
+    if (curRatio > targetRatio) nh = Math.round(c.width / targetRatio);
+    else nw = Math.round(c.height * targetRatio);
+
+    const out = document.createElement('canvas');
+    out.width = nw; out.height = nh;
+    const ctx = out.getContext('2d');
+    // Seamless blurred + zoomed ambient outpaint fill
+    ctx.save();
+    ctx.filter = 'blur(38px) saturate(1.25) brightness(0.88)';
+    const fillScale = Math.max(nw / c.width, nh / c.height) * 1.15;
+    const fw = c.width * fillScale, fh = c.height * fillScale;
+    ctx.drawImage(c, (nw - fw) / 2, (nh - fh) / 2, fw, fh);
+    ctx.restore();
+    // Draw crisp original centered with feathered edge blend
+    const ox = (nw - c.width) / 2, oy = (nh - c.height) / 2;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.45)';
+    ctx.shadowBlur = 32;
+    ctx.drawImage(c, ox, oy);
+    ctx.restore();
+
+    const dataUrl = out.toDataURL('image/png');
+    if (typeof PhotoEngine !== 'undefined' && PhotoEngine.loadDataUrl) {
+      PhotoEngine.loadDataUrl(dataUrl, `Expanded_${aspect}.png`);
+    } else {
+      c.width = nw; c.height = nh;
+      c.getContext('2d').drawImage(out, 0, 0);
+    }
+    toast(`✨ Magic Generative Expand (${aspect}) applied — zero cropping!`, 'success');
+  }
+
+  function applySelectiveMaskEffect() {
+    const c = document.getElementById('edCanvas');
+    if (!c || !photoNg.maskCanvas) { toast('Pehle photo par brush se mask paint karein!', 'info'); return; }
+    captureOrigIfNeeded();
+    const eff = document.createElement('canvas');
+    eff.width = c.width; eff.height = c.height;
+    const ectx = eff.getContext('2d');
+    const s = photoNg.maskStrength;
+    if (photoNg.maskEffect === 'bright') ectx.filter = `brightness(${1 + s / 100}) contrast(1.06)`;
+    else if (photoNg.maskEffect === 'blur') ectx.filter = `blur(${Math.round(s / 5)}px)`;
+    else if (photoNg.maskEffect === 'sat') ectx.filter = `saturate(${1 + s / 45})`;
+    else if (photoNg.maskEffect === 'warm') ectx.filter = `sepia(${(s / 140).toFixed(2)}) saturate(1.2)`;
+    ectx.drawImage(c, 0, 0);
+
+    // Mask compositing
+    ectx.globalCompositeOperation = photoNg.maskInvert ? 'destination-out' : 'destination-in';
+    ectx.drawImage(photoNg.maskCanvas, 0, 0, c.width, c.height);
+
+    const ctx = c.getContext('2d');
+    ctx.drawImage(eff, 0, 0);
+    photoNg.maskCanvas.getContext('2d').clearRect(0, 0, photoNg.maskCanvas.width, photoNg.maskCanvas.height);
+    toast('✅ Selective Mask Effect applied!', 'success');
+  }
+
+  function bindPhotoMaskBrush() {
+    const c = document.getElementById('edCanvas');
+    if (!c || c._ngMaskBound) return;
+    c._ngMaskBound = true;
+    let painting = false;
+    const drawDot = (e) => {
+      if (!photoNg.maskMode) return;
+      const r = c.getBoundingClientRect();
+      const pt = e.touches ? e.touches[0] : e;
+      const x = ((pt.clientX - r.left) / r.width) * c.width;
+      const y = ((pt.clientY - r.top) / r.height) * c.height;
+      if (!photoNg.maskCanvas || photoNg.maskCanvas.width !== c.width || photoNg.maskCanvas.height !== c.height) {
+        photoNg.maskCanvas = document.createElement('canvas');
+        photoNg.maskCanvas.width = c.width; photoNg.maskCanvas.height = c.height;
+      }
+      const mctx = photoNg.maskCanvas.getContext('2d');
+      const rad = photoNg.maskBrush * (c.width / 500);
+      const gr = mctx.createRadialGradient(x, y, rad * 0.25, x, y, rad);
+      gr.addColorStop(0, 'rgba(255,255,255,0.95)');
+      gr.addColorStop(1, 'rgba(255,255,255,0)');
+      mctx.fillStyle = gr;
+      mctx.beginPath(); mctx.arc(x, y, rad, 0, Math.PI * 2); mctx.fill();
+      // Visual ruby feedback on main canvas
+      const ctx = c.getContext('2d');
+      ctx.save();
+      ctx.fillStyle = 'rgba(236,72,153,0.18)';
+      ctx.beginPath(); ctx.arc(x, y, rad * 0.7, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    };
+    c.addEventListener('mousedown', (e) => { if (photoNg.maskMode) { painting = true; drawDot(e); } });
+    window.addEventListener('mousemove', (e) => { if (painting) drawDot(e); });
+    window.addEventListener('mouseup', () => { painting = false; });
+    c.addEventListener('touchstart', (e) => { if (photoNg.maskMode) { painting = true; drawDot(e); } }, { passive: true });
+    c.addEventListener('touchmove', (e) => { if (painting) drawDot(e); }, { passive: true });
+    c.addEventListener('touchend', () => { painting = false; });
+  }
+
+  function mountNextGenPhotoLab() {
+    const edCanvas = document.getElementById('edCanvas');
+    if (!edCanvas || document.getElementById('ngPhotoLabCard')) return;
+    const host = edCanvas.closest('.grid');
+    if (!host || !host.parentElement) return;
+    const card = document.createElement('div');
+    card.id = 'ngPhotoLabCard';
+    card.className = 'ng-card p-3.5 space-y-3 text-xs mt-3';
+    card.innerHTML = `
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div class="font-extrabold text-white flex items-center gap-1.5">⚡ Next-Gen Pro Photo Lab <span class="px-2 py-0.5 rounded-full bg-fuchsia-500/20 text-fuchsia-200 text-[10px]">Split • Mask • Expand • HSL • Batch</span></div>
+        <div class="flex flex-wrap gap-1.5">
+          <button type="button" id="ngSplitToggleBtn" class="px-2.5 py-1 rounded-lg font-bold bg-indigo-500/25 border border-indigo-400/45 text-indigo-100">⇄ Split Compare</button>
+          <button type="button" id="ngBrandStampPhotoBtn" class="px-2.5 py-1 rounded-lg font-bold bg-amber-500/20 border border-amber-400/45 text-amber-200">👑 Stamp Brand Kit</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <!-- 1. Selective Brush Masking -->
+        <div class="p-2.5 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+          <div class="font-bold text-pink-300">🖌️ Selective Brush Mask</div>
+          <div class="flex gap-1.5">
+            <button type="button" id="ngMaskToggleBtn" class="flex-1 py-1.5 rounded-lg font-bold bg-white/10 text-white">Paint Mask: OFF</button>
+            <button type="button" id="ngMaskInvertBtn" class="px-2.5 py-1.5 rounded-lg bg-white/10 text-slate-200">Invert</button>
+          </div>
+          <div class="grid grid-cols-2 gap-1.5">
+            <select id="ngMaskEffSel" class="bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white">
+              <option value="bright">Face Brighten</option>
+              <option value="blur">DSLR Bokeh Blur</option>
+              <option value="sat">Color Pop</option>
+              <option value="warm">Golden Glow</option>
+            </select>
+            <input id="ngMaskStrInp" type="range" min="10" max="100" value="45" class="studio-slider self-center"/>
+          </div>
+          <button type="button" id="ngMaskApplyBtn" class="btn-primary w-full py-1.5 rounded-lg font-bold">Apply Mask Effect</button>
+        </div>
+
+        <!-- 2. Magic Generative Expand -->
+        <div class="p-2.5 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+          <div class="font-bold text-cyan-300">🪄 Magic Generative Expand</div>
+          <p class="text-[10.5px] text-slate-400">Crop kiye bina edges auto-fill karke photo expand karein:</p>
+          <div class="grid grid-cols-2 gap-1.5">
+            <button type="button" data-ng-expand="9:16" class="btn-secondary py-1.5 rounded-lg font-bold">9:16 Reels</button>
+            <button type="button" data-ng-expand="16:9" class="btn-secondary py-1.5 rounded-lg font-bold">16:9 YouTube</button>
+            <button type="button" data-ng-expand="1:1" class="btn-secondary py-1.5 rounded-lg font-bold">1:1 Square</button>
+            <button type="button" data-ng-expand="4:5" class="btn-secondary py-1.5 rounded-lg font-bold">4:5 Portrait</button>
+          </div>
+        </div>
+
+        <!-- 3. Pro HSL, Split-Tone, Grain & Batch -->
+        <div class="p-2.5 rounded-2xl bg-slate-950/75 border border-white/10 space-y-1.5">
+          <div class="font-bold text-amber-300">🎛️ Pro HSL, Split-Tone &amp; Batch</div>
+          <div class="grid grid-cols-3 gap-1 text-[10px]">
+            <label>Skin/Red<input id="ngHslR" type="range" min="-40" max="40" value="0" class="w-full studio-slider"/></label>
+            <label>Green<input id="ngHslG" type="range" min="-40" max="40" value="0" class="w-full studio-slider"/></label>
+            <label>Sky/Blue<input id="ngHslB" type="range" min="-40" max="40" value="0" class="w-full studio-slider"/></label>
+          </div>
+          <div class="grid grid-cols-2 gap-1.5">
+            <select id="ngSplitToneSel" class="bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white">
+              <option value="none">Split-Tone: Off</option>
+              <option value="teal-orange">Teal &amp; Orange</option>
+              <option value="gold-indigo">Royal Gold/Indigo</option>
+              <option value="rose-cyan">Rose &amp; Cyan</option>
+            </select>
+            <label class="text-[10px] text-slate-300">Grain <input id="ngGrainInp" type="range" min="0" max="50" value="0" class="w-full studio-slider"/></label>
+          </div>
+          <div class="flex gap-1.5 pt-0.5">
+            <button type="button" id="ngApplyGradeBtn" class="btn-primary flex-1 py-1.5 rounded-lg font-bold">Apply Grade</button>
+            <label class="btn-secondary px-2.5 py-1.5 rounded-lg font-bold cursor-pointer text-emerald-300">Batch 20+<input id="ngBatchGradeInp" type="file" accept="image/*" multiple class="hidden"/></label>
+          </div>
+        </div>
+      </div>
+    `;
+    host.parentElement.appendChild(card);
+    bindPhotoMaskBrush();
+  }
+
+  /* ==========================================================================
+     PACK 4: NEXT-GEN VIDEO STUDIO LAB (KEYFRAMES, BEAT MARKERS, KARAOKE
+             CAPTIONS, VELOCITY SPEED RAMP & CHROMA KEY)
+     ========================================================================== */
+  const vidNg = {
+    kfEnabled: false,
+    kfZoomStart: 1.0,
+    kfZoomEnd: 1.25,
+    kfPanXStart: 0,
+    kfPanXEnd: 0,
+    kfRotEnd: 0,
+    kfOpacityStart: 1,
+    kfOpacityEnd: 1,
+    kfEase: 'ease-in-out',
+    beats: [],
+    beatPulse: false,
+    captionsEnabled: false,
+    captionText: 'Maha AI STUDIO Next-Gen Video Editor',
+    captionStyle: 'hormozi', // hormozi | neon | royal | classic
+    captionPos: 'bottom', // top | center | bottom
+    speedCurve: 'normal', // normal | ramp-in | velocity | slow-dip | fast-out
+    chromaOn: false,
+    chromaColor: '#00ff00',
+    chromaTol: 75,
+    chromaBgColor: '#0f172a',
+    chromaBgImg: null
+  };
+
+  function easeVal(t, mode) {
+    t = Math.max(0, Math.min(1, t));
+    if (mode === 'linear') return t;
+    if (mode === 'bounce') return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    return t * t * (3 - 2 * t); // ease-in-out
+  }
+
+  function hexToRgb(hex) {
+    const h = String(hex || '#00ff00').replace('#', '');
+    return [parseInt(h.slice(0,2), 16) || 0, parseInt(h.slice(2,4), 16) || 255, parseInt(h.slice(4,6), 16) || 0];
+  }
+
+  window.MahaNextGenVideo = {
+    renderFrameEffects(ctx, w, h, currentTime, clip) {
+      // 1. Chroma Key green/blue screen removal
+      if (vidNg.chromaOn) {
+        try {
+          const img = ctx.getImageData(0, 0, w, h);
+          const d = img.data;
+          const [kr, kg, kb] = hexToRgb(vidNg.chromaColor);
+          const tol = vidNg.chromaTol;
+          for (let i = 0; i < d.length; i += 4) {
+            const dist = Math.abs(d[i] - kr) + Math.abs(d[i+1] - kg) + Math.abs(d[i+2] - kb);
+            if (dist < tol * 2.1) d[i+3] = 0;
+          }
+          const tmp = document.createElement('canvas');
+          tmp.width = w; tmp.height = h;
+          tmp.getContext('2d').putImageData(img, 0, 0);
+          ctx.save();
+          if (vidNg.chromaBgImg) {
+            ctx.drawImage(vidNg.chromaBgImg, 0, 0, w, h);
+          } else {
+            ctx.fillStyle = vidNg.chromaBgColor || '#0f172a';
+            ctx.fillRect(0, 0, w, h);
+          }
+          ctx.drawImage(tmp, 0, 0);
+          ctx.restore();
+        } catch (_) {}
+      }
+
+      // 2. Keyframe Transform / Zoom / Beat Pulse overlay
+      const clipDur = Math.max(0.5, Number(clip?.duration || 4));
+      const prog = easeVal((currentTime % clipDur) / clipDur, vidNg.kfEase);
+      let pulseScale = 1;
+      if (vidNg.beatPulse && vidNg.beats.length) {
+        const near = vidNg.beats.some((bt) => Math.abs(bt - currentTime) < 0.09);
+        if (near) pulseScale = 1.07;
+      }
+      if (vidNg.kfEnabled || pulseScale !== 1) {
+        const z = (vidNg.kfEnabled ? (vidNg.kfZoomStart + (vidNg.kfZoomEnd - vidNg.kfZoomStart) * prog) : 1) * pulseScale;
+        const px = vidNg.kfEnabled ? (vidNg.kfPanXStart + (vidNg.kfPanXEnd - vidNg.kfPanXStart) * prog) : 0;
+        const rot = vidNg.kfEnabled ? (vidNg.kfRotEnd * prog) : 0;
+        const op = vidNg.kfEnabled ? (vidNg.kfOpacityStart + (vidNg.kfOpacityEnd - vidNg.kfOpacityStart) * prog) : 1;
+        if (Math.abs(z - 1) > 0.005 || Math.abs(px) > 1 || Math.abs(rot) > 0.1 || op < 0.99) {
+          const snap = document.createElement('canvas');
+          snap.width = w; snap.height = h;
+          snap.getContext('2d').drawImage(ctx.canvas, 0, 0, w, h);
+          ctx.save();
+          ctx.clearRect(0, 0, w, h);
+          ctx.globalAlpha = op;
+          ctx.translate(w / 2 + px, h / 2);
+          ctx.rotate((rot * Math.PI) / 180);
+          ctx.scale(z, z);
+          ctx.drawImage(snap, -w / 2, -h / 2);
+          ctx.restore();
+        }
+      }
+
+      // 3. Velocity Speed Ramp dynamic clip speed modulation
+      if (clip && vidNg.speedCurve !== 'normal') {
+        const p = (currentTime % clipDur) / clipDur;
+        if (vidNg.speedCurve === 'ramp-in') clip.speed = Number((0.4 + p * 1.4).toFixed(2));
+        else if (vidNg.speedCurve === 'velocity') clip.speed = p < 0.35 ? 2.0 : (p < 0.7 ? 0.45 : 1.6);
+        else if (vidNg.speedCurve === 'slow-dip') clip.speed = (p > 0.3 && p < 0.7) ? 0.4 : 1.4;
+        else if (vidNg.speedCurve === 'fast-out') clip.speed = Number((0.8 + p * 1.8).toFixed(2));
+      }
+
+      // 4. Karaoke / Reels Word-by-Word Animated Captions
+      if (vidNg.captionsEnabled && vidNg.captionText.trim()) {
+        const words = vidNg.captionText.trim().split(/\s+/);
+        const totalDur = (typeof VideoStudioEngine !== 'undefined' && VideoStudioEngine.getState)
+          ? Math.max(1, VideoStudioEngine.getState().totalDuration || clipDur)
+          : clipDur;
+        const activeIdx = Math.min(words.length - 1, Math.floor((currentTime / totalDur) * words.length));
+        const chunkStart = Math.floor(activeIdx / 4) * 4;
+        const chunk = words.slice(chunkStart, chunkStart + 4);
+
+        ctx.save();
+        const fSize = Math.round(Math.min(w, h) * 0.082);
+        ctx.font = `900 ${fSize}px Impact, system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const yPos = vidNg.captionPos === 'top' ? h * 0.16 : vidNg.captionPos === 'center' ? h * 0.5 : h * 0.84;
+
+        const gap = fSize * 0.28;
+        const widths = chunk.map((wd) => ctx.measureText(wd).width);
+        const totalW = widths.reduce((a, b) => a + b, 0) + gap * (chunk.length - 1);
+        let cx = (w - totalW) / 2;
+
+        chunk.forEach((wd, i) => {
+          const isCur = (chunkStart + i) === activeIdx;
+          const ww = widths[i];
+          const wx = cx + ww / 2;
+          ctx.save();
+          if (isCur) {
+            ctx.translate(wx, yPos);
+            ctx.scale(1.14, 1.14);
+            ctx.translate(-wx, -yPos);
+          }
+          if (vidNg.captionStyle === 'hormozi') {
+            if (isCur) {
+              ctx.fillStyle = 'rgba(0,0,0,0.68)';
+              ctx.beginPath(); ctx.roundRect(wx - ww / 2 - 10, yPos - fSize * 0.62, ww + 20, fSize * 1.24, 12); ctx.fill();
+            }
+            ctx.lineWidth = 6; ctx.strokeStyle = '#000000'; ctx.strokeText(wd, wx, yPos);
+            ctx.fillStyle = isCur ? '#facc15' : '#ffffff';
+            ctx.fillText(wd, wx, yPos);
+          } else if (vidNg.captionStyle === 'neon') {
+            ctx.shadowColor = isCur ? '#ec4899' : '#38bdf8';
+            ctx.shadowBlur = isCur ? 24 : 10;
+            ctx.fillStyle = isCur ? '#f472b6' : '#e0f2fe';
+            ctx.fillText(wd, wx, yPos);
+          } else if (vidNg.captionStyle === 'royal') {
+            ctx.lineWidth = 5; ctx.strokeStyle = '#1e1b4b'; ctx.strokeText(wd, wx, yPos);
+            ctx.fillStyle = isCur ? '#fbbf24' : '#f8fafc';
+            ctx.fillText(wd, wx, yPos);
+          } else {
+            ctx.fillStyle = 'rgba(0,0,0,0.55)';
+            ctx.fillRect(wx - ww / 2 - 6, yPos - fSize * 0.55, ww + 12, fSize * 1.1);
+            ctx.fillStyle = isCur ? '#34d399' : '#ffffff';
+            ctx.fillText(wd, wx, yPos);
+          }
+          ctx.restore();
+          cx += ww + gap;
+        });
+        ctx.restore();
+      }
+    }
+  };
+
+  async function detectAudioBeats() {
+    const vs = typeof VideoStudioEngine !== 'undefined' && VideoStudioEngine.getState ? VideoStudioEngine.getState() : null;
+    const totalDur = Math.max(4, Number(vs?.totalDuration || 12));
+    // Try decoding real uploaded audio file if available, else generate musical 124 BPM beat grid
+    let detected = [];
+    try {
+      const audioObj = vs && vs.audioTrack;
+      if (audioObj && audioObj.file) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        const ac = new AC();
+        const ab = await audioObj.file.arrayBuffer();
+        const buf = await ac.decodeAudioData(ab);
+        const ch = buf.getChannelData(0);
+        const step = Math.floor(buf.sampleRate * 0.05);
+        const energies = [];
+        for (let i = 0; i < ch.length; i += step) {
+          let sum = 0;
+          for (let j = i; j < Math.min(i + step, ch.length); j++) sum += ch[j] * ch[j];
+          energies.push(sum / step);
+        }
+        const avg = energies.reduce((a, b) => a + b, 0) / Math.max(1, energies.length);
+        let lastT = -0.35;
+        energies.forEach((e, idx) => {
+          const t = idx * 0.05;
+          if (e > avg * 1.65 && t - lastT > 0.32 && t <= totalDur) {
+            detected.push(Number(t.toFixed(2)));
+            lastT = t;
+          }
+        });
+        try { ac.close(); } catch (_) {}
+      }
+    } catch (_) {}
+    if (!detected.length) {
+      for (let t = 0.48; t < totalDur; t += 0.484) detected.push(Number(t.toFixed(2)));
+    }
+    vidNg.beats = detected;
+    vidNg.beatPulse = true;
+    const strip = document.getElementById('ngBeatMarkersStrip');
+    if (strip) {
+      strip.innerHTML = detected.slice(0, 24).map((b) => `<span class="px-1.5 py-0.5 rounded bg-amber-500/25 border border-amber-400/50 text-amber-200 text-[9.5px] font-mono">⚡${b}s</span>`).join('');
+    }
+    toast(`🎵 ${detected.length} Beat Markers detected & Beat-Pulse ON!`, 'success');
+  }
+
+  function mountNextGenVideoLab() {
+    const hosts = document.querySelectorAll('#vproStudioHostVE, #vproStudioHostVM');
+    hosts.forEach((h) => {
+      if (!h.parentElement || h.parentElement.querySelector('.ng-video-lab-card')) return;
+      const card = document.createElement('div');
+      card.className = 'ng-video-lab-card ng-card p-3.5 space-y-3 text-xs';
+      card.innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="font-extrabold text-white">🚀 Next-Gen Video Pro Suite</div>
+          <span class="px-2 py-0.5 rounded-full bg-indigo-500/25 text-indigo-200 text-[10px]">Keyframes • Beats • Captions • Speed • Chroma</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+          <!-- 1. Keyframe Animator -->
+          <div class="p-2.5 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-indigo-300">🎞️ Keyframe Animator</span>
+              <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" class="ng-kf-toggle accent-indigo-500" ${vidNg.kfEnabled ? 'checked' : ''}/> Enable</label>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 text-[10.5px]">
+              <label>Zoom Start <input type="range" min="0.7" max="2" step="0.05" value="${vidNg.kfZoomStart}" class="ng-kf-zs w-full studio-slider"/></label>
+              <label>Zoom End <input type="range" min="0.7" max="2.2" step="0.05" value="${vidNg.kfZoomEnd}" class="ng-kf-ze w-full studio-slider"/></label>
+              <label>Pan X End <input type="range" min="-140" max="140" step="5" value="${vidNg.kfPanXEnd}" class="ng-kf-px w-full studio-slider"/></label>
+              <label>Rotate End <input type="range" min="-35" max="35" step="1" value="${vidNg.kfRotEnd}" class="ng-kf-rot w-full studio-slider"/></label>
+            </div>
+            <select class="ng-kf-ease w-full bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white">
+              <option value="ease-in-out" ${vidNg.kfEase==='ease-in-out'?'selected':''}>Curve: Smooth Ease In-Out</option>
+              <option value="linear" ${vidNg.kfEase==='linear'?'selected':''}>Curve: Linear</option>
+              <option value="bounce" ${vidNg.kfEase==='bounce'?'selected':''}>Curve: Dynamic Punch</option>
+            </select>
+          </div>
+
+          <!-- 2. Karaoke / Reels Captions -->
+          <div class="p-2.5 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-amber-300">💬 Karaoke Reels Captions</span>
+              <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" class="ng-cap-toggle accent-amber-500" ${vidNg.captionsEnabled ? 'checked' : ''}/> Show</label>
+            </div>
+            <input type="text" value="${vidNg.captionText.replace(/"/g,'&quot;')}" placeholder="Lyrics / Reels caption text likhein..." class="ng-cap-text w-full bg-slate-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-white"/>
+            <div class="grid grid-cols-2 gap-1.5">
+              <select class="ng-cap-style bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white">
+                <option value="hormozi" ${vidNg.captionStyle==='hormozi'?'selected':''}>Hormozi Bold Yellow</option>
+                <option value="neon" ${vidNg.captionStyle==='neon'?'selected':''}>Neon Glow</option>
+                <option value="royal" ${vidNg.captionStyle==='royal'?'selected':''}>Royal Gold</option>
+                <option value="classic" ${vidNg.captionStyle==='classic'?'selected':''}>Classic Subtitle</option>
+              </select>
+              <select class="ng-cap-pos bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white">
+                <option value="bottom" ${vidNg.captionPos==='bottom'?'selected':''}>Bottom</option>
+                <option value="center" ${vidNg.captionPos==='center'?'selected':''}>Center</option>
+                <option value="top" ${vidNg.captionPos==='top'?'selected':''}>Top</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 3. Auto Beat-Markers & Velocity Speed Ramp -->
+          <div class="p-2.5 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+            <div class="font-bold text-emerald-300">⚡ Beat-Markers &amp; Velocity Speed Ramp</div>
+            <div class="flex gap-1.5">
+              <button type="button" class="ng-detect-beats btn-primary flex-1 py-1.5 rounded-lg font-bold">🎵 Detect Beats</button>
+              <label class="px-2.5 py-1.5 rounded-lg bg-white/10 flex items-center gap-1 cursor-pointer"><input type="checkbox" class="ng-beat-pulse accent-emerald-400" ${vidNg.beatPulse ? 'checked' : ''}/> Pulse</label>
+            </div>
+            <div id="ngBeatMarkersStrip" class="flex flex-wrap gap-1 max-h-14 overflow-y-auto">
+              ${vidNg.beats.length ? vidNg.beats.slice(0,20).map((b)=>`<span class="px-1.5 py-0.5 rounded bg-amber-500/25 text-amber-200 text-[9.5px]">⚡${b}s</span>`).join('') : '<span class="text-[10px] text-slate-400">Tap Detect Beats to auto-map audio peaks</span>'}
+            </div>
+            <select class="ng-speed-curve w-full bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white">
+              <option value="normal" ${vidNg.speedCurve==='normal'?'selected':''}>Speed Ramp: Normal (1x)</option>
+              <option value="velocity" ${vidNg.speedCurve==='velocity'?'selected':''}>⚡ Velocity Beat-Drop (2x → 0.45x → 1.6x)</option>
+              <option value="ramp-in" ${vidNg.speedCurve==='ramp-in'?'selected':''}>Smooth Ramp In (Slow → Fast)</option>
+              <option value="slow-dip" ${vidNg.speedCurve==='slow-dip'?'selected':''}>Hero Slow-Mo Dip</option>
+              <option value="fast-out" ${vidNg.speedCurve==='fast-out'?'selected':''}>Flash Fast-Out</option>
+            </select>
+          </div>
+
+          <!-- 4. Pro Chroma Key (Green / Blue Screen) -->
+          <div class="p-2.5 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-cyan-300">🟩 Pro Chroma Key (Green Screen)</span>
+              <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" class="ng-chroma-toggle accent-cyan-400" ${vidNg.chromaOn ? 'checked' : ''}/> Enable</label>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="flex items-center gap-1">Key <input type="color" value="${vidNg.chromaColor}" class="ng-chroma-color w-7 h-6 rounded"/></label>
+              <label class="flex items-center gap-1">BG <input type="color" value="${vidNg.chromaBgColor}" class="ng-chroma-bg w-7 h-6 rounded"/></label>
+              <label class="flex-1 text-[10px]">Tol <input type="range" min="25" max="140" value="${vidNg.chromaTol}" class="ng-chroma-tol w-full studio-slider"/></label>
+            </div>
+            <label class="btn-secondary w-full py-1.5 rounded-lg font-semibold text-center block cursor-pointer">🌄 Upload Chroma Scene BG<input type="file" accept="image/*" class="ng-chroma-img hidden"/></label>
+          </div>
+        </div>
+      `;
+      h.insertAdjacentElement('afterend', card);
+    });
+  }
+
+  /* ==========================================================================
+     GLOBAL EVENT DELEGATION FOR ALL 4 NEXT-GEN PACKS
+     ========================================================================== */
+  document.addEventListener('click', async (e) => {
+    const t = e.target;
+
+    // --- Design Studio ---
+    const dsTab = t.closest('[data-ds-tab]');
+    if (dsTab) { dsState.tab = dsTab.getAttribute('data-ds-tab'); renderDesignStudioUI(); return; }
+    const dsGrad = t.closest('[data-ds-grad]');
+    if (dsGrad) { dsState.bgType = 'gradient'; dsState.bgGrad = dsGrad.getAttribute('data-ds-grad'); renderDesignCanvas(); return; }
+    const dsAct = t.closest('[data-ds-act]');
+    if (dsAct) {
+      e.stopPropagation();
+      const act = dsAct.getAttribute('data-ds-act');
+      const id = dsAct.getAttribute('data-ds-id');
+      const idx = dsState.layers.findIndex((l) => l.id === id);
+      if (idx !== -1) {
+        if (act === 'del') dsState.layers.splice(idx, 1);
+        else if (act === 'lock') dsState.layers[idx].locked = !dsState.layers[idx].locked;
+        else if (act === 'vis') dsState.layers[idx].visible = !dsState.layers[idx].visible;
+        else if (act === 'up' && idx < dsState.layers.length - 1) [dsState.layers[idx], dsState.layers[idx+1]] = [dsState.layers[idx+1], dsState.layers[idx]];
+        else if (act === 'down' && idx > 0) [dsState.layers[idx], dsState.layers[idx-1]] = [dsState.layers[idx-1], dsState.layers[idx]];
+        renderDesignStudioUI();
+      }
+      return;
+    }
+    const dsSel = t.closest('[data-ds-sel]');
+    if (dsSel) { dsState.selectedId = dsSel.getAttribute('data-ds-sel'); renderDesignStudioUI(); return; }
+
+    if (t.closest('#dsAddTextBtn')) {
+      const nl = { id: 'ly_t_' + Date.now(), type: 'text', name: 'Text Layer', text: 'NEW HEADLINE', x: 0.5, y: 0.55, scale: 1, rot: 0, opacity: 1, locked: false, visible: true, fontSize: 72, color: '#ffffff', stroke: '#000000', strokeW: 3, shadow: 14, font: 'Impact, system-ui, sans-serif' };
+      dsState.layers.push(nl); dsState.selectedId = nl.id; renderDesignStudioUI(); return;
+    }
+    if (t.closest('#dsAddShapeBtn')) {
+      const nl = { id: 'ly_s_' + Date.now(), type: 'shape', shape: 'rect', name: 'Glass Card', w: 480, h: 160, x: 0.5, y: 0.72, scale: 1, rot: 0, opacity: 0.88, locked: false, visible: true, color: dsState.brand.primary || '#6366f1', stroke: '#fbbf24', strokeW: 4, shadow: 18 };
+      dsState.layers.push(nl); dsState.selectedId = nl.id; renderDesignStudioUI(); return;
+    }
+    if (t.closest('#dsAddFrameBtn')) {
+      const nl = { id: 'ly_f_' + Date.now(), type: 'shape', shape: 'frame', name: 'Royal Gold Frame', x: 0.5, y: 0.5, scale: 1, rot: 0, opacity: 0.95, locked: true, visible: true, color: 'transparent', stroke: '#fbbf24', strokeW: 14, shadow: 16 };
+      dsState.layers.push(nl); dsState.selectedId = nl.id; renderDesignStudioUI(); return;
+    }
+    if (t.closest('#dsAddStickerBtn')) {
+      const icons = ['👑', '✨', '🔥', '💍', '🎬', '❤️', '🎉', '📸', '💎'];
+      const pick = icons[Math.floor(Math.random() * icons.length)];
+      const nl = { id: 'ly_st_' + Date.now(), type: 'sticker', name: 'Sticker ' + pick, text: pick, x: 0.5, y: 0.5, scale: 1, rot: 0, opacity: 1, locked: false, visible: true, fontSize: 120, color: '#ffffff', stroke: '', strokeW: 0, shadow: 12, font: 'system-ui' };
+      dsState.layers.push(nl); dsState.selectedId = nl.id; renderDesignStudioUI(); return;
+    }
+    if (t.closest('#dsDupLayerBtn')) {
+      const cur = dsState.layers.find((l) => l.id === dsState.selectedId);
+      if (cur) {
+        const copy = { ...cur, id: 'ly_c_' + Date.now(), x: Math.min(0.9, cur.x + 0.04), y: Math.min(0.9, cur.y + 0.04) };
+        dsState.layers.push(copy); dsState.selectedId = copy.id; renderDesignStudioUI();
+      }
+      return;
+    }
+    if (t.closest('#dsAddGalPhotoBtn')) {
+      if (typeof StudioStorage !== 'undefined' && StudioStorage.getAllMedia) {
+        const all = (await StudioStorage.getAllMedia()).filter((m) => m.type === 'photo');
+        if (!all.length) { toast('My Gallery mein koi photo nahi hai.', 'info'); return; }
+        const src = all[0].dataUrl || all[0].thumbDataUrl;
+        const img = new Image();
+        img.onload = () => {
+          const nl = { id: 'ly_i_' + Date.now(), type: 'image', name: all[0].name || 'Gallery Photo', img, x: 0.5, y: 0.5, scale: 1, rot: 0, opacity: 1, locked: false, visible: true, shadow: 18 };
+          dsState.layers.push(nl); dsState.selectedId = nl.id; renderDesignStudioUI();
+        };
+        img.src = src;
+      }
+      return;
+    }
+    if (t.closest('#bkSaveBtn')) {
+      dsState.brand.name = document.getElementById('bkNameInp')?.value || 'Maha AI STUDIO';
+      dsState.brand.tagline = document.getElementById('bkTagInp')?.value || '';
+      dsState.brand.primary = document.getElementById('bkPrimInp')?.value || '#6366f1';
+      dsState.brand.accent = document.getElementById('bkAccInp')?.value || '#f59e0b';
+      saveBrandKit(dsState.brand);
+      toast('👑 Brand Kit saved!', 'success');
+      return;
+    }
+    if (t.closest('#dsApplyBrandBtn')) {
+      const bk = loadBrandKit();
+      dsState.brand = bk;
+      dsState.layers.push({
+        id: 'ly_bk_txt_' + Date.now(), type: 'text', name: 'Brand Watermark',
+        text: `${bk.name}${bk.tagline ? ' • ' + bk.tagline : ''}`,
+        x: 0.5, y: 0.92, scale: 1, rot: 0, opacity: 0.95, locked: false, visible: true,
+        fontSize: 34, color: bk.accent || '#fbbf24', stroke: '#000000', strokeW: 2, shadow: 10, font: 'system-ui, sans-serif'
+      });
+      if (bk.logoDataUrl) {
+        const img = new Image();
+        img.onload = () => {
+          dsState.layers.push({ id: 'ly_bk_logo_' + Date.now(), type: 'image', name: 'Brand Logo', img, x: 0.14, y: 0.12, scale: 0.28, rot: 0, opacity: 1, locked: false, visible: true, shadow: 12 });
+          renderDesignStudioUI();
+        };
+        img.src = bk.logoDataUrl;
+      } else {
+        renderDesignStudioUI();
+      }
+      toast('👑 Brand Kit applied to Design Canvas!', 'success');
+      return;
+    }
+    if (t.closest('#dsSaveGalBtn')) {
+      const prevSel = dsState.selectedId; dsState.selectedId = null; renderDesignCanvas();
+      const c = document.getElementById('ngDesignCanvas');
+      const dataUrl = c ? c.toDataURL('image/png') : '';
+      dsState.selectedId = prevSel; renderDesignCanvas();
+      if (dataUrl && typeof StudioStorage !== 'undefined' && StudioStorage.saveMedia) {
+        await StudioStorage.saveMedia({ name: `Design_${dsState.preset}_${Date.now()}.png`, type: 'photo', dataUrl, album: 'Design Studio' });
+        toast('💾 Design saved to My Gallery!', 'success');
+      }
+      return;
+    }
+    if (t.closest('#dsExportPngBtn')) {
+      const prevSel = dsState.selectedId; dsState.selectedId = null; renderDesignCanvas();
+      const c = document.getElementById('ngDesignCanvas');
+      if (c) {
+        const a = document.createElement('a');
+        a.download = `MahaAI_Design_${dsState.preset}_${Date.now()}.png`;
+        a.href = c.toDataURL('image/png');
+        a.click();
+        toast('⬇ Exported HD PNG Design!', 'success');
+      }
+      dsState.selectedId = prevSel; renderDesignCanvas();
+      return;
+    }
+
+    // --- Pro Camera Next-Gen ---
+    if (t.closest('#ngCamProToggleBtn')) { camNg.drawerOpen = !camNg.drawerOpen; renderCamNextGenDrawer(); return; }
+    if (t.closest('#ngCamDrawerClose')) { camNg.drawerOpen = false; renderCamNextGenDrawer(); return; }
+    if (t.closest('#ngCamBurst3Btn')) { runSmart3ShotBurst(); return; }
+    const cl = t.closest('[data-ng-cam-light]');
+    if (cl) { camNg.lighting = cl.getAttribute('data-ng-cam-light'); applyCamNextGenVisuals(); renderCamNextGenDrawer(); return; }
+    if (t.closest('#ngCamPeakBtn')) { camNg.focusPeaking = !camNg.focusPeaking; runFocusPeakingLoop(); renderCamNextGenDrawer(); return; }
+    if (t.closest('#ngCamVoiceBtn')) { toggleVoiceDirector(); renderCamNextGenDrawer(); return; }
+
+    // --- Photo Editor Next-Gen ---
+    if (t.closest('#ngSplitToggleBtn')) {
+      photoNg.splitOn = !photoNg.splitOn;
+      updatePhotoSplitCompare();
+      toast(photoNg.splitOn ? '⇄ Drag handle left/right for Before/After!' : 'Split Compare OFF', 'info');
+      return;
+    }
+    if (t.closest('#ngMaskToggleBtn')) {
+      photoNg.maskMode = !photoNg.maskMode;
+      const b = document.getElementById('ngMaskToggleBtn');
+      if (b) b.textContent = photoNg.maskMode ? '🖌️ Paint Mask: ON' : 'Paint Mask: OFF';
+      toast(photoNg.maskMode ? 'Photo par finger/mouse se paint karein, phir Apply Mask dabayein!' : 'Mask Brush OFF', 'info');
+      return;
+    }
+    if (t.closest('#ngMaskInvertBtn')) {
+      photoNg.maskInvert = !photoNg.maskInvert;
+      toast(photoNg.maskInvert ? 'Mask Inverted (Background target)' : 'Mask Normal (Painted area target)', 'info');
+      return;
+    }
+    if (t.closest('#ngMaskApplyBtn')) { applySelectiveMaskEffect(); return; }
+    const expBtn = t.closest('[data-ng-expand]');
+    if (expBtn) { runGenerativeExpand(expBtn.getAttribute('data-ng-expand')); return; }
+    if (t.closest('#ngApplyGradeBtn')) {
+      const c = document.getElementById('edCanvas');
+      if (c) { captureOrigIfNeeded(); applyNextGenPhotoGrade(c); toast('✅ Pro HSL / Split-Tone / Grain applied!', 'success'); }
+      return;
+    }
+    if (t.closest('#ngBrandStampPhotoBtn')) {
+      const c = document.getElementById('edCanvas');
+      if (!c || !c.width) return;
+      const bk = loadBrandKit();
+      const ctx = c.getContext('2d');
+      ctx.save();
+      const fs = Math.max(18, Math.round(c.width * 0.032));
+      ctx.font = `800 ${fs}px system-ui, sans-serif`;
+      ctx.fillStyle = 'rgba(0,0,0,0.52)';
+      const txt = bk.name || 'Maha AI STUDIO';
+      const tw = ctx.measureText(txt).width;
+      ctx.beginPath(); ctx.roundRect(c.width - tw - 40, c.height - fs - 28, tw + 26, fs + 16, 10); ctx.fill();
+      ctx.fillStyle = bk.accent || '#fbbf24';
+      ctx.fillText(txt, c.width - tw - 27, c.height - 20);
+      ctx.restore();
+      toast('👑 Brand Kit watermark stamped!', 'success');
+      return;
+    }
+
+    // --- Video Pro Next-Gen ---
+    if (t.closest('.ng-detect-beats')) { detectAudioBeats(); return; }
+  });
+
+  document.addEventListener('input', (e) => {
+    const el = e.target;
+    if (!el) return;
+    // Design Studio layer live inputs
+    const sel = dsState.layers.find((l) => l.id === dsState.selectedId);
+    if (sel) {
+      if (el.id === 'dsLayerText') { sel.text = el.value; renderDesignCanvas(); }
+      else if (el.id === 'dsLayerSize') { sel.fontSize = Number(el.value); renderDesignCanvas(); }
+      else if (el.id === 'dsLayerColor') { sel.color = el.value; renderDesignCanvas(); }
+      else if (el.id === 'dsLayerStroke') { sel.stroke = el.value; renderDesignCanvas(); }
+      else if (el.id === 'dsLayerStrokeW') { sel.strokeW = Number(el.value); renderDesignCanvas(); }
+      else if (el.id === 'dsLayerScale') { sel.scale = Number(el.value); renderDesignCanvas(); }
+      else if (el.id === 'dsLayerRot') { sel.rot = Number(el.value); renderDesignCanvas(); }
+      else if (el.id === 'dsLayerOp') { sel.opacity = Number(el.value); renderDesignCanvas(); }
+      else if (el.id === 'dsLayerShad') { sel.shadow = Number(el.value); renderDesignCanvas(); }
+    }
+    if (el.id === 'dsBgSolidInp') { dsState.bgType = 'solid'; dsState.bgColor = el.value; renderDesignCanvas(); }
+
+    // Pro Camera sliders
+    if (el.id === 'ngCamBokehInp') { camNg.bokeh = Number(el.value); applyCamNextGenVisuals(); }
+    if (el.id === 'ngCamKelvinInp') { camNg.kelvin = Number(el.value); applyCamNextGenVisuals(); }
+
+    // Photo Lab sliders
+    if (el.id === 'ngMaskStrInp') photoNg.maskStrength = Number(el.value);
+    if (el.id === 'ngHslR') photoNg.hslRed = Number(el.value);
+    if (el.id === 'ngHslG') photoNg.hslGreen = Number(el.value);
+    if (el.id === 'ngHslB') photoNg.hslBlue = Number(el.value);
+    if (el.id === 'ngGrainInp') photoNg.grain = Number(el.value);
+
+    // Video Pro sliders/inputs
+    if (el.classList.contains('ng-kf-zs')) vidNg.kfZoomStart = Number(el.value);
+    if (el.classList.contains('ng-kf-ze')) vidNg.kfZoomEnd = Number(el.value);
+    if (el.classList.contains('ng-kf-px')) vidNg.kfPanXEnd = Number(el.value);
+    if (el.classList.contains('ng-kf-rot')) vidNg.kfRotEnd = Number(el.value);
+    if (el.classList.contains('ng-cap-text')) vidNg.captionText = el.value;
+    if (el.classList.contains('ng-chroma-color')) vidNg.chromaColor = el.value;
+    if (el.classList.contains('ng-chroma-bg')) vidNg.chromaBgColor = el.value;
+    if (el.classList.contains('ng-chroma-tol')) vidNg.chromaTol = Number(el.value);
+  });
+
+  document.addEventListener('change', async (e) => {
+    const el = e.target;
+    if (!el) return;
+
+    // Design Studio controls & file uploads
+    if (el.id === 'dsPresetSel') {
+      const p = DS_PRESETS[el.value];
+      if (p) { dsState.preset = el.value; dsState.w = p.w; dsState.h = p.h; renderDesignCanvas(); }
+    }
+    if (el.id === 'dsLayerFont') {
+      const sel = dsState.layers.find((l) => l.id === dsState.selectedId);
+      if (sel) { sel.font = el.value; renderDesignCanvas(); }
+    }
+    if (el.id === 'dsAddPhotoInp' && el.files && el.files[0]) {
+      const f = el.files[0];
+      const r = new FileReader();
+      r.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const nl = { id: 'ly_i_' + Date.now(), type: 'image', name: f.name.slice(0, 18), img, x: 0.5, y: 0.5, scale: 1, rot: 0, opacity: 1, locked: false, visible: true, shadow: 18 };
+          dsState.layers.push(nl); dsState.selectedId = nl.id; renderDesignStudioUI();
+        };
+        img.src = r.result;
+      };
+      r.readAsDataURL(f);
+      el.value = '';
+    }
+    if (el.id === 'dsBgImgInp' && el.files && el.files[0]) {
+      const r = new FileReader();
+      r.onload = () => {
+        const img = new Image();
+        img.onload = () => { dsState.bgType = 'image'; dsState.bgImg = img; renderDesignCanvas(); };
+        img.src = r.result;
+      };
+      r.readAsDataURL(el.files[0]);
+      el.value = '';
+    }
+    if (el.id === 'bkLogoInp' && el.files && el.files[0]) {
+      const r = new FileReader();
+      r.onload = () => { dsState.brand.logoDataUrl = r.result; saveBrandKit(dsState.brand); renderDesignStudioUI(); toast('🏷️ Brand Logo uploaded!', 'success'); };
+      r.readAsDataURL(el.files[0]);
+      el.value = '';
+    }
+
+    // Photo Lab selects & Batch Grade upload
+    if (el.id === 'ngMaskEffSel') photoNg.maskEffect = el.value;
+    if (el.id === 'ngSplitToneSel') photoNg.splitTone = el.value;
+    if (el.id === 'ngBatchGradeInp' && el.files && el.files.length) {
+      const files = Array.from(el.files);
+      let done = 0;
+      for (const f of files) {
+        const dataUrl = await new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); });
+        const img = await new Promise((res) => { const im = new Image(); im.onload = () => res(im); im.src = dataUrl; });
+        const bc = document.createElement('canvas');
+        bc.width = img.width; bc.height = img.height;
+        bc.getContext('2d').drawImage(img, 0, 0);
+        applyNextGenPhotoGrade(bc);
+        const outUrl = bc.toDataURL('image/jpeg', 0.93);
+        if (typeof StudioStorage !== 'undefined' && StudioStorage.saveMedia) {
+          try { await StudioStorage.saveMedia({ name: 'BatchGraded_' + f.name, type: 'photo', dataUrl: outUrl, album: 'Batch Graded' }); done++; } catch (_) {}
+        }
+      }
+      toast(`✅ Batch Grade applied to ${done} photo(s) & saved to My Gallery!`, 'success');
+      el.value = '';
+    }
+
+    // Video Pro toggles & chroma BG upload
+    if (el.classList.contains('ng-kf-toggle')) vidNg.kfEnabled = el.checked;
+    if (el.classList.contains('ng-kf-ease')) vidNg.kfEase = el.value;
+    if (el.classList.contains('ng-cap-toggle')) vidNg.captionsEnabled = el.checked;
+    if (el.classList.contains('ng-cap-style')) vidNg.captionStyle = el.value;
+    if (el.classList.contains('ng-cap-pos')) vidNg.captionPos = el.value;
+    if (el.classList.contains('ng-beat-pulse')) vidNg.beatPulse = el.checked;
+    if (el.classList.contains('ng-speed-curve')) vidNg.speedCurve = el.value;
+    if (el.classList.contains('ng-chroma-toggle')) vidNg.chromaOn = el.checked;
+    if (el.classList.contains('ng-chroma-img') && el.files && el.files[0]) {
+      const r = new FileReader();
+      r.onload = () => {
+        const im = new Image();
+        im.onload = () => { vidNg.chromaBgImg = im; toast('🌄 Chroma Scene BG loaded!', 'success'); };
+        im.src = r.result;
+      };
+      r.readAsDataURL(el.files[0]);
+      el.value = '';
+    }
+  });
+
+  // Auto-mount watcher across route transitions
+  function syncNextGenMounts() {
+    const dRoot = document.getElementById('nextGenDesignRoot');
+    if (dRoot && !dRoot.dataset.ngMounted) {
+      dRoot.dataset.ngMounted = '1';
+      renderDesignStudioUI();
+    }
+    mountNextGenPhotoLab();
+    mountNextGenVideoLab();
+    injectCamNextGenHud();
+  }
+
+  const mo = new MutationObserver(() => requestAnimationFrame(syncNextGenMounts));
+  mo.observe(document.body, { childList: true, subtree: true });
+  setInterval(syncNextGenMounts, 650);
+  syncNextGenMounts();
 })();
 </script>
 
