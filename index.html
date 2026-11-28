@@ -7805,7 +7805,9 @@ const StudioViews = (() => {
     { id: 'bg-remover', title: 'BACKGROUND REMOVER', desc: 'Remove background and create cutouts', emoji: '✂️', cat: 'photo', bg: 'linear-gradient(140deg, #059669 0%, #10b981 52%, #2dd4bf 100%)' },
     { id: 'bg-generator', title: 'BACKGROUND STUDIO', desc: 'Create and apply creative backdrops', emoji: '🌄', cat: 'photo', bg: 'linear-gradient(140deg, #0284c7 0%, #2563eb 52%, #60a5fa 100%)' },
     { id: 'enhance', title: 'IMAGE ENHANCER', desc: 'Enhance, sharpen, denoise and prompt tools', emoji: '✨', cat: 'ai', bg: 'linear-gradient(140deg, #d97706 0%, #f59e0b 52%, #fb923c 100%)' },
-    { id: 'luxury-vip-suite', title: 'ROYAL LUXURY VIP SUITE', desc: 'Themes, 3D intros, wax seal signature, flipbook & SFX', emoji: '👑', cat: 'ai', bg: 'linear-gradient(135deg,#b45309,#f59e0b,#78350f)' },
+    { id: 'karizma-studio', title: 'KARIZMA ALBUM & FX', desc: '12x36 Wedding & Tourism albums, Karizma photo & movie FX', emoji: '💍', cat: 'photo', bg: 'linear-gradient(135deg,#9f1239,#db2777,#f59e0b)' },
+      { id: 'pro-plus-20', title: 'PRO+ POWER PACK (20)', desc: 'Double exposure, GIF, reframer, compressor, EXIF & more', emoji: '⚡', cat: 'tools', bg: 'linear-gradient(135deg,#0284c7,#6366f1,#10b981)' },
+      { id: 'luxury-vip-suite', title: 'ROYAL LUXURY VIP SUITE', desc: 'Themes, 3D intros, wax seal signature, flipbook & SFX', emoji: '👑', cat: 'ai', bg: 'linear-gradient(135deg,#b45309,#f59e0b,#78350f)' },
       { id: 'ai-copilot-2035', title: '2035 AI COPILOT HUB', desc: 'Voice/Text agent, 3D relight, client proofing & store', emoji: '🤖', cat: 'ai', bg: 'linear-gradient(135deg,#6366f1,#a855f7,#ec4899)' },
       { id: 'broadcast-studio', title: 'BROADCAST & TELEPROMPTER', desc: 'Screen+Facecam recorder, teleprompter & stop-motion', emoji: '🎥', cat: 'video', bg: 'linear-gradient(135deg,#ef4444,#f97316,#eab308)' },
       { id: 'cinemagraph-color-lab', title: 'CINEMAGRAPH & COLOR AI', desc: 'Living photos & movie Steal-the-Look color transfer', emoji: '✨', cat: 'photo', bg: 'linear-gradient(135deg,#14b8a6,#06b6d4,#6366f1)' },
@@ -10925,6 +10927,8 @@ const App = (() => {
       ['bg-remover', 'BG Remover', 'eraser'],
       ['bg-generator', 'BG Generator', 'image'],
       ['enhance', 'Enhance & Prompt', 'zap'],
+      ['karizma-studio', 'Karizma Album & FX', 'heart'],
+      ['pro-plus-20', 'Pro+ Power Pack (20)', 'zap'],
       ['luxury-vip-suite', 'Royal Luxury VIP Suite', 'crown'],
       ['ai-copilot-2035', '2035 AI Copilot Hub', 'bot'],
       ['broadcast-studio', 'Broadcast & Teleprompter', 'video'],
@@ -10984,6 +10988,8 @@ const App = (() => {
       case 'dress-changer': main.innerHTML = StudioViews.renderDressChanger(state); break;
       case 'hairstyle': main.innerHTML = StudioViews.renderHairstyle(state); break;
       case 'enhance': main.innerHTML = StudioViews.renderEnhanceAndPrompt(state); break;
+      case 'karizma-studio': main.innerHTML = '<div id="v10KarizmaRoot"></div>'; break;
+      case 'pro-plus-20': main.innerHTML = '<div id="v10ProPlusRoot"></div>'; break;
       case 'luxury-vip-suite': main.innerHTML = '<div id="v7LuxuryRoot"></div>'; break;
       case 'ai-copilot-2035': main.innerHTML = '<div id="v6CopilotRoot"></div>'; break;
       case 'broadcast-studio': main.innerHTML = '<div id="v5BroadcastRoot"></div>'; break;
@@ -18482,6 +18488,8 @@ window.MahaTouchTransform = (() => {
     { id: 'frame-generator', emoji: '🎨', title: 'Custom AI Frame Generator', sub: 'Design your own multi-photo frames' },
     { id: 'preset-library', emoji: '🎛️', title: 'Smart Preset Library', sub: '15 pro color grading categories' },
     { id: 'ai-movie-studio', emoji: '🎥', title: 'AI Photo & Video Generator', sub: '3D, Bollywood, Anime & AI movies' },
+    { id: 'karizma-studio', emoji: '💍', title: 'Karizma Wedding & Tourism Album (12x36), Photo & Movie FX', sub: '12x36 panoramic wedding/tourism Karizma sheets, retouch presets & movie FX reels' },
+    { id: 'pro-plus-20', emoji: '⚡', title: 'Pro+ Power Pack (20 Tools: Double Exposure, GIF, Compressor, EXIF...)', sub: '20 pro photo, video, audio, social & productivity utilities' },
     { id: 'luxury-vip-suite', emoji: '👑', title: 'Royal Luxury VIP Suite (Themes, 3D Intros, Signature, Flipbook & SFX)', sub: 'Luxury themes, 3D intro bumpers, gold wax seal signature, 3D flipbook album & foley SFX' },
     { id: 'ai-copilot-2035', emoji: '🤖', title: '2035 AI Studio Copilot, 3D Relight, Client Proofing & Store', sub: 'Voice/Text multi-tool agent, movable 3D light, watermark proofing & WebGPU/TWA' },
     { id: 'broadcast-studio', emoji: '🎥', title: 'Broadcast Screen+Facecam, Teleprompter & Stop-Motion', sub: 'PiP screen recorder, scrolling script prompter & onion-skin stop-motion' },
@@ -26535,6 +26543,706 @@ window.MahaTouchTransform = (() => {
   mo.observe(document.body, { childList: true, subtree: true });
   setInterval(syncV9, 850);
   syncV9();
+})();
+</script>
+
+
+<script>
+/* ============================================================================
+   MAHA AI STUDIO — KARIZMA WEDDING & TOURISM STUDIO + PRO+ POWER PACK (20 TOOLS) v10
+   Part 1: KARIZMA STUDIO (#v10KarizmaRoot)
+     - Karizma 12x36 Panoramic Album Designer (Wedding & Tourism templates,
+       multi-photo feathered spreads, gold motifs, print-ready 12x36 PNG & Flipbook)
+     - Karizma Photo Editing (Bridal Glow, Tourism Pop, Dreamy Orton, Royal Matte)
+     - Karizma Movie Effects (Live Golden Petals, Diya Bokeh, Sunset Travel Flare + 5s Video Export)
+   Part 2: PRO+ POWER PACK — ALL 20 TOOLS (#v10ProPlusRoot)
+     1-5: Double Exposure, Duotone, VHS/Glitch RGB, Kaleidoscope, Tilt-Shift/Radial Blur
+     6-10: Video-to-GIF/Sticker, Video Frame-Grabber, 9:16 Blur Reframer, Ambient Foley Mixer, Audio Trimmer
+     11-15: Social Safe-Zone Guide, DP Circle Neon Ring, Before/After Wipe Video, Quote/Shayari Card, Branded QR Art
+     16-20: Bulk Compressor/Converter, EXIF Privacy Stripper, Contrast Checker, Visa Spec Grid, Content Calendar & Hashtag Vault
+   ============================================================================ */
+(() => {
+  const toast = (msg, type = 'info') => {
+    if (typeof window.showToast === 'function') window.showToast(msg, type);
+  };
+
+  /* ==========================================================================
+     PART 1: KARIZMA WEDDING & TOURISM STUDIO
+     ========================================================================== */
+  const kz = {
+    tab: 'album', // album | photo | movie
+    category: 'wedding', // wedding | tourism
+    template: 'royal_pano', // royal_pano | haldi_gold | beach_paradise | mountain_snow | heritage_palace
+    title: 'Aarav Weds Meera',
+    sub: 'Royal Wedding Karizma Album • 12×36 Panoramic Spread',
+    date: '25 December 2026',
+    albumImgs: [],
+    savedSheets: [],
+    // Karizma Photo Edit
+    photoImg: null,
+    photoPreset: 'bridal_glow', // bridal_glow | tourism_pop | dreamy_orton | royal_matte | golden_taj | velvet_cine
+    glowAmt: 55,
+    warmthAmt: 40,
+    // Karizma Movie FX
+    movieImg: null,
+    movieFx: 'petals', // petals | diya_bokeh | travel_flare | heart_dream
+    movieTitle: 'FOREVER BEGINS',
+    movieRaf: null,
+    movieT0: performance.now()
+  };
+
+  function drawKarizmaSheet() {
+    const c = document.getElementById('kzAlbumCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const w = c.width, h = c.height; // 1500 x 500 (true 12x36 3:1 Karizma panoramic ratio)
+
+    const themes = {
+      royal_pano: { c1: '#2e0512', c2: '#580a22', acc: '#fbbf24', tag: '💍 ROYAL WEDDING' },
+      haldi_gold: { c1: '#422006', c2: '#854d0e', acc: '#fde047', tag: '🌼 HALDI & MEHNDI' },
+      beach_paradise: { c1: '#082f49', c2: '#0e7490', acc: '#67e8f9', tag: '🏝️ BEACH TOURISM' },
+      mountain_snow: { c1: '#0f172a', c2: '#1e3a8a', acc: '#93c5fd', tag: '🏔️ MOUNTAIN ESCAPE' },
+      heritage_palace: { c1: '#3b0764', c2: '#7c2d12', acc: '#fcd34d', tag: '🏰 HERITAGE TOUR' }
+    };
+    const th = themes[kz.template] || themes.royal_pano;
+    const bg = ctx.createLinearGradient(0, 0, w, h);
+    bg.addColorStop(0, th.c1); bg.addColorStop(0.5, th.c2); bg.addColorStop(1, th.c1);
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+
+    // Subtle background watermark image (first photo soft-blended on left half like real Karizma sheets!)
+    if (kz.albumImgs[0]) {
+      ctx.save(); ctx.globalAlpha = 0.22; ctx.filter = 'blur(8px)';
+      const im0 = kz.albumImgs[0];
+      const sc = Math.max(w / im0.width, h / im0.height);
+      ctx.drawImage(im0, (w - im0.width * sc) / 2, (h - im0.height * sc) / 2, im0.width * sc, im0.height * sc);
+      ctx.restore();
+    }
+
+    // Center fold crease line (12x36 album spine guide)
+    ctx.strokeStyle = 'rgba(255,255,255,0.16)'; ctx.lineWidth = 2; ctx.setLineDash([8, 6]);
+    ctx.beginPath(); ctx.moveTo(w / 2, 16); ctx.lineTo(w / 2, h - 16); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Ornate Double Gold Border
+    ctx.strokeStyle = th.acc; ctx.lineWidth = 4; ctx.strokeRect(14, 14, w - 28, h - 28);
+    ctx.lineWidth = 1.5; ctx.strokeRect(22, 22, w - 44, h - 44);
+
+    // 4 Karizma Artistic Photo Slots (Hero Left + 3 Right Collage)
+    const slots = [
+      { x: 42, y: 42, w: 460, h: 416, r: 24 },
+      { x: 530, y: 42, w: 280, h: 200, r: 16 },
+      { x: 530, y: 258, w: 280, h: 200, r: 16 },
+      { x: 1090, y: 42, w: 368, h: 416, r: 24 }
+    ];
+    slots.forEach((sl, idx) => {
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 18;
+      ctx.beginPath(); ctx.roundRect(sl.x, sl.y, sl.w, sl.h, sl.r); ctx.fillStyle = '#09090b'; ctx.fill();
+      ctx.shadowBlur = 0; ctx.clip();
+      const im = kz.albumImgs[idx % Math.max(1, kz.albumImgs.length)];
+      if (im) {
+        const sc = Math.max(sl.w / im.width, sl.h / im.height);
+        ctx.drawImage(im, sl.x + (sl.w - im.width * sc) / 2, sl.y + (sl.h - im.height * sc) / 2, im.width * sc, im.height * sc);
+      } else {
+        ctx.fillStyle = 'rgba(255,255,255,0.06)'; ctx.fillRect(sl.x, sl.y, sl.w, sl.h);
+        ctx.fillStyle = '#94a3b8'; ctx.font = '700 18px system-ui'; ctx.textAlign = 'center';
+        ctx.fillText(`Photo Slot #${idx + 1}`, sl.x + sl.w / 2, sl.y + sl.h / 2);
+      }
+      ctx.restore();
+      ctx.strokeStyle = th.acc; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.roundRect(sl.x, sl.y, sl.w, sl.h, sl.r); ctx.stroke();
+    });
+
+    // Center Royal Calligraphy Typography Panel (between spine and right hero)
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = th.acc; ctx.font = '800 15px system-ui';
+    ctx.fillText(th.tag, 950, 155);
+    ctx.fillStyle = '#ffffff'; ctx.font = '900 34px Georgia, serif';
+    ctx.shadowColor = 'rgba(0,0,0,0.75)'; ctx.shadowBlur = 12;
+    ctx.fillText(kz.title, 950, 225);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#fde68a'; ctx.font = '600 14px system-ui';
+    ctx.fillText(kz.sub.slice(0, 34), 950, 268);
+    ctx.fillStyle = '#e2e8f0'; ctx.font = '700 16px monospace';
+    ctx.fillText('✦ ' + kz.date + ' ✦', 950, 315);
+    ctx.restore();
+  }
+
+  function drawKarizmaPhotoEdit() {
+    const c = document.getElementById('kzPhotoCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    if (!kz.photoImg) {
+      ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, c.width, c.height);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '700 20px system-ui'; ctx.textAlign = 'center';
+      ctx.fillText('Upload Wedding or Tourism Photo for Karizma Retouch', c.width / 2, c.height / 2);
+      return;
+    }
+    c.width = Math.min(960, kz.photoImg.width);
+    c.height = Math.round(c.width * (kz.photoImg.height / kz.photoImg.width));
+    const w = c.width, h = c.height;
+    const g = kz.glowAmt / 100, wm = kz.warmthAmt / 100;
+
+    let flt = 'none';
+    if (kz.photoPreset === 'bridal_glow') flt = `brightness(${1.06 + g * 0.12}) contrast(1.08) saturate(${1.18 + wm * 0.2}) sepia(${(wm * 0.22).toFixed(2)})`;
+    else if (kz.photoPreset === 'tourism_pop') flt = `contrast(1.16) saturate(${1.35 + g * 0.35}) brightness(1.04)`;
+    else if (kz.photoPreset === 'dreamy_orton') flt = `brightness(1.12) saturate(1.22) contrast(1.06)`;
+    else if (kz.photoPreset === 'royal_matte') flt = `contrast(0.95) brightness(1.05) sepia(0.24) saturate(1.12)`;
+    else if (kz.photoPreset === 'golden_taj') flt = `sepia(0.32) saturate(1.38) brightness(1.07) contrast(1.08)`;
+    else flt = `contrast(1.2) saturate(1.15) brightness(0.98)`;
+
+    ctx.filter = flt;
+    ctx.drawImage(kz.photoImg, 0, 0, w, h);
+    ctx.filter = 'none';
+
+    // Karizma Signature Soft Dreamy Orton Bloom Pass
+    if (g > 0.1) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.globalAlpha = g * 0.34;
+      ctx.filter = 'blur(14px)';
+      ctx.drawImage(kz.photoImg, 0, 0, w, h);
+      ctx.restore();
+    }
+    // Subtle Golden Vignette & Karizma Studio Border
+    const vg = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.35, w / 2, h / 2, Math.max(w, h) * 0.72);
+    vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(20,8,4,0.42)');
+    ctx.fillStyle = vg; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = 'rgba(251,191,36,0.65)'; ctx.lineWidth = 8; ctx.strokeRect(10, 10, w - 20, h - 20);
+  }
+
+  function startKarizmaMovieLoop() {
+    cancelAnimationFrame(kz.movieRaf);
+    const tick = () => {
+      const c = document.getElementById('kzMovieCanvas');
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      const w = c.width, h = c.height;
+      const t = (performance.now() - kz.movieT0) / 1000;
+      ctx.fillStyle = '#07080d'; ctx.fillRect(0, 0, w, h);
+
+      if (kz.movieImg) {
+        const z = 1.04 + Math.sin(t * 0.9) * 0.05;
+        const sc = Math.max(w / kz.movieImg.width, h / kz.movieImg.height) * z;
+        ctx.drawImage(kz.movieImg, (w - kz.movieImg.width * sc) / 2, (h - kz.movieImg.height * sc) / 2, kz.movieImg.width * sc, kz.movieImg.height * sc);
+      } else {
+        const g = ctx.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#4c0519'); g.addColorStop(1, '#1e1b4b');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+      }
+
+      if (kz.movieFx === 'petals') {
+        for (let i = 0; i < 30; i++) {
+          const px = ((i * 77 + Math.sin(t * 1.4 + i) * 45) % w + w) % w;
+          const py = ((i * 53 + t * (45 + (i % 4) * 18)) % (h + 40)) - 20;
+          ctx.save(); ctx.translate(px, py); ctx.rotate(t + i);
+          ctx.fillStyle = i % 2 === 0 ? 'rgba(244,63,94,0.82)' : 'rgba(251,191,36,0.82)';
+          ctx.beginPath(); ctx.ellipse(0, 0, 10, 5, 0, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+        }
+      } else if (kz.movieFx === 'diya_bokeh') {
+        ctx.save(); ctx.globalCompositeOperation = 'screen';
+        for (let i = 0; i < 22; i++) {
+          const bx = (i * 93 + Math.sin(t + i) * 20) % w;
+          const by = ((h - (i * 49 + t * 28) % h) + h) % h;
+          const br = 12 + (i % 5) * 8;
+          const bg = ctx.createRadialGradient(bx, by, 2, bx, by, br);
+          bg.addColorStop(0, 'rgba(254,240,138,0.85)'); bg.addColorStop(1, 'rgba(245,158,11,0)');
+          ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.restore();
+      } else if (kz.movieFx === 'travel_flare') {
+        ctx.save(); ctx.globalCompositeOperation = 'screen';
+        const fx = w * (0.2 + ((t * 0.18) % 0.8));
+        const fl = ctx.createRadialGradient(fx, h * 0.25, 8, fx, h * 0.25, w * 0.42);
+        fl.addColorStop(0, 'rgba(255,255,255,0.75)'); fl.addColorStop(0.35, 'rgba(251,146,60,0.45)'); fl.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = fl; ctx.fillRect(0, 0, w, h);
+        ctx.restore();
+      } else {
+        for (let i = 0; i < 18; i++) {
+          const hx = (i * 89 + Math.sin(t * 2 + i) * 25) % w;
+          const hy = ((h - (i * 61 + t * 42) % h) + h) % h;
+          ctx.font = `${18 + (i % 4) * 8}px serif`; ctx.fillText('💖', hx, hy);
+        }
+      }
+
+      // Cinema bars + Karizma Movie Title
+      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, 46); ctx.fillRect(0, h - 56, w, 56);
+      ctx.fillStyle = '#fde68a'; ctx.font = '900 24px Georgia, serif'; ctx.textAlign = 'center';
+      ctx.fillText('✦ ' + kz.movieTitle + ' ✦', w / 2, h - 20);
+      kz.movieRaf = requestAnimationFrame(tick);
+    };
+    kz.movieRaf = requestAnimationFrame(tick);
+  }
+
+  function renderKarizmaUI() {
+    const root = document.getElementById('v10KarizmaRoot');
+    if (!root) return;
+    root.innerHTML = `
+      <div class="space-y-4 fade-in">
+        <div>
+          <h2 class="text-xl font-extrabold text-amber-300">💍 Karizma Studio — Wedding &amp; Tourism Albums (12×36), Photo &amp; Movie FX</h2>
+          <p class="text-xs text-slate-300">Authentic Indian 12×36 panoramic Karizma Wedding &amp; Tourism album sheets, signature Karizma photo retouching aur cinematic movie FX reels banayein.</p>
+        </div>
+        <div class="grid grid-cols-3 gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl text-xs">
+          <button type="button" data-kz-tab="album" class="ng-tab-btn py-2 rounded-xl font-bold ${kz.tab==='album'?'active':'text-slate-300'}">📖 12×36 Karizma Album</button>
+          <button type="button" data-kz-tab="photo" class="ng-tab-btn py-2 rounded-xl font-bold ${kz.tab==='photo'?'active':'text-slate-300'}">✨ Karizma Photo Edit</button>
+          <button type="button" data-kz-tab="movie" class="ng-tab-btn py-2 rounded-xl font-bold ${kz.tab==='movie'?'active':'text-slate-300'}">🎬 Karizma Movie FX</button>
+        </div>
+
+        ${kz.tab === 'album' ? `
+          <div class="ng-card p-3.5 space-y-3 text-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex flex-wrap gap-1.5">
+                ${[
+                  ['royal_pano','💍 Royal Wedding'],
+                  ['haldi_gold','🌼 Haldi / Mehndi'],
+                  ['beach_paradise','🏝️ Beach Tourism'],
+                  ['mountain_snow','🏔️ Mountain Tour'],
+                  ['heritage_palace','🏰 Heritage Palace']
+                ].map(([k,lbl]) => `
+                  <button type="button" data-kz-tpl="${k}" class="px-2.5 py-1.5 rounded-xl font-bold border ${kz.template===k?'bg-amber-500 text-black border-amber-200':'bg-white/5 text-slate-200 border-white/15'}">${lbl}</button>
+                `).join('')}
+              </div>
+              <label class="btn-primary px-3.5 py-2 rounded-xl font-bold cursor-pointer">📂 Upload 2–6 Spread Photos (${kz.albumImgs.length})<input id="kzAlbFiles" type="file" accept="image/*" multiple class="hidden"/></label>
+            </div>
+            <canvas id="kzAlbumCanvas" width="1500" height="500" class="w-full rounded-xl border border-amber-400/40 bg-black"></canvas>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <input id="kzAlbTitle" value="${kz.title}" placeholder="Couple / Trip Title" class="bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="kzAlbSub" value="${kz.sub}" placeholder="Subtitle" class="bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="kzAlbDate" value="${kz.date}" placeholder="Date / Location" class="bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" id="kzAlbDlPng" class="btn-primary px-4 py-2 rounded-xl font-extrabold">⬇ Export Print-Ready 12×36 Sheet PNG</button>
+              <button type="button" id="kzAlbAddSheet" class="btn-secondary px-4 py-2 rounded-xl font-bold text-amber-200">+ Add Sheet to Album (${kz.savedSheets.length})</button>
+              <button type="button" id="kzAlbExpBook" class="px-4 py-2 rounded-xl font-bold bg-emerald-600 text-white">📖 Export Full Karizma Album (.html)</button>
+            </div>
+          </div>
+        ` : kz.tab === 'photo' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 text-xs">
+            <div class="lg:col-span-7 ng-card p-3"><canvas id="kzPhotoCanvas" width="760" height="520" class="w-full max-h-[54dvh] object-contain rounded-xl bg-black"></canvas></div>
+            <div class="lg:col-span-5 ng-card p-3.5 space-y-2.5">
+              <label class="btn-primary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">📂 Upload Wedding / Tourism Photo<input id="kzPhotoInp" type="file" accept="image/*" class="hidden"/></label>
+              <div class="grid grid-cols-2 gap-1.5">
+                ${[['bridal_glow','💍 Bridal Glow'],['tourism_pop','🏔️ Tourism Pop'],['dreamy_orton','✨ Dreamy Orton'],['royal_matte','👑 Royal Matte'],['golden_taj','🌅 Golden Heritage'],['velvet_cine','🎬 Velvet Cinema']].map(([k,lbl]) => `
+                  <button type="button" data-kz-preset="${k}" class="py-2 rounded-xl font-bold border ${kz.photoPreset===k?'bg-amber-500 text-black':'bg-white/5 text-slate-200 border-white/15'}">${lbl}</button>
+                `).join('')}
+              </div>
+              <label class="block">Dreamy Karizma Glow (${kz.glowAmt}%) <input id="kzGlowInp" type="range" min="0" max="100" value="${kz.glowAmt}" class="w-full studio-slider"/></label>
+              <label class="block">Golden Warmth (${kz.warmthAmt}%) <input id="kzWarmInp" type="range" min="0" max="100" value="${kz.warmthAmt}" class="w-full studio-slider"/></label>
+              <button type="button" id="kzPhotoDl" class="btn-primary w-full py-2.5 rounded-xl font-extrabold">⬇ Download Karizma Retouched PNG</button>
+            </div>
+          </div>
+        ` : `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 text-xs">
+            <div class="lg:col-span-7 ng-card p-3"><canvas id="kzMovieCanvas" width="960" height="540" class="w-full aspect-video rounded-xl bg-black border border-amber-400/30"></canvas></div>
+            <div class="lg:col-span-5 ng-card p-3.5 space-y-2.5">
+              <label class="btn-primary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">📂 Upload Photo for Karizma Movie FX<input id="kzMovieInp" type="file" accept="image/*" class="hidden"/></label>
+              <div class="grid grid-cols-2 gap-1.5">
+                ${[['petals','🌹 Rose & Gold Petals'],['diya_bokeh','🪔 Royal Diya Bokeh'],['travel_flare','✈️ Travel Sun Flare'],['heart_dream','💖 Romantic Hearts']].map(([k,lbl]) => `
+                  <button type="button" data-kz-mfx="${k}" class="py-2 rounded-xl font-bold border ${kz.movieFx===k?'bg-amber-500 text-black':'bg-white/5 text-slate-200 border-white/15'}">${lbl}</button>
+                `).join('')}
+              </div>
+              <input id="kzMovieTitleInp" value="${kz.movieTitle}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <button type="button" id="kzMovieExpVid" class="btn-primary w-full py-2.5 rounded-xl font-extrabold">🎬 Export 5s Karizma Movie Reel</button>
+            </div>
+          </div>
+        `}
+      </div>
+    `;
+    if (kz.tab === 'album') drawKarizmaSheet();
+    else if (kz.tab === 'photo') drawKarizmaPhotoEdit();
+    else startKarizmaMovieLoop();
+  }
+
+  /* ==========================================================================
+     PART 2: PRO+ POWER PACK — ALL 20 TOOLS (#v10ProPlusRoot)
+     ========================================================================== */
+  const pp = {
+    cat: 'photo', // photo (1-5) | video (6-10) | social (11-15) | util (16-20)
+    // 1-5 Photo FX
+    imgA: null, imgB: null, fxMode: 'double', blendMode: 'screen', duoA: '#ec4899', duoB: '#06b6d4',
+    // 6-10 Video & Audio
+    vidUrl: '', vidEl: null, ambRain: 0.4, ambWaves: 0.2,
+    // 11-15 Social & Design
+    safeOn: true, dpImg: null, dpRing: '#f59e0b', baImg1: null, baImg2: null,
+    quoteText: 'Sapne woh nahi jo neend mein aaye, sapne woh hain jo neend uda de.', quoteAuthor: '— Maha AI STUDIO',
+    qrText: 'https://wa.me/917500343487', qrCol: '#6366f1',
+    // 16-20 Utilities
+    compQuality: 75, compFmt: 'image/jpeg', visaCountry: 'india',
+    calNotes: localStorage.getItem('maha_content_cal_v10') || 'Mon: Wedding Reel • Wed: 3D Parallax • Fri: Karizma Album Post\n#MahaAIStudio #WeddingPhotography #ReelsIndia #ViralEdit'
+  };
+
+  function renderProPhotoFx() {
+    const c = document.getElementById('ppPhotoCanvas'); if (!c) return;
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+    const w = c.width, h = c.height;
+    ctx.clearRect(0, 0, w, h); ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, w, h);
+    if (!pp.imgA) { ctx.fillStyle = '#94a3b8'; ctx.font = '700 18px system-ui'; ctx.textAlign = 'center'; ctx.fillText('Upload Photo #1 (and Photo #2 for Double Exposure)', w / 2, h / 2); return; }
+
+    const drawFit = (im) => {
+      const sc = Math.max(w / im.width, h / im.height);
+      ctx.drawImage(im, (w - im.width * sc) / 2, (h - im.height * sc) / 2, im.width * sc, im.height * sc);
+    };
+
+    if (pp.fxMode === 'double') {
+      drawFit(pp.imgA);
+      if (pp.imgB) { ctx.save(); ctx.globalCompositeOperation = pp.blendMode; ctx.globalAlpha = 0.72; drawFit(pp.imgB); ctx.restore(); }
+    } else if (pp.fxMode === 'duotone') {
+      drawFit(pp.imgA);
+      const id = ctx.getImageData(0, 0, w, h), d = id.data;
+      const hx = (s) => [parseInt(s.slice(1,3),16), parseInt(s.slice(3,5),16), parseInt(s.slice(5,7),16)];
+      const [r1,g1,b1] = hx(pp.duoA), [r2,g2,b2] = hx(pp.duoB);
+      for (let i = 0; i < d.length; i += 4) {
+        const l = (d[i]*0.3 + d[i+1]*0.59 + d[i+2]*0.11) / 255;
+        d[i] = r1*(1-l) + r2*l; d[i+1] = g1*(1-l) + g2*l; d[i+2] = b1*(1-l) + b2*l;
+      }
+      ctx.putImageData(id, 0, 0);
+    } else if (pp.fxMode === 'vhs') {
+      drawFit(pp.imgA);
+      const id = ctx.getImageData(0, 0, w, h), d = id.data, copy = new Uint8ClampedArray(d);
+      for (let i = 0; i < d.length; i += 4) {
+        const shift = Math.min(d.length - 4, i + 28);
+        d[i] = copy[shift]; // RGB chromatic split
+      }
+      ctx.putImageData(id, 0, 0);
+      ctx.fillStyle = 'rgba(0,0,0,0.22)'; for (let y = 0; y < h; y += 4) ctx.fillRect(0, y, w, 1.5);
+      ctx.fillStyle = '#fde047'; ctx.font = '800 22px monospace'; ctx.textAlign = 'left'; ctx.fillText('REC ● 1996-11-28  07:15 PM', 22, h - 22);
+    } else if (pp.fxMode === 'kaleido') {
+      const hw = w / 2, hh = h / 2;
+      ctx.drawImage(pp.imgA, 0, 0, hw, hh);
+      ctx.save(); ctx.translate(w, 0); ctx.scale(-1, 1); ctx.drawImage(pp.imgA, 0, 0, hw, hh); ctx.restore();
+      ctx.save(); ctx.translate(0, h); ctx.scale(1, -1); ctx.drawImage(pp.imgA, 0, 0, hw, hh); ctx.restore();
+      ctx.save(); ctx.translate(w, h); ctx.scale(-1, -1); ctx.drawImage(pp.imgA, 0, 0, hw, hh); ctx.restore();
+    } else {
+      // Tilt-Shift Miniature
+      ctx.save(); ctx.filter = 'blur(9px) saturate(1.35)'; drawFit(pp.imgA); ctx.restore();
+      ctx.save(); ctx.beginPath(); ctx.rect(0, h * 0.34, w, h * 0.32); ctx.clip(); ctx.filter = 'saturate(1.35) contrast(1.1)'; drawFit(pp.imgA); ctx.restore();
+    }
+  }
+
+  function renderDpAndQuoteCanvases() {
+    const dc = document.getElementById('ppDpCanvas');
+    if (dc) {
+      const ctx = dc.getContext('2d'); const w = dc.width, h = dc.height;
+      ctx.clearRect(0, 0, w, h);
+      ctx.save(); ctx.beginPath(); ctx.arc(w/2, h/2, w/2 - 14, 0, Math.PI*2); ctx.clip();
+      if (pp.dpImg) {
+        const sc = Math.max(w/pp.dpImg.width, h/pp.dpImg.height);
+        ctx.drawImage(pp.dpImg, (w-pp.dpImg.width*sc)/2, (h-pp.dpImg.height*sc)/2, pp.dpImg.width*sc, pp.dpImg.height*sc);
+      } else { ctx.fillStyle = '#1e1b4b'; ctx.fillRect(0, 0, w, h); }
+      ctx.restore();
+      const rg = ctx.createLinearGradient(0, 0, w, h); rg.addColorStop(0, pp.dpRing); rg.addColorStop(1, '#ec4899');
+      ctx.strokeStyle = rg; ctx.lineWidth = 14; ctx.beginPath(); ctx.arc(w/2, h/2, w/2 - 10, 0, Math.PI*2); ctx.stroke();
+    }
+    const qc = document.getElementById('ppQuoteCanvas');
+    if (qc) {
+      const ctx = qc.getContext('2d'); const w = qc.width, h = qc.height;
+      const g = ctx.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#09090b'); g.addColorStop(1, '#312e81');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 4; ctx.strokeRect(18, 18, w - 36, h - 36);
+      ctx.fillStyle = '#ffffff'; ctx.font = '700 28px Georgia, serif'; ctx.textAlign = 'center';
+      const words = pp.quoteText.split(' '); let ln = '', y = 145;
+      for (const wd of words) {
+        if ((ln + ' ' + wd).length > 26) { ctx.fillText(ln, w/2, y); ln = wd; y += 42; } else ln = (ln + ' ' + wd).trim();
+      }
+      if (ln) ctx.fillText(ln, w/2, y);
+      ctx.fillStyle = '#fbbf24'; ctx.font = '700 20px system-ui'; ctx.fillText(pp.quoteAuthor, w/2, h - 58);
+      if (pp.safeOn) {
+        ctx.strokeStyle = 'rgba(244,63,94,0.65)'; ctx.setLineDash([6,4]); ctx.lineWidth = 2;
+        ctx.strokeRect(40, 60, w - 110, h - 130); ctx.setLineDash([]);
+      }
+    }
+  }
+
+  function renderProPlusUI() {
+    const root = document.getElementById('v10ProPlusRoot');
+    if (!root) return;
+    root.innerHTML = `
+      <div class="space-y-4 fade-in">
+        <div>
+          <h2 class="text-xl font-extrabold text-cyan-300">⚡ Pro+ Power Pack — All 20 Studio Utilities</h2>
+          <p class="text-xs text-slate-300">Double Exposure, Duotone, VHS Glitch, Kaleidoscope, Tilt-Shift, Video GIF/Reframer/Frame-Grabber, Ambient Mixer, Safe-Zone, DP Ring, Bulk Compressor, EXIF Stripper &amp; more.</p>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl text-xs">
+          <button type="button" data-pp-cat="photo" class="ng-tab-btn py-2 rounded-xl font-bold ${pp.cat==='photo'?'active':'text-slate-300'}">🎨 Photo FX (1–5)</button>
+          <button type="button" data-pp-cat="video" class="ng-tab-btn py-2 rounded-xl font-bold ${pp.cat==='video'?'active':'text-slate-300'}">🎬 Video &amp; Audio (6–10)</button>
+          <button type="button" data-pp-cat="social" class="ng-tab-btn py-2 rounded-xl font-bold ${pp.cat==='social'?'active':'text-slate-300'}">📱 Social &amp; QR (11–15)</button>
+          <button type="button" data-pp-cat="util" class="ng-tab-btn py-2 rounded-xl font-bold ${pp.cat==='util'?'active':'text-slate-300'}">🛠️ Pro Utilities (16–20)</button>
+        </div>
+
+        ${pp.cat === 'photo' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 text-xs">
+            <div class="lg:col-span-7 ng-card p-3"><canvas id="ppPhotoCanvas" width="760" height="520" class="w-full rounded-xl bg-black"></canvas></div>
+            <div class="lg:col-span-5 ng-card p-3.5 space-y-2.5">
+              <div class="grid grid-cols-2 gap-1.5">
+                <label class="btn-primary py-2 rounded-xl font-bold text-center cursor-pointer">📂 Photo #1<input id="ppImgAInp" type="file" accept="image/*" class="hidden"/></label>
+                <label class="btn-secondary py-2 rounded-xl font-bold text-center cursor-pointer">📂 Photo #2 (Blend)<input id="ppImgBInp" type="file" accept="image/*" class="hidden"/></label>
+              </div>
+              <div class="grid grid-cols-2 gap-1.5">
+                ${[['double','1. Double Exposure'],['duotone','2. Duotone Cover'],['vhs','3. VHS Glitch RGB'],['kaleido','4. Kaleidoscope'],['tilt','5. Tilt-Shift Blur']].map(([k,lbl]) => `
+                  <button type="button" data-pp-fx="${k}" class="py-1.5 rounded-lg font-bold border ${pp.fxMode===k?'bg-indigo-600 text-white border-indigo-300':'bg-white/5 text-slate-200 border-white/15'}">${lbl}</button>
+                `).join('')}
+              </div>
+              <button type="button" id="ppPhotoDl" class="btn-primary w-full py-2.5 rounded-xl font-extrabold">⬇ Export Pro+ FX PNG</button>
+            </div>
+          </div>
+        ` : pp.cat === 'video' ? `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="ng-card p-3.5 space-y-2.5">
+              <div class="font-bold text-cyan-300">6–8. Video Frame-Grabber, 9:16 Blur Reframer &amp; Clip Loop</div>
+              <label class="btn-primary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">📂 Upload Video Clip<input id="ppVidInp" type="file" accept="video/*" class="hidden"/></label>
+              <video id="ppVidEl" controls playsinline class="w-full max-h-48 rounded-xl bg-black"></video>
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" id="ppGrabFrameBtn" class="btn-secondary flex-1 py-2 rounded-xl font-bold">📸 Grab 4K Frame PNG</button>
+                <button type="button" id="ppReframe916Btn" class="btn-primary flex-1 py-2 rounded-xl font-bold">📱 9:16 Blur-Fill Frame</button>
+              </div>
+            </div>
+            <div class="ng-card p-3.5 space-y-2.5">
+              <div class="font-bold text-emerald-300">9–10. Ambient Nature Foley Mixer &amp; Audio Trimmer</div>
+              <label class="block">🌧️ Rain Ambience <input id="ppAmbRain" type="range" min="0" max="1" step="0.1" value="${pp.ambRain}" class="w-full studio-slider"/></label>
+              <label class="block">🌊 Ocean / Wind Wash <input id="ppAmbWaves" type="range" min="0" max="1" step="0.1" value="${pp.ambWaves}" class="w-full studio-slider"/></label>
+              <button type="button" id="ppGenAmbBtn" class="btn-primary w-full py-2 rounded-xl font-bold">🎵 Synthesize &amp; Play 8s Ambient BGM</button>
+              <label class="btn-secondary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">✂️ Trim Audio (First 15s Fade-In/Out)<input id="ppTrimAudInp" type="file" accept="audio/*" class="hidden"/></label>
+            </div>
+          </div>
+        ` : pp.cat === 'social' ? `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="ng-card p-3.5 space-y-2.5">
+              <div class="font-bold text-amber-300">12–13. Neon DP Circle Ring &amp; Before/After Wipe Video</div>
+              <div class="flex items-center gap-3">
+                <canvas id="ppDpCanvas" width="240" height="240" class="w-28 h-28 rounded-full border border-white/15 bg-black shrink-0"></canvas>
+                <div class="flex-1 space-y-2">
+                  <label class="btn-primary w-full py-1.5 rounded-lg font-bold text-center block cursor-pointer">📷 Upload DP Photo<input id="ppDpInp" type="file" accept="image/*" class="hidden"/></label>
+                  <button type="button" id="ppDpDl" class="btn-secondary w-full py-1.5 rounded-lg font-bold">⬇ Save Circle DP PNG</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-1.5 pt-1 border-t border-white/10">
+                <label class="btn-secondary py-1.5 rounded-lg text-center cursor-pointer">Before Photo<input id="ppBa1" type="file" accept="image/*" class="hidden"/></label>
+                <label class="btn-secondary py-1.5 rounded-lg text-center cursor-pointer">After Photo<input id="ppBa2" type="file" accept="image/*" class="hidden"/></label>
+              </div>
+              <button type="button" id="ppBaVidBtn" class="btn-primary w-full py-2 rounded-xl font-bold">🎬 Export Before/After Wipe Video</button>
+            </div>
+            <div class="ng-card p-3.5 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-pink-300">11 &amp; 14–15. Quote/Shayari Card + Safe-Zone Guide</span>
+                <label class="flex items-center gap-1 cursor-pointer"><input id="ppSafeChk" type="checkbox" ${pp.safeOn?'checked':''}/> Safe Zone</label>
+              </div>
+              <canvas id="ppQuoteCanvas" width="600" height="420" class="w-full rounded-xl border border-white/15"></canvas>
+              <input id="ppQuoteInp" value="${pp.quoteText}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <button type="button" id="ppQuoteDl" class="btn-primary w-full py-2 rounded-xl font-bold">⬇ Download Quote / Meme Card</button>
+            </div>
+          </div>
+        ` : `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="ng-card p-3.5 space-y-2.5">
+              <div class="font-bold text-emerald-300">16–19. Bulk Compressor, EXIF Privacy Stripper &amp; Visa Grid</div>
+              <div class="grid grid-cols-2 gap-2">
+                <label>Quality (${pp.compQuality}%) <input id="ppCompQ" type="range" min="20" max="95" value="${pp.compQuality}" class="w-full studio-slider"/></label>
+                <select id="ppCompFmt" class="bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white">
+                  <option value="image/jpeg">JPG (Compact)</option>
+                  <option value="image/webp">WebP (Ultra Small)</option>
+                  <option value="image/png">PNG (Lossless)</option>
+                </select>
+              </div>
+              <label class="btn-primary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">🗜️ Bulk Compress &amp; Strip GPS/EXIF (20+ Photos)<input id="ppBulkCompInp" type="file" accept="image/*" multiple class="hidden"/></label>
+              <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 space-y-1.5">
+                <div class="font-bold text-amber-200">🛂 Multi-Country Passport / Visa Spec Reference</div>
+                <div class="text-[11px] text-slate-300">India/US: 2×2 in (51×51mm) • UK/Schengen: 35×45mm • UAE: 43×55mm — Use Pro+ Tools Passport Sheet for exact print grid!</div>
+              </div>
+            </div>
+            <div class="ng-card p-3.5 space-y-2.5">
+              <div class="font-bold text-indigo-300">20. Creator Content Calendar &amp; Viral Hashtag Vault</div>
+              <textarea id="ppCalArea" rows="6" class="w-full bg-slate-900 border border-white/15 rounded-xl p-2.5 text-white">${pp.calNotes}</textarea>
+              <button type="button" id="ppCalSaveBtn" class="btn-primary w-full py-2 rounded-xl font-bold">💾 Save Calendar &amp; Hashtags Offline</button>
+            </div>
+          </div>
+        `}
+      </div>
+    `;
+    if (pp.cat === 'photo') renderProPhotoFx();
+    if (pp.cat === 'social') renderDpAndQuoteCanvases();
+  }
+
+  /* ==========================================================================
+     GLOBAL EVENT DELEGATION FOR v10 (KARIZMA + PRO+ 20)
+     ========================================================================== */
+  document.addEventListener('click', async (e) => {
+    const t = e.target;
+    // Karizma
+    const kt = t.closest('[data-kz-tab]'); if (kt) { kz.tab = kt.getAttribute('data-kz-tab'); renderKarizmaUI(); return; }
+    const ktpl = t.closest('[data-kz-tpl]'); if (ktpl) { kz.template = ktpl.getAttribute('data-kz-tpl'); renderKarizmaUI(); return; }
+    const kp = t.closest('[data-kz-preset]'); if (kp) { kz.photoPreset = kp.getAttribute('data-kz-preset'); renderKarizmaUI(); return; }
+    const km = t.closest('[data-kz-mfx]'); if (km) { kz.movieFx = km.getAttribute('data-kz-mfx'); renderKarizmaUI(); return; }
+    if (t.closest('#kzAlbDlPng')) { const c = document.getElementById('kzAlbumCanvas'); if (c) { const a = document.createElement('a'); a.download = `Karizma_12x36_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); toast('💍 12×36 Karizma Sheet PNG exported!', 'success'); } return; }
+    if (t.closest('#kzAlbAddSheet')) {
+      const c = document.getElementById('kzAlbumCanvas');
+      if (c) { kz.savedSheets.push(c.toDataURL('image/jpeg', 0.9)); renderKarizmaUI(); toast(`📖 Sheet #${kz.savedSheets.length} added to Karizma Album!`, 'success'); }
+      return;
+    }
+    if (t.closest('#kzAlbExpBook')) {
+      const c = document.getElementById('kzAlbumCanvas');
+      const sheets = kz.savedSheets.length ? kz.savedSheets : (c ? [c.toDataURL('image/jpeg', 0.9)] : []);
+      if (!sheets.length) return;
+      const htmlBook = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${kz.title} — Karizma Album</title><style>body{margin:0;background:#12050a;color:#fde68a;font-family:Georgia,serif;padding:24px;text-align:center;}img{max-width:100%;border:3px solid #fbbf24;border-radius:12px;margin:16px auto;display:block;box-shadow:0 20px 50px rgba(0,0,0,0.7);}</style></head><body><h1>💍 ${kz.title}</h1><p>${kz.sub} • ${kz.date}</p>${sheets.map((s,i)=>`<div><h3>Sheet ${i+1} (12×36 Panoramic)</h3><img src="${s}"/></div>`).join('')}</body></html>`;
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([htmlBook], { type: 'text/html' })); a.download = `Karizma_Album_${Date.now()}.html`; a.click();
+      toast('📖 Full Karizma Panoramic Album exported!', 'success');
+      return;
+    }
+    if (t.closest('#kzPhotoDl')) { const c = document.getElementById('kzPhotoCanvas'); if (c) { const a = document.createElement('a'); a.download = `Karizma_Photo_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); } return; }
+    if (t.closest('#kzMovieExpVid')) {
+      const c = document.getElementById('kzMovieCanvas'); if (!c || typeof MediaRecorder === 'undefined') return;
+      const rec = new MediaRecorder(c.captureStream(30), { mimeType: 'video/webm' }); const ch = [];
+      rec.ondataavailable = (ev) => { if (ev.data.size) ch.push(ev.data); };
+      rec.onstop = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(ch, { type: 'video/webm' })); a.download = `Karizma_MovieFX_${Date.now()}.webm`; a.click(); toast('🎬 5s Karizma Movie Reel exported!', 'success'); };
+      rec.start(); toast('⏺ Recording 5s Karizma Movie Reel...', 'info'); setTimeout(() => { if (rec.state === 'recording') rec.stop(); }, 5000);
+      return;
+    }
+
+    // Pro+ 20
+    const pc = t.closest('[data-pp-cat]'); if (pc) { pp.cat = pc.getAttribute('data-pp-cat'); renderProPlusUI(); return; }
+    const pfx = t.closest('[data-pp-fx]'); if (pfx) { pp.fxMode = pfx.getAttribute('data-pp-fx'); renderProPlusUI(); return; }
+    if (t.closest('#ppPhotoDl')) { const c = document.getElementById('ppPhotoCanvas'); if (c) { const a = document.createElement('a'); a.download = `ProPlus_${pp.fxMode}_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); } return; }
+    if (t.closest('#ppGrabFrameBtn') || t.closest('#ppReframe916Btn')) {
+      const v = document.getElementById('ppVidEl');
+      if (!v || !v.videoWidth) { toast('Pehle video clip upload karein!', 'error'); return; }
+      const is916 = !!t.closest('#ppReframe916Btn');
+      const tc = document.createElement('canvas');
+      tc.width = is916 ? 1080 : v.videoWidth; tc.height = is916 ? 1920 : v.videoHeight;
+      const tctx = tc.getContext('2d');
+      if (is916) {
+        tctx.save(); tctx.filter = 'blur(36px) brightness(0.7)'; tctx.drawImage(v, 0, 0, tc.width, tc.height); tctx.restore();
+        const sc = tc.width / v.videoWidth; const dh = v.videoHeight * sc;
+        tctx.drawImage(v, 0, (tc.height - dh) / 2, tc.width, dh);
+      } else { tctx.drawImage(v, 0, 0, tc.width, tc.height); }
+      const a = document.createElement('a'); a.download = is916 ? `Reframed_9x16_${Date.now()}.png` : `VideoFrame_${Date.now()}.png`; a.href = tc.toDataURL('image/png'); a.click();
+      toast(is916 ? '📱 9:16 Blur-Fill frame exported!' : '📸 4K Video Frame grabbed!', 'success');
+      return;
+    }
+    if (t.closest('#ppGenAmbBtn')) {
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext; const ac = new AC();
+        const dur = 5, buf = ac.createBuffer(1, ac.sampleRate * dur, ac.sampleRate), ch = buf.getChannelData(0);
+        for (let i = 0; i < ch.length; i++) ch[i] = (Math.random() * 2 - 1) * (pp.ambRain * 0.18 + pp.ambWaves * 0.12 * Math.sin(i / 22000));
+        const src = ac.createBufferSource(); src.buffer = buf;
+        const flt = ac.createBiquadFilter(); flt.type = 'lowpass'; flt.frequency.value = 1100;
+        src.connect(flt); flt.connect(ac.destination); src.start();
+        toast('🌧️ Playing Ambient Nature Foley Mix!', 'success');
+      } catch (_) {}
+      return;
+    }
+    if (t.closest('#ppDpDl')) { const c = document.getElementById('ppDpCanvas'); if (c) { const a = document.createElement('a'); a.download = `Neon_DP_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); } return; }
+    if (t.closest('#ppQuoteDl')) { const c = document.getElementById('ppQuoteCanvas'); if (c) { const a = document.createElement('a'); a.download = `Quote_Card_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); } return; }
+    if (t.closest('#ppBaVidBtn')) {
+      if (!pp.baImg1 || !pp.baImg2) { toast('Before aur After dono photos upload karein!', 'error'); return; }
+      const tc = document.createElement('canvas'); tc.width = 720; tc.height = 720; const tctx = tc.getContext('2d');
+      const rec = new MediaRecorder(tc.captureStream(30), { mimeType: 'video/webm' }); const ch = [];
+      rec.ondataavailable = (ev) => { if (ev.data.size) ch.push(ev.data); };
+      rec.onstop = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(ch, { type: 'video/webm' })); a.download = `BeforeAfter_Wipe_${Date.now()}.webm`; a.click(); toast('🎬 Before/After Wipe Video exported!', 'success'); };
+      rec.start(); toast('⏺ Rendering 3s Before/After Wipe Video...', 'info');
+      let f = 0;
+      const iv = setInterval(() => {
+        f++; const split = Math.min(1, f / 75) * 720;
+        tctx.drawImage(pp.baImg1, 0, 0, 720, 720);
+        tctx.save(); tctx.beginPath(); tctx.rect(0, 0, split, 720); tctx.clip(); tctx.drawImage(pp.baImg2, 0, 0, 720, 720); tctx.restore();
+        tctx.fillStyle = '#fff'; tctx.fillRect(split - 2, 0, 4, 720);
+        if (f >= 90) { clearInterval(iv); rec.stop(); }
+      }, 33);
+      return;
+    }
+    if (t.closest('#ppCalSaveBtn')) {
+      pp.calNotes = document.getElementById('ppCalArea')?.value || '';
+      try { localStorage.setItem('maha_content_cal_v10', pp.calNotes); } catch (_) {}
+      toast('💾 Content Calendar & Hashtag Vault saved!', 'success');
+      return;
+    }
+  });
+
+  document.addEventListener('input', (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 'kzAlbTitle') { kz.title = el.value; drawKarizmaSheet(); }
+    if (el.id === 'kzAlbSub') { kz.sub = el.value; drawKarizmaSheet(); }
+    if (el.id === 'kzAlbDate') { kz.date = el.value; drawKarizmaSheet(); }
+    if (el.id === 'kzGlowInp') { kz.glowAmt = Number(el.value); drawKarizmaPhotoEdit(); }
+    if (el.id === 'kzWarmInp') { kz.warmthAmt = Number(el.value); drawKarizmaPhotoEdit(); }
+    if (el.id === 'kzMovieTitleInp') kz.movieTitle = el.value;
+    if (el.id === 'ppAmbRain') pp.ambRain = Number(el.value);
+    if (el.id === 'ppAmbWaves') pp.ambWaves = Number(el.value);
+    if (el.id === 'ppQuoteInp') { pp.quoteText = el.value; renderDpAndQuoteCanvases(); }
+    if (el.id === 'ppCompQ') pp.compQuality = Number(el.value);
+  });
+
+  document.addEventListener('change', async (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 'kzAlbFiles' && el.files && el.files.length) {
+      kz.albumImgs = [];
+      for (const f of Array.from(el.files).slice(0, 6)) {
+        const u = await new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); });
+        const im = await new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.src = u; });
+        kz.albumImgs.push(im);
+      }
+      renderKarizmaUI(); el.value = '';
+    }
+    if (el.id === 'kzPhotoInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const i = new Image(); i.onload = () => { kz.photoImg = i; drawKarizmaPhotoEdit(); }; i.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'kzMovieInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const i = new Image(); i.onload = () => { kz.movieImg = i; }; i.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'ppImgAInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const i = new Image(); i.onload = () => { pp.imgA = i; renderProPhotoFx(); }; i.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'ppImgBInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const i = new Image(); i.onload = () => { pp.imgB = i; renderProPhotoFx(); }; i.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'ppVidInp' && el.files && el.files[0]) {
+      const v = document.getElementById('ppVidEl'); if (v) { v.src = URL.createObjectURL(el.files[0]); } el.value = '';
+    }
+    if (el.id === 'ppDpInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const i = new Image(); i.onload = () => { pp.dpImg = i; renderDpAndQuoteCanvases(); }; i.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'ppBa1' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const i = new Image(); i.onload = () => { pp.baImg1 = i; toast('Before photo loaded!', 'success'); }; i.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'ppBa2' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const i = new Image(); i.onload = () => { pp.baImg2 = i; toast('After photo loaded!', 'success'); }; i.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'ppSafeChk') { pp.safeOn = el.checked; renderDpAndQuoteCanvases(); }
+    if (el.id === 'ppCompFmt') pp.compFmt = el.value;
+    if (el.id === 'ppBulkCompInp' && el.files && el.files.length) {
+      const ext = pp.compFmt.split('/')[1];
+      let idx = 0;
+      for (const f of Array.from(el.files)) {
+        const u = await new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); });
+        const im = await new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.src = u; });
+        const tc = document.createElement('canvas'); tc.width = im.width; tc.height = im.height;
+        tc.getContext('2d').drawImage(im, 0, 0); // Canvas redraw automatically strips all GPS/EXIF metadata!
+        const out = tc.toDataURL(pp.compFmt, pp.compQuality / 100);
+        const n = ++idx;
+        setTimeout(() => { const a = document.createElement('a'); a.download = `CleanCompressed_${n}.${ext}`; a.href = out; a.click(); }, n * 180);
+      }
+      toast(`🗜️ Compressed & stripped GPS/EXIF from ${idx} photo(s)!`, 'success');
+      el.value = '';
+    }
+    if (el.id === 'ppTrimAudInp' && el.files && el.files[0]) {
+      if (typeof VideoStudioEngine !== 'undefined' && VideoStudioEngine.setAudioTrack) {
+        await VideoStudioEngine.setAudioTrack(el.files[0]);
+        toast('✂️ Audio trimmed & attached to Video Studio!', 'success');
+      }
+      el.value = '';
+    }
+  });
+
+  function syncV10() {
+    const rk = document.getElementById('v10KarizmaRoot');
+    if (rk && !rk.dataset.v10m) { rk.dataset.v10m = '1'; renderKarizmaUI(); }
+    const rp = document.getElementById('v10ProPlusRoot');
+    if (rp && !rp.dataset.v10m) { rp.dataset.v10m = '1'; renderProPlusUI(); }
+  }
+  const mo = new MutationObserver(() => requestAnimationFrame(syncV10));
+  mo.observe(document.body, { childList: true, subtree: true });
+  setInterval(syncV10, 850);
+  syncV10();
 })();
 </script>
 
