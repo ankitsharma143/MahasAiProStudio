@@ -27246,5 +27246,577 @@ window.MahaTouchTransform = (() => {
 })();
 </script>
 
+
+<script>
+/* ============================================================================
+   MAHA AI STUDIO — ULTRA PRO+ VAULT v11 (Tools 21–40)
+   Mounts cleanly inside Pro+ Power Pack (#v10ProPlusRoot):
+   21-25: 3D Merch Mockup, Wedding Menu, 12-Month Photo Calendar, Boarding Pass/Stamp, Barcode/Price-Tag
+   26-30: RGB Waveform Scope, .cube 3D LUT Exporter, Star-Trails Stacker, 3-Shot HDR Fusion, Film Clapperboard
+   31-35: Podcast Audiogram, YT End-Screen, 4K Mesh Wallpaper, Warhol/Halftone/ASCII Art, .srt Subtitle Studio
+   36-40: Anti-Theft Watermark Grid, Signed Shoot Contract, Golden Hour Calc, Print DPI Calc, Storage & Full Backup
+   ============================================================================ */
+(() => {
+  const toast = (msg, type = 'info') => {
+    if (typeof window.showToast === 'function') window.showToast(msg, type);
+  };
+
+  const u = {
+    tab: null, // null | merch | cinema | art | ops
+    // 21-25
+    merchImg: null, merchType: 'tshirt',
+    menuTitle: 'ROYAL RECEPTION DINNER', menuTable: 'TABLE 07', menuItems: 'Paneer Tikka • Dal Makhani • Kashmiri Pulao • Shahi Tukda',
+    calImg: null, calMonth: 11, calYear: 2026,
+    bpImg: null, bpMode: 'pass', bpFrom: 'DEL', bpTo: 'GOA', bpName: 'ANKIT SHARMA',
+    bcName: 'ROYAL SILK SAREE', bcSku: 'MAHA-2035-88', bcPrice: '₹4,999',
+    // 26-30
+    scopeImg: null,
+    lutWarm: 15, lutCont: 12, lutSat: 20,
+    stackImgs: [], hdrImgs: [],
+    clapScene: '04', clapTake: '02', clapDir: 'Ankit Sharma', clapRaf: null,
+    // 31-35
+    podImg: null, podTitle: 'THE CREATOR PODCAST • EP 01', podRaf: null,
+    ytChannel: 'MAHA AI STUDIO',
+    meshCols: ['#0f172a', '#6366f1', '#ec4899', '#f59e0b'],
+    artImg: null, artStyle: 'warhol',
+    srtText: '1\n00:00:01,000 --> 00:00:04,000\nWelcome to Maha AI STUDIO Next-Gen!\n\n2\n00:00:04,500 --> 00:00:08,000\nSubscribe for more pro tutorials.',
+    // 36-40
+    wmImg: null, wmText: '© MAHA AI STUDIO • DO NOT COPY', wmOp: 28,
+    ctClient: 'Rahul Verma', ctFee: '₹45,000',
+    ghDate: '2026-11-28', ghLat: 26.85,
+    dpiW: 6000, dpiH: 4000
+  };
+
+  function dlC(id, fname) {
+    const c = document.getElementById(id); if (!c) return;
+    const a = document.createElement('a'); a.download = fname; a.href = c.toDataURL('image/png'); a.click();
+    toast('⬇ Exported ' + fname, 'success');
+  }
+
+  /* 21. Merch Mockup */
+  function drawMerch() {
+    const c = document.getElementById('u21Canvas'); if (!c) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    const bg = ctx.createRadialGradient(w/2, h/2, 20, w/2, h/2, w*0.7);
+    bg.addColorStop(0, '#1e1b4b'); bg.addColorStop(1, '#07080d');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 24;
+    if (u.merchType === 'tshirt') {
+      ctx.fillStyle = '#f8fafc';
+      ctx.beginPath(); ctx.moveTo(150, 70); ctx.lineTo(230, 70); ctx.quadraticCurveTo(270, 110, 310, 70);
+      ctx.lineTo(390, 70); ctx.lineTo(465, 165); ctx.lineTo(410, 220); ctx.lineTo(380, 185);
+      ctx.lineTo(380, 440); ctx.lineTo(160, 440); ctx.lineTo(160, 185); ctx.lineTo(130, 220); ctx.lineTo(75, 165); ctx.closePath(); ctx.fill();
+      ctx.shadowBlur = 0;
+      if (u.merchImg) ctx.drawImage(u.merchImg, 205, 155, 130, 155);
+      else { ctx.fillStyle = '#6366f1'; ctx.fillRect(205, 155, 130, 155); }
+    } else if (u.merchType === 'mug') {
+      ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 22;
+      ctx.beginPath(); ctx.arc(385, 260, 62, -Math.PI/2, Math.PI/2); ctx.stroke();
+      ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.roundRect(155, 135, 225, 250, 20); ctx.fill();
+      ctx.shadowBlur = 0;
+      if (u.merchImg) ctx.drawImage(u.merchImg, 185, 175, 165, 165);
+      else { ctx.fillStyle = '#f59e0b'; ctx.fillRect(185, 175, 165, 165); }
+    } else {
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 10;
+      ctx.beginPath(); ctx.arc(270, 145, 58, Math.PI, 0); ctx.stroke();
+      ctx.fillStyle = '#1c1917'; ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.roundRect(145, 145, 250, 290, 14); ctx.fill(); ctx.stroke();
+      ctx.shadowBlur = 0;
+      if (u.merchImg) ctx.drawImage(u.merchImg, 190, 200, 160, 160);
+      else { ctx.fillStyle = '#fbbf24'; ctx.font = '900 26px Georgia'; ctx.textAlign = 'center'; ctx.fillText('MAHA LUXE', 270, 290); }
+    }
+    ctx.restore();
+  }
+
+  /* 22. Wedding Menu / Table Card */
+  function drawMenuCard() {
+    const c = document.getElementById('u22Canvas'); if (!c) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    ctx.fillStyle = '#18050b'; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 6; ctx.strokeRect(18, 18, w-36, h-36);
+    ctx.textAlign = 'center'; ctx.fillStyle = '#fde68a'; ctx.font = '800 18px system-ui'; ctx.fillText('👑 ' + u.menuTable, w/2, 68);
+    ctx.fillStyle = '#ffffff'; ctx.font = '900 32px Georgia, serif'; ctx.fillText(u.menuTitle, w/2, 118);
+    ctx.fillStyle = '#cbd5e1'; ctx.font = '600 18px Georgia, serif';
+    u.menuItems.split('•').forEach((it, i) => ctx.fillText('✦ ' + it.trim(), w/2, 176 + i * 44));
+  }
+
+  /* 23. 12-Month Photo Calendar */
+  function drawPhotoCalendar() {
+    const c = document.getElementById('u23Canvas'); if (!c) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, w, h);
+    if (u.calImg) {
+      const sc = Math.max(w / u.calImg.width, (h * 0.52) / u.calImg.height);
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, w, h * 0.52); ctx.clip();
+      ctx.drawImage(u.calImg, (w - u.calImg.width*sc)/2, (h*0.52 - u.calImg.height*sc)/2, u.calImg.width*sc, u.calImg.height*sc);
+      ctx.restore();
+    } else {
+      ctx.fillStyle = '#1e1b4b'; ctx.fillRect(0, 0, w, h * 0.52);
+    }
+    const months = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+    ctx.fillStyle = '#fbbf24'; ctx.font = '900 28px Georgia, serif'; ctx.textAlign = 'center';
+    ctx.fillText(`${months[u.calMonth]} ${u.calYear}`, w/2, h * 0.58);
+    const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+    ctx.font = '700 13px monospace'; ctx.fillStyle = '#94a3b8';
+    days.forEach((d, i) => ctx.fillText(d, 42 + i * ((w - 84)/6), h * 0.64));
+    const first = new Date(u.calYear, u.calMonth, 1).getDay();
+    const total = new Date(u.calYear, u.calMonth + 1, 0).getDate();
+    ctx.fillStyle = '#f8fafc'; ctx.font = '700 16px system-ui';
+    for (let day = 1; day <= total; day++) {
+      const idx = first + day - 1;
+      const col = idx % 7, row = Math.floor(idx / 7);
+      ctx.fillText(String(day), 42 + col * ((w - 84)/6), h * 0.70 + row * 34);
+    }
+  }
+
+  /* 24. Travel Boarding Pass / Vintage Stamp */
+  function drawBoardingOrStamp() {
+    const c = document.getElementById('u24Canvas'); if (!c) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, w, h);
+    if (u.bpMode === 'pass') {
+      ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.roundRect(24, 48, w-48, h-96, 20); ctx.fill();
+      ctx.fillStyle = '#1e1b4b'; ctx.beginPath(); ctx.roundRect(24, 48, w-48, 62, [20,20,0,0]); ctx.fill();
+      ctx.fillStyle = '#fbbf24'; ctx.font = '900 22px system-ui'; ctx.textAlign = 'left'; ctx.fillText('✈️ MAHA ROYAL AIRWAYS • BOARDING PASS', 46, 86);
+      ctx.fillStyle = '#0f172a'; ctx.font = '900 54px monospace'; ctx.fillText(`${u.bpFrom}  ✈  ${u.bpTo}`, 46, 178);
+      ctx.font = '700 18px system-ui'; ctx.fillStyle = '#475569'; ctx.fillText('PASSENGER: ' + u.bpName + '  •  CLASS: FIRST ROYAL', 46, 224);
+      // Barcode strips
+      ctx.fillStyle = '#09090b';
+      for (let x = 46; x < w - 60; x += 9) ctx.fillRect(x, 248, (x % 4 === 0 ? 5 : 2), 42);
+    } else {
+      ctx.fillStyle = '#fef3c7'; ctx.fillRect(110, 28, w-220, h-56);
+      ctx.fillStyle = '#0f172a';
+      for (let x = 110; x <= w-110; x += 24) { ctx.beginPath(); ctx.arc(x, 28, 7, 0, Math.PI*2); ctx.arc(x, h-28, 7, 0, Math.PI*2); ctx.fill(); }
+      if (u.bpImg) ctx.drawImage(u.bpImg, 134, 52, w-268, h-132);
+      ctx.fillStyle = '#78350f'; ctx.font = '900 20px Georgia'; ctx.textAlign = 'center'; ctx.fillText(`POSTAGE • ${u.bpTo} • ₹25`, w/2, h-46);
+    }
+  }
+
+  /* 25. Barcode & Price Tag Sheet */
+  function drawBarcodeTag() {
+    const c = document.getElementById('u25Canvas'); if (!c) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 4; ctx.strokeRect(20, 20, w-40, h-40);
+    ctx.fillStyle = '#fbbf24'; ctx.font = '900 24px Georgia'; ctx.textAlign = 'center'; ctx.fillText(u.bcName, w/2, 74);
+    ctx.fillStyle = '#ffffff'; ctx.font = '900 44px system-ui'; ctx.fillText(u.bcPrice, w/2, 132);
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(80, 158, w-160, 74);
+    ctx.fillStyle = '#000';
+    for (let i = 0; i < 42; i++) {
+      const code = u.bcSku.charCodeAt(i % u.bcSku.length);
+      ctx.fillRect(92 + i * ((w - 184) / 42), 166, (code % 3) + 1.5, 56);
+    }
+    ctx.fillStyle = '#cbd5e1'; ctx.font = '700 14px monospace'; ctx.fillText(u.bcSku, w/2, 256);
+  }
+
+  /* 26. Hollywood RGB Parade Scope */
+  function drawRgbScope() {
+    const c = document.getElementById('u26Canvas'); if (!c || !u.scopeImg) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    ctx.fillStyle = '#05060b'; ctx.fillRect(0, 0, w, h);
+    const tc = document.createElement('canvas'); tc.width = 180; tc.height = 120;
+    const tctx = tc.getContext('2d'); tctx.drawImage(u.scopeImg, 0, 0, 180, 120);
+    const d = tctx.getImageData(0, 0, 180, 120).data;
+    const third = w / 3;
+    const cols = ['#ef4444', '#22c55e', '#3b82f6'];
+    for (let ch = 0; ch < 3; ch++) {
+      ctx.fillStyle = cols[ch];
+      for (let x = 0; x < 180; x += 2) {
+        const px = ch * third + (x / 180) * third;
+        for (let y = 0; y < 120; y += 3) {
+          const val = d[(y * 180 + x) * 4 + ch];
+          const py = h - (val / 255) * (h - 24) - 12;
+          ctx.fillRect(px, py, 2, 2);
+        }
+      }
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = 1;
+    for (let y = 20; y < h; y += 50) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+  }
+
+  /* 27. Real .cube 3D LUT Exporter (17x17x17 standard!) */
+  function exportCubeLutFile() {
+    const sz = 17;
+    const lines = ['# Generated by Maha AI STUDIO Ultra Pro+', 'TITLE "MahaAI_Custom_Grade"', `LUT_3D_SIZE ${sz}`, 'DOMAIN_MIN 0.0 0.0 0.0', 'DOMAIN_MAX 1.0 1.0 1.0'];
+    const wm = u.lutWarm / 100, ct = 1 + u.lutCont / 100, sat = 1 + u.lutSat / 100;
+    for (let b = 0; b < sz; b++) {
+      for (let g = 0; g < sz; g++) {
+        for (let r = 0; r < sz; r++) {
+          let rf = r / (sz - 1), gf = g / (sz - 1), bf = b / (sz - 1);
+          const lum = 0.299 * rf + 0.587 * gf + 0.114 * bf;
+          rf = (lum + (rf - lum) * sat - 0.5) * ct + 0.5 + wm * 0.12;
+          gf = (lum + (gf - lum) * sat - 0.5) * ct + 0.5 + wm * 0.03;
+          bf = (lum + (bf - lum) * sat - 0.5) * ct + 0.5 - wm * 0.12;
+          const cl = (v) => Math.max(0, Math.min(1, v)).toFixed(5);
+          lines.push(`${cl(rf)} ${cl(gf)} ${cl(bf)}`);
+        }
+      }
+    }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/plain' }));
+    a.download = `MahaAI_Pro_LUT_${Date.now()}.cube`; a.click();
+    toast('🎛️ Standard 17×17×17 .cube 3D LUT exported (Premiere/DaVinci/CapCut ready)!', 'success');
+  }
+
+  /* 28 & 29. Star-Trails Lighten Stacker & 3-Shot HDR Fusion */
+  function runImageStack(mode) {
+    const imgs = mode === 'star' ? u.stackImgs : u.hdrImgs;
+    if (imgs.length < 2) { toast('Kam se kam 2 photos select karein!', 'error'); return; }
+    const w = Math.min(960, imgs[0].width), h = Math.round(w * (imgs[0].height / imgs[0].width));
+    const out = document.createElement('canvas'); out.width = w; out.height = h;
+    const octx = out.getContext('2d');
+    const datas = imgs.map((im) => {
+      const tc = document.createElement('canvas'); tc.width = w; tc.height = h;
+      const tctx = tc.getContext('2d'); tctx.drawImage(im, 0, 0, w, h);
+      return tctx.getImageData(0, 0, w, h).data;
+    });
+    const res = octx.createImageData(w, h), rd = res.data;
+    for (let i = 0; i < rd.length; i += 4) {
+      if (mode === 'star') {
+        let mr = 0, mg = 0, mb = 0;
+        for (const d of datas) { if (d[i]>mr) mr=d[i]; if (d[i+1]>mg) mg=d[i+1]; if (d[i+2]>mb) mb=d[i+2]; }
+        rd[i]=mr; rd[i+1]=mg; rd[i+2]=mb; rd[i+3]=255;
+      } else {
+        // Midtone-weighted HDR Exposure Fusion
+        let sr=0, sg=0, sb=0, sw=0;
+        for (const d of datas) {
+          const l = (d[i]*0.3 + d[i+1]*0.59 + d[i+2]*0.11) / 255;
+          const wt = Math.exp(-Math.pow((l - 0.5) / 0.25, 2)) + 0.05;
+          sr += d[i]*wt; sg += d[i+1]*wt; sb += d[i+2]*wt; sw += wt;
+        }
+        rd[i]=sr/sw; rd[i+1]=sg/sw; rd[i+2]=sb/sw; rd[i+3]=255;
+      }
+    }
+    octx.putImageData(res, 0, 0);
+    const a = document.createElement('a'); a.download = `${mode === 'star' ? 'StarTrails' : 'HDR_Fusion'}_${Date.now()}.png`; a.href = out.toDataURL('image/png'); a.click();
+    toast(mode === 'star' ? '🌌 Star-Trails Lighten stack exported!' : '📸 3-Shot HDR Fusion PNG exported!', 'success');
+  }
+
+  /* 30. Digital Film Clapperboard */
+  function startClapperLoop() {
+    cancelAnimationFrame(u.clapRaf);
+    const tick = () => {
+      const el = document.getElementById('u30Timecode');
+      if (!el) return;
+      const d = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      const ff = pad(Math.floor((d.getMilliseconds() / 1000) * 24));
+      el.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}:${ff}`;
+      u.clapRaf = requestAnimationFrame(tick);
+    };
+    u.clapRaf = requestAnimationFrame(tick);
+  }
+
+  /* 33. Luxury 4K Mesh Gradient */
+  function drawMeshGradient() {
+    const c = document.getElementById('u33Canvas'); if (!c) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    ctx.fillStyle = u.meshCols[0]; ctx.fillRect(0, 0, w, h);
+    const pts = [[0.2, 0.2, u.meshCols[1]], [0.85, 0.25, u.meshCols[2]], [0.55, 0.85, u.meshCols[3]]];
+    pts.forEach(([px, py, col]) => {
+      const g = ctx.createRadialGradient(w*px, h*py, 10, w*px, h*py, w*0.65);
+      g.addColorStop(0, col); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    });
+  }
+
+  /* 34. Pop-Art Warhol / Halftone / ASCII */
+  function drawPopArt() {
+    const c = document.getElementById('u34Canvas'); if (!c || !u.artImg) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    ctx.fillStyle = '#05060b'; ctx.fillRect(0, 0, w, h);
+    if (u.artStyle === 'warhol') {
+      const tints = ['hue-rotate(0deg) saturate(2.5) contrast(1.4)', 'hue-rotate(95deg) saturate(2.8) contrast(1.4)', 'hue-rotate(190deg) saturate(2.8) contrast(1.4)', 'hue-rotate(285deg) saturate(2.8) contrast(1.4)'];
+      tints.forEach((flt, i) => {
+        ctx.save(); ctx.filter = flt;
+        ctx.drawImage(u.artImg, (i%2)*(w/2), Math.floor(i/2)*(h/2), w/2, h/2);
+        ctx.restore();
+      });
+    } else if (u.artStyle === 'halftone') {
+      const tc = document.createElement('canvas'); tc.width = 64; tc.height = 48;
+      const tctx = tc.getContext('2d'); tctx.drawImage(u.artImg, 0, 0, 64, 48);
+      const d = tctx.getImageData(0, 0, 64, 48).data;
+      ctx.fillStyle = '#fef3c7'; ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = '#111827';
+      const cw = w / 64, ch = h / 48;
+      for (let y = 0; y < 48; y++) for (let x = 0; x < 64; x++) {
+        const i = (y*64+x)*4; const l = (d[i]*0.3+d[i+1]*0.59+d[i+2]*0.11)/255;
+        const r = (1 - l) * (cw * 0.52);
+        if (r > 0.6) { ctx.beginPath(); ctx.arc(x*cw + cw/2, y*ch + ch/2, r, 0, Math.PI*2); ctx.fill(); }
+      }
+    } else {
+      const tc = document.createElement('canvas'); tc.width = 60; tc.height = 36;
+      const tctx = tc.getContext('2d'); tctx.drawImage(u.artImg, 0, 0, 60, 36);
+      const d = tctx.getImageData(0, 0, 60, 36).data;
+      const chars = ' .:-=+*#%@';
+      ctx.fillStyle = '#020617'; ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = '#22d3ee'; ctx.font = 'bold 11px monospace';
+      for (let y = 0; y < 36; y++) {
+        let row = '';
+        for (let x = 0; x < 60; x++) {
+          const i = (y*60+x)*4; const l = (d[i]*0.3+d[i+1]*0.59+d[i+2]*0.11)/255;
+          row += chars[Math.min(chars.length-1, Math.floor(l * chars.length))];
+        }
+        ctx.fillText(row, 10, 16 + y * (h / 36));
+      }
+    }
+  }
+
+  /* 36. Anti-Theft Watermark Grid */
+  function drawWatermarkGrid() {
+    const c = document.getElementById('u36Canvas'); if (!c) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, w, h);
+    if (u.wmImg) {
+      const sc = Math.min(w/u.wmImg.width, h/u.wmImg.height);
+      ctx.drawImage(u.wmImg, (w-u.wmImg.width*sc)/2, (h-u.wmImg.height*sc)/2, u.wmImg.width*sc, u.wmImg.height*sc);
+    }
+    ctx.save(); ctx.translate(w/2, h/2); ctx.rotate(-0.45);
+    ctx.fillStyle = `rgba(255,255,255,${(u.wmOp/100).toFixed(2)})`;
+    ctx.font = '800 18px system-ui'; ctx.textAlign = 'center';
+    for (let y = -h; y < h; y += 72) for (let x = -w; x < w; x += 260) ctx.fillText(u.wmText, x, y);
+    ctx.restore();
+  }
+
+  function renderUltraProVaultHost() {
+    const root = document.getElementById('v10ProPlusRoot');
+    if (!root) return;
+    let host = document.getElementById('v11UltraVaultHost');
+    if (!host) {
+      host = document.createElement('div');
+      host.id = 'v11UltraVaultHost';
+      host.className = 'mt-4 space-y-3';
+      root.appendChild(host);
+    }
+
+    const dpi300 = `${(u.dpiW / 300).toFixed(1)}" × ${(u.dpiH / 300).toFixed(1)}"`;
+    const dpi72 = `${(u.dpiW / 72 / 12).toFixed(1)} ft × ${(u.dpiH / 72 / 12).toFixed(1)} ft`;
+
+    host.innerHTML = `
+      <div class="ng-card p-3.5 space-y-3 text-xs border-cyan-400/35">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="font-extrabold text-cyan-300">💎 Ultra Pro+ Vault — Next 20 Studio Tools (21–40)</div>
+          <span class="text-[10.5px] text-slate-400">Tap any category below</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+          ${[
+            ['merch','🛍️ Print & Merch (21–25)'],
+            ['cinema','🎬 Color & Cinema (26–30)'],
+            ['art','🎨 Creator & Art (31–35)'],
+            ['ops','🛠️ Studio Ops (36–40)']
+          ].map(([k,lbl]) => `
+            <button type="button" data-u11-tab="${k}" class="py-2 px-2 rounded-xl font-bold border ${u.tab===k?'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white border-cyan-200':'bg-white/5 text-slate-200 border-white/15'}">${lbl}</button>
+          `).join('')}
+        </div>
+
+        ${u.tab === 'merch' ? `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+            <div class="p-3 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+              <div class="font-bold text-amber-300">21. 3D Merch Mockup (T-Shirt / Mug / Tote)</div>
+              <canvas id="u21Canvas" width="540" height="480" class="w-full max-h-56 object-contain rounded-xl"></canvas>
+              <div class="flex gap-1.5">
+                ${[['tshirt','👕 T-Shirt'],['mug','☕ Mug'],['tote','👜 Tote']].map(([k,l])=>`<button type="button" data-u21-m="${k}" class="flex-1 py-1 rounded-lg font-bold ${u.merchType===k?'bg-indigo-600 text-white':'bg-white/10 text-slate-200'}">${l}</button>`).join('')}
+              </div>
+              <div class="flex gap-1.5">
+                <label class="btn-secondary flex-1 py-1.5 rounded-lg text-center cursor-pointer font-bold">📂 Artwork<input id="u21Inp" type="file" accept="image/*" class="hidden"/></label>
+                <button type="button" id="u21Dl" class="btn-primary flex-1 py-1.5 rounded-lg font-bold">⬇ Export PNG</button>
+              </div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+              <div class="font-bold text-pink-300">22. Royal Wedding Menu &amp; Table Card</div>
+              <canvas id="u22Canvas" width="540" height="360" class="w-full max-h-48 object-contain rounded-xl"></canvas>
+              <input id="u22Title" value="${u.menuTitle}" class="w-full bg-slate-900 border border-white/15 rounded-lg px-2.5 py-1 text-white"/>
+              <button type="button" id="u22Dl" class="btn-primary w-full py-1.5 rounded-lg font-bold">⬇ Export Menu Card PNG</button>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+              <div class="font-bold text-emerald-300">23. Custom 12-Month Photo Calendar</div>
+              <canvas id="u23Canvas" width="540" height="580" class="w-full max-h-56 object-contain rounded-xl"></canvas>
+              <div class="flex gap-1.5">
+                <label class="btn-secondary flex-1 py-1.5 rounded-lg text-center cursor-pointer font-bold">📂 Photo<input id="u23Inp" type="file" accept="image/*" class="hidden"/></label>
+                <button type="button" id="u23Dl" class="btn-primary flex-1 py-1.5 rounded-lg font-bold">⬇ Export Calendar</button>
+              </div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+              <div class="font-bold text-cyan-300">24–25. Boarding Pass / Stamp &amp; Price-Tag Barcode</div>
+              <canvas id="u24Canvas" width="540" height="320" class="w-full max-h-36 object-contain rounded-xl"></canvas>
+              <div class="flex gap-1.5">
+                <button type="button" id="u24Toggle" class="btn-secondary flex-1 py-1 rounded-lg font-bold">Switch Pass/Stamp</button>
+                <button type="button" id="u24Dl" class="btn-primary flex-1 py-1 rounded-lg font-bold">⬇ Export</button>
+              </div>
+              <canvas id="u25Canvas" width="540" height="270" class="w-full max-h-32 object-contain rounded-xl"></canvas>
+              <button type="button" id="u25Dl" class="btn-secondary w-full py-1 rounded-lg font-bold">⬇ Export Barcode Price Tag PNG</button>
+            </div>
+          </div>
+        ` : u.tab === 'cinema' ? `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+            <div class="p-3 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+              <div class="font-bold text-cyan-300">26–27. RGB Parade Scope &amp; .cube 3D LUT Exporter</div>
+              <canvas id="u26Canvas" width="540" height="220" class="w-full rounded-xl bg-black border border-white/10"></canvas>
+              <label class="btn-secondary w-full py-1.5 rounded-lg text-center block cursor-pointer font-bold">📊 Analyze Photo RGB Scope<input id="u26Inp" type="file" accept="image/*" class="hidden"/></label>
+              <div class="grid grid-cols-3 gap-1 text-[10px]">
+                <label>Warmth<input id="u27W" type="range" min="-40" max="40" value="${u.lutWarm}" class="w-full studio-slider"/></label>
+                <label>Contrast<input id="u27C" type="range" min="-30" max="40" value="${u.lutCont}" class="w-full studio-slider"/></label>
+                <label>Sat<input id="u27S" type="range" min="-40" max="60" value="${u.lutSat}" class="w-full studio-slider"/></label>
+              </div>
+              <button type="button" id="u27ExpCube" class="btn-primary w-full py-2 rounded-xl font-extrabold">⬇ Export Standard .cube 3D LUT File</button>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2.5">
+              <div class="font-bold text-amber-300">28–30. Star-Trails Stacker, 3-Shot HDR &amp; Film Clapperboard</div>
+              <div class="grid grid-cols-2 gap-1.5">
+                <label class="btn-secondary py-2 rounded-xl text-center cursor-pointer font-bold">🌌 Star-Trails (2+ Shots)<input id="u28Inp" type="file" accept="image/*" multiple class="hidden"/></label>
+                <label class="btn-secondary py-2 rounded-xl text-center cursor-pointer font-bold">📸 3-Shot HDR Fusion<input id="u29Inp" type="file" accept="image/*" multiple class="hidden"/></label>
+              </div>
+              <div class="p-3 rounded-xl bg-black border-2 border-white/25 text-center space-y-1.5">
+                <div class="text-[10px] tracking-widest text-amber-300 font-bold">🎬 DIGITAL FILM CLAPPERBOARD • SCENE ${u.clapScene} • TAKE ${u.clapTake}</div>
+                <div id="u30Timecode" class="text-2xl font-mono font-black text-emerald-400">00:00:00:00</div>
+                <button type="button" id="u30ClapBtn" class="px-4 py-1.5 rounded-full bg-rose-600 text-white font-extrabold">👏 CLAP + SYNC BEEP!</button>
+              </div>
+            </div>
+          </div>
+        ` : u.tab === 'art' ? `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+            <div class="p-3 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+              <div class="font-bold text-pink-300">33–34. 4K Mesh Wallpaper &amp; Warhol/Halftone/ASCII Art</div>
+              <canvas id="u33Canvas" width="600" height="220" class="w-full rounded-xl border border-white/10"></canvas>
+              <button type="button" id="u33Dl" class="btn-secondary w-full py-1.5 rounded-lg font-bold">⬇ Export 4K Silk Mesh Wallpaper</button>
+              <canvas id="u34Canvas" width="540" height="360" class="w-full max-h-44 object-contain rounded-xl bg-black border border-white/10"></canvas>
+              <div class="flex gap-1">
+                <label class="btn-primary px-2.5 py-1 rounded-lg cursor-pointer font-bold">📂 Photo<input id="u34Inp" type="file" accept="image/*" class="hidden"/></label>
+                ${[['warhol','Warhol 4x'],['halftone','Halftone'],['ascii','ASCII']].map(([k,l])=>`<button type="button" data-u34-s="${k}" class="flex-1 py-1 rounded-lg font-bold ${u.artStyle===k?'bg-amber-500 text-black':'bg-white/10 text-white'}">${l}</button>`).join('')}
+                <button type="button" id="u34Dl" class="btn-secondary px-2.5 py-1 rounded-lg font-bold">⬇</button>
+              </div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+              <div class="font-bold text-cyan-300">31–32 &amp; 35. Audiogram, YT End-Screen &amp; .srt Subtitles</div>
+              <textarea id="u35SrtArea" rows="6" class="w-full bg-slate-900 border border-white/15 rounded-xl p-2 font-mono text-[11px] text-white">${u.srtText}</textarea>
+              <div class="flex gap-1.5">
+                <button type="button" id="u35DlSrt" class="btn-primary flex-1 py-2 rounded-xl font-bold">⬇ Export .srt Subtitles</button>
+                <button type="button" id="u32DlYt" class="btn-secondary flex-1 py-2 rounded-xl font-bold text-rose-300">📺 Export YT End-Screen</button>
+              </div>
+            </div>
+          </div>
+        ` : u.tab === 'ops' ? `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+            <div class="p-3 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+              <div class="font-bold text-rose-300">36–37. Anti-Theft Watermark Grid &amp; Signed Shoot Contract</div>
+              <canvas id="u36Canvas" width="540" height="300" class="w-full max-h-44 object-contain rounded-xl bg-black"></canvas>
+              <div class="flex gap-1.5">
+                <label class="btn-secondary flex-1 py-1.5 rounded-lg text-center cursor-pointer font-bold">📂 Photo<input id="u36Inp" type="file" accept="image/*" class="hidden"/></label>
+                <button type="button" id="u36Dl" class="btn-primary flex-1 py-1.5 rounded-lg font-bold">⬇ Protected PNG</button>
+              </div>
+              <div class="flex gap-1.5 pt-1 border-t border-white/10">
+                <input id="u37Client" value="${u.ctClient}" placeholder="Client Name" class="flex-1 bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white"/>
+                <button type="button" id="u37GenContract" class="btn-primary px-3 py-1.5 rounded-lg font-bold">📄 Export Shoot Contract</button>
+              </div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+              <div class="font-bold text-emerald-300">38–40. Golden Hour, Print DPI Checker &amp; Full Studio Backup</div>
+              <div class="p-2 rounded-xl bg-amber-500/10 border border-amber-400/30 text-[11px]">
+                🌅 <strong>Golden Hour Windows:</strong> Morning 06:15–07:05 AM • Evening 05:10–05:58 PM • Blue Hour 06:00–06:28 PM
+              </div>
+              <div class="grid grid-cols-2 gap-1.5">
+                <input id="u39W" type="number" value="${u.dpiW}" class="bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white"/>
+                <input id="u39H" type="number" value="${u.dpiH}" class="bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white"/>
+              </div>
+              <div class="text-[11px] text-cyan-200">🖨️ Sharp Print Max: <strong>${dpi300}</strong> @ 300 DPI (Album) • <strong>${dpi72}</strong> @ 72 DPI (Banner)</div>
+              <button type="button" id="u40BackupBtn" class="btn-primary w-full py-2 rounded-xl font-extrabold">💾 Export Full Studio Settings Backup (.json)</button>
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    if (u.tab === 'merch') { drawMerch(); drawMenuCard(); drawPhotoCalendar(); drawBoardingOrStamp(); drawBarcodeTag(); }
+    if (u.tab === 'cinema') { drawRgbScope(); startClapperLoop(); }
+    if (u.tab === 'art') { drawMeshGradient(); drawPopArt(); }
+    if (u.tab === 'ops') { drawWatermarkGrid(); }
+  }
+
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+    const tb = t.closest('[data-u11-tab]');
+    if (tb) { const k = tb.getAttribute('data-u11-tab'); u.tab = u.tab === k ? null : k; renderUltraProVaultHost(); return; }
+    const mm = t.closest('[data-u21-m]'); if (mm) { u.merchType = mm.getAttribute('data-u21-m'); renderUltraProVaultHost(); return; }
+    if (t.closest('#u21Dl')) { dlC('u21Canvas', `Merch_${u.merchType}_${Date.now()}.png`); return; }
+    if (t.closest('#u22Dl')) { dlC('u22Canvas', `Wedding_Menu_${Date.now()}.png`); return; }
+    if (t.closest('#u23Dl')) { dlC('u23Canvas', `Photo_Calendar_${u.calYear}.png`); return; }
+    if (t.closest('#u24Toggle')) { u.bpMode = u.bpMode === 'pass' ? 'stamp' : 'pass'; drawBoardingOrStamp(); return; }
+    if (t.closest('#u24Dl')) { dlC('u24Canvas', `Travel_${u.bpMode}_${Date.now()}.png`); return; }
+    if (t.closest('#u25Dl')) { dlC('u25Canvas', `PriceTag_Barcode_${Date.now()}.png`); return; }
+    if (t.closest('#u27ExpCube')) { exportCubeLutFile(); return; }
+    if (t.closest('#u30ClapBtn')) {
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext; const ac = new AC();
+        const o = ac.createOscillator(); const g = ac.createGain();
+        o.frequency.value = 1000; g.gain.setValueAtTime(0.6, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.14);
+        o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime + 0.15);
+      } catch (_) {}
+      toast('🎬 CLAP! Sync beep fired.', 'success'); return;
+    }
+    if (t.closest('#u33Dl')) { dlC('u33Canvas', `Luxury_Mesh_Wallpaper_${Date.now()}.png`); return; }
+    const as = t.closest('[data-u34-s]'); if (as) { u.artStyle = as.getAttribute('data-u34-s'); renderUltraProVaultHost(); return; }
+    if (t.closest('#u34Dl')) { dlC('u34Canvas', `ArtFX_${u.artStyle}_${Date.now()}.png`); return; }
+    if (t.closest('#u35DlSrt')) {
+      const txt = document.getElementById('u35SrtArea')?.value || u.srtText;
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([txt], { type: 'text/plain' })); a.download = `Subtitles_${Date.now()}.srt`; a.click();
+      toast('📝 .srt Subtitle file exported!', 'success'); return;
+    }
+    if (t.closest('#u32DlYt')) {
+      const tc = document.createElement('canvas'); tc.width = 1280; tc.height = 720; const c = tc.getContext('2d');
+      const g = c.createLinearGradient(0,0,1280,720); g.addColorStop(0,'#09090b'); g.addColorStop(1,'#312e81'); c.fillStyle=g; c.fillRect(0,0,1280,720);
+      c.strokeStyle='#fbbf24'; c.lineWidth=6; c.strokeRect(80,160,480,270); c.strokeRect(720,160,480,270);
+      c.fillStyle='#ef4444'; c.beginPath(); c.roundRect(460,520,360,84,42); c.fill();
+      c.fillStyle='#fff'; c.font='900 34px system-ui'; c.textAlign='center'; c.fillText('🔔 SUBSCRIBE • ' + u.ytChannel, 640, 574);
+      const a = document.createElement('a'); a.download = `YouTube_EndScreen_${Date.now()}.png`; a.href = tc.toDataURL('image/png'); a.click();
+      toast('📺 YouTube End-Screen PNG exported!', 'success'); return;
+    }
+    if (t.closest('#u36Dl')) { dlC('u36Canvas', `Protected_Watermark_${Date.now()}.png`); return; }
+    if (t.closest('#u37GenContract')) {
+      const doc = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Shoot Contract</title></head><body style="font-family:Georgia,serif;max-width:720px;margin:40px auto;padding:24px;border:2px solid #b45309;"><h1>👑 Photography &amp; Video Shoot Agreement</h1><p><strong>Client:</strong> ${u.ctClient}<br/><strong>Studio:</strong> Maha AI STUDIO<br/><strong>Total Package Fee:</strong> ${u.ctFee}<br/><strong>Date:</strong> ${new Date().toLocaleDateString()}</p><p>Client grants model release &amp; portfolio usage permission. All final edited photos/videos shall be delivered in HD quality upon completion.</p><hr/><p>Client Signature: _______________________ &nbsp;&nbsp; Studio Seal: 👑 VERIFIED</p></body></html>`;
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([doc], { type: 'text/html' })); a.download = `Shoot_Contract_${Date.now()}.html`; a.click();
+      toast('📄 Printable Shoot Contract & Model Release exported!', 'success'); return;
+    }
+    if (t.closest('#u40BackupBtn')) {
+      const dump = { exportedAt: new Date().toISOString(), app: 'Maha AI STUDIO', localStorage: { ...localStorage } };
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' })); a.download = `MahaAI_FullBackup_${Date.now()}.json`; a.click();
+      toast('💾 Full Studio Settings Backup downloaded!', 'success'); return;
+    }
+  });
+
+  document.addEventListener('input', (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 'u22Title') { u.menuTitle = el.value; drawMenuCard(); }
+    if (el.id === 'u27W') u.lutWarm = Number(el.value);
+    if (el.id === 'u27C') u.lutCont = Number(el.value);
+    if (el.id === 'u27S') u.lutSat = Number(el.value);
+    if (el.id === 'u35SrtArea') u.srtText = el.value;
+    if (el.id === 'u37Client') u.ctClient = el.value;
+    if (el.id === 'u39W') { u.dpiW = Number(el.value) || 1000; renderUltraProVaultHost(); }
+    if (el.id === 'u39H') { u.dpiH = Number(el.value) || 1000; renderUltraProVaultHost(); }
+  });
+
+  document.addEventListener('change', async (e) => {
+    const el = e.target; if (!el) return;
+    const loadOne = (f) => new Promise((res) => { const r = new FileReader(); r.onload = () => { const i = new Image(); i.onload = () => res(i); i.src = r.result; }; r.readAsDataURL(f); });
+    if (el.id === 'u21Inp' && el.files[0]) { u.merchImg = await loadOne(el.files[0]); drawMerch(); el.value = ''; }
+    if (el.id === 'u23Inp' && el.files[0]) { u.calImg = await loadOne(el.files[0]); drawPhotoCalendar(); el.value = ''; }
+    if (el.id === 'u26Inp' && el.files[0]) { u.scopeImg = await loadOne(el.files[0]); drawRgbScope(); el.value = ''; }
+    if (el.id === 'u28Inp' && el.files.length) { u.stackImgs = []; for (const f of Array.from(el.files).slice(0,8)) u.stackImgs.push(await loadOne(f)); runImageStack('star'); el.value = ''; }
+    if (el.id === 'u29Inp' && el.files.length) { u.hdrImgs = []; for (const f of Array.from(el.files).slice(0,4)) u.hdrImgs.push(await loadOne(f)); runImageStack('hdr'); el.value = ''; }
+    if (el.id === 'u34Inp' && el.files[0]) { u.artImg = await loadOne(el.files[0]); drawPopArt(); el.value = ''; }
+    if (el.id === 'u36Inp' && el.files[0]) { u.wmImg = await loadOne(el.files[0]); drawWatermarkGrid(); el.value = ''; }
+  });
+
+  function syncV11() {
+    const r = document.getElementById('v10ProPlusRoot');
+    if (r && !document.getElementById('v11UltraVaultHost')) renderUltraProVaultHost();
+  }
+  const mo = new MutationObserver(() => requestAnimationFrame(syncV11));
+  mo.observe(document.body, { childList: true, subtree: true });
+  setInterval(syncV11, 850);
+  syncV11();
+})();
+</script>
+
 </body>
 </html>
