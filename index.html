@@ -25939,5 +25939,604 @@ window.MahaTouchTransform = (() => {
 })();
 </script>
 
+
+<script>
+/* ============================================================================
+   MAHA AI STUDIO — ROYAL LUXURY ATELIER v9 (10 Pro Luxury Tools)
+   Mounts cleanly inside Royal Luxury VIP Suite (#v7LuxuryRoot):
+   1) Royal Crest & Monogram Emblem Builder (Transparent PNG)
+   2) 24K Gold Foil & Embossed Velvet Typography
+   3) Animated Save-the-Date & Live Countdown Video Invite (5s WebM)
+   4) Instagram Seamless Carousel (3/5) & 9-Grid Profile Slicer
+   5) Fine-Art Oil Painting, Gold-Leaf & Charcoal Portrait Stylizer
+   6) VIP Event Pass & Royal Gold Certificate Maker
+   7) Copyright-Free Royal Piano & Cinematic String Composer (WAV + Video Track)
+   8) Museum Gallery Mat & Leica EXIF Batch Framer
+   9) Multi-Tier Luxury Rate Card & Package Menu (Silver/Gold/Platinum)
+   10) VIP Shoot Planner & Client Shot-List Brief Card
+   ============================================================================ */
+(() => {
+  const toast = (msg, type = 'info') => {
+    if (typeof window.showToast === 'function') window.showToast(msg, type);
+  };
+
+  const at = {
+    tool: null, // crest | foil | countdown | slicer | fineart | cert | piano | framer | ratecard | planner
+    // 1. Crest
+    crestLetters: 'M&A', crestSub: 'EST. 2026 • ROYAL STUDIO', crestShape: 'wreath',
+    // 2. Foil
+    foilText: 'ROYAL LUXURY', foilSub: 'CRAFTED WITH 24K GOLD', foilBg: '#1c060c',
+    // 3. Countdown
+    cdTitle: 'SAVE THE DATE', cdNames: 'Aarav & Meera', cdDate: '2026-12-25', cdRaf: null, cdT0: performance.now(),
+    // 4. Slicer
+    sliceImg: null, sliceMode: '3x1', // 3x1 | 5x1 | 3x3
+    // 5. Fine Art
+    faImg: null, faStyle: 'oil', // oil | goldleaf | charcoal
+    // 6. Cert / VIP Pass
+    certMode: 'cert', certName: 'Ankit Sharma', certTitle: 'MASTER CREATOR AWARD', certSerial: 'MAHA-2035-001',
+    // 7. Piano Composer
+    pianoMood: 'wedding',
+    // 8. Gallery Framer
+    frameImgs: [], frameStyle: 'white', frameExif: 'LEICA M11 • 50mm f/1.4 • ISO 100 • 1/500s',
+    // 9. Rate Card
+    rcStudio: 'MAHA ROYAL STUDIO',
+    rcS: ['SILVER', '₹25,000', '1 Day Shoot • 150 Photos • 1 Reel'],
+    rcG: ['GOLD', '₹55,000', '2 Days • 4K Film • 3D Flipbook • Drone'],
+    rcP: ['PLATINUM', '₹1,10,000', 'Full Wedding • Pre-Shoot • Same-Day Edit'],
+    // 10. Planner
+    plTitle: 'ROYAL BRIDAL SHOOT BRIEF', plDate: '2026-12-18 • Udaipur Palace',
+    plOutfit: 'Crimson Velvet Lehenga + Gold Kundan Jewelry',
+    plShots: ['Golden Hour Veil Portrait', 'Wide Palace Architecture', 'Ring & Mehndi Macro', '3D Slow-Mo Entry Reel', 'Family Group Editorial']
+  };
+
+  function dlCanvas(id, name) {
+    const c = document.getElementById(id);
+    if (!c) return;
+    const a = document.createElement('a'); a.download = name; a.href = c.toDataURL('image/png'); a.click();
+    toast('⬇ Exported ' + name, 'success');
+  }
+
+  /* 1. Royal Crest & Monogram */
+  function drawCrest() {
+    const c = document.getElementById('v9CrestCanvas'); if (!c) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    ctx.clearRect(0, 0, w, h);
+    const cx = w / 2, cy = h / 2;
+    const g = ctx.createLinearGradient(cx - 180, cy - 180, cx + 180, cy + 180);
+    g.addColorStop(0, '#fef08a'); g.addColorStop(0.5, '#d97706'); g.addColorStop(1, '#fde047');
+    ctx.save(); ctx.strokeStyle = g; ctx.fillStyle = g;
+    // Outer ornate rings
+    ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(cx, cy, 195, 0, Math.PI * 2); ctx.stroke();
+    ctx.lineWidth = 2; ctx.setLineDash([8, 6]); ctx.beginPath(); ctx.arc(cx, cy, 178, 0, Math.PI * 2); ctx.stroke();
+    ctx.setLineDash([]);
+    // Laurel leaves around arc
+    for (let i = -7; i <= 7; i++) {
+      if (Math.abs(i) < 2) continue;
+      const ang = Math.PI / 2 + i * 0.17;
+      for (const side of [-1, 1]) {
+        const a = Math.PI / 2 + side * (0.28 + Math.abs(i) * 0.16);
+        const lx = cx + Math.cos(a) * 218, ly = cy + Math.sin(a) * 218;
+        ctx.save(); ctx.translate(lx, ly); ctx.rotate(a + side * 0.6);
+        ctx.beginPath(); ctx.ellipse(0, 0, 14, 6, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
+    }
+    // Crown top
+    ctx.font = '80px serif'; ctx.textAlign = 'center'; ctx.fillText('👑', cx, cy - 120);
+    // Monogram letters
+    ctx.font = '900 116px Georgia, serif'; ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 12;
+    ctx.fillText(at.crestLetters.toUpperCase(), cx, cy + 6);
+    ctx.shadowBlur = 0; ctx.font = '700 20px system-ui';
+    ctx.fillText(at.crestSub, cx, cy + 115);
+    ctx.restore();
+  }
+
+  /* 2. 24K Gold Foil & Embossed Velvet Typography */
+  function drawFoil() {
+    const c = document.getElementById('v9FoilCanvas'); if (!c) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    const bg = ctx.createRadialGradient(w / 2, h / 2, 40, w / 2, h / 2, w * 0.72);
+    bg.addColorStop(0, at.foilBg); bg.addColorStop(1, '#050508');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+    // Subtle velvet grain
+    ctx.fillStyle = 'rgba(255,255,255,0.025)';
+    for (let i = 0; i < 600; i++) ctx.fillRect((i * 73) % w, (i * 137) % h, 2, 2);
+
+    const fg = ctx.createLinearGradient(0, h * 0.25, w, h * 0.75);
+    fg.addColorStop(0, '#92400e'); fg.addColorStop(0.28, '#fef08a'); fg.addColorStop(0.5, '#d97706'); fg.addColorStop(0.72, '#ffffff'); fg.addColorStop(1, '#b45309');
+    ctx.strokeStyle = fg; ctx.lineWidth = 6; ctx.strokeRect(28, 28, w - 56, h - 56);
+
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = '900 84px Georgia, serif';
+    // 3D emboss depth shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillText(at.foilText, w / 2 + 4, h / 2 - 14);
+    ctx.fillStyle = fg; ctx.shadowColor = 'rgba(251,191,36,0.45)'; ctx.shadowBlur = 20;
+    ctx.fillText(at.foilText, w / 2, h / 2 - 18);
+    ctx.shadowBlur = 0; ctx.font = '700 22px system-ui'; ctx.fillStyle = '#fde68a';
+    ctx.fillText(at.foilSub, w / 2, h / 2 + 64);
+  }
+
+  /* 3. Animated Save-the-Date Countdown */
+  function startCountdownLoop() {
+    cancelAnimationFrame(at.cdRaf);
+    const tick = () => {
+      const c = document.getElementById('v9CdCanvas'); if (!c) return;
+      const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+      const t = ((performance.now() - at.cdT0) / 1000) % 5;
+      const g = ctx.createRadialGradient(w / 2, h / 2, 20, w / 2, h / 2, w * 0.75);
+      g.addColorStop(0, '#4c0519'); g.addColorStop(1, '#09050a');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+      // Sparkles
+      for (let i = 0; i < 36; i++) {
+        ctx.fillStyle = `rgba(253,224,71,${(0.2 + 0.7 * Math.abs(Math.sin(t * 2.5 + i))).toFixed(2)})`;
+        ctx.beginPath(); ctx.arc((i * 83 + t * 24) % w, (i * 59 - t * 18 + h * 10) % h, 2 + (i % 3), 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 5; ctx.strokeRect(24, 24, w - 48, h - 48);
+      const diffDays = Math.max(0, Math.ceil((new Date(at.cdDate) - new Date()) / 86400000));
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#fde68a'; ctx.font = '800 26px system-ui'; ctx.fillText('✨ ' + at.cdTitle + ' ✨', w / 2, 118);
+      ctx.fillStyle = '#ffffff'; ctx.font = '900 68px Georgia, serif'; ctx.fillText(at.cdNames, w / 2, 235);
+      ctx.fillStyle = 'rgba(251,191,36,0.22)'; ctx.beginPath(); ctx.roundRect(w / 2 - 170, 290, 340, 88, 20); ctx.fill();
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = '#fde047'; ctx.font = '900 40px monospace'; ctx.fillText(`${diffDays} DAYS TO GO`, w / 2, 348);
+      ctx.fillStyle = '#e2e8f0'; ctx.font = '700 22px system-ui'; ctx.fillText('📅 ' + at.cdDate, w / 2, 435);
+      at.cdRaf = requestAnimationFrame(tick);
+    };
+    at.cdRaf = requestAnimationFrame(tick);
+  }
+
+  /* 4. Instagram Seamless Slicer */
+  function drawSlicerPreview() {
+    const c = document.getElementById('v9SliceCanvas'); if (!c) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, w, h);
+    if (at.sliceImg) {
+      const sc = Math.max(w / at.sliceImg.width, h / at.sliceImg.height);
+      ctx.drawImage(at.sliceImg, (w - at.sliceImg.width * sc) / 2, (h - at.sliceImg.height * sc) / 2, at.sliceImg.width * sc, at.sliceImg.height * sc);
+    }
+    const [cols, rows] = at.sliceMode === '5x1' ? [5, 1] : at.sliceMode === '3x3' ? [3, 3] : [3, 1];
+    ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3; ctx.setLineDash([10, 6]);
+    for (let i = 1; i < cols; i++) { ctx.beginPath(); ctx.moveTo((w / cols) * i, 0); ctx.lineTo((w / cols) * i, h); ctx.stroke(); }
+    for (let j = 1; j < rows; j++) { ctx.beginPath(); ctx.moveTo(0, (h / rows) * j); ctx.lineTo(w, (h / rows) * j); ctx.stroke(); }
+    ctx.setLineDash([]);
+  }
+
+  function exportSlicedTiles() {
+    if (!at.sliceImg) { toast('Pehle photo upload karein!', 'error'); return; }
+    const [cols, rows] = at.sliceMode === '5x1' ? [5, 1] : at.sliceMode === '3x3' ? [3, 3] : [3, 1];
+    const tw = Math.floor(at.sliceImg.width / cols), th = Math.floor(at.sliceImg.height / rows);
+    let idx = 1;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const tc = document.createElement('canvas'); tc.width = tw; tc.height = th;
+        tc.getContext('2d').drawImage(at.sliceImg, c * tw, r * th, tw, th, 0, 0, tw, th);
+        const n = idx++;
+        setTimeout(() => {
+          const a = document.createElement('a'); a.download = `IG_Tile_${n}_of_${cols*rows}.png`; a.href = tc.toDataURL('image/png'); a.click();
+        }, n * 180);
+      }
+    }
+    toast(`🧩 Exporting ${cols * rows} seamless Instagram tiles!`, 'success');
+  }
+
+  /* 5. Fine-Art Oil / Gold-Leaf / Charcoal Portrait */
+  function drawFineArt() {
+    const c = document.getElementById('v9FaCanvas'); if (!c) return;
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+    if (!at.faImg) { ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, c.width, c.height); return; }
+    c.width = Math.min(820, at.faImg.width); c.height = Math.round(c.width * (at.faImg.height / at.faImg.width));
+    ctx.drawImage(at.faImg, 0, 0, c.width, c.height);
+    const img = ctx.getImageData(0, 0, c.width, c.height);
+    const d = img.data;
+    for (let i = 0; i < d.length; i += 4) {
+      let r = d[i], g = d[i+1], b = d[i+2];
+      if (at.faStyle === 'oil') {
+        r = Math.round(r / 28) * 28; g = Math.round(g / 28) * 28; b = Math.round(b / 28) * 28;
+      } else if (at.faStyle === 'goldleaf') {
+        const l = 0.3 * r + 0.59 * g + 0.11 * b;
+        if (l > 168) { r = 253; g = 224; b = 71; }
+        else { r = Math.min(255, r * 1.12); g = g * 0.96; b = b * 0.78; }
+      } else {
+        const l = 0.3 * r + 0.59 * g + 0.11 * b;
+        const v = l > 140 ? Math.min(255, l + 35) : Math.max(0, l - 35);
+        r = g = b = v;
+      }
+      d[i] = r; d[i+1] = g; d[i+2] = b;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  /* 6. VIP Pass & Royal Certificate */
+  function drawCertOrPass() {
+    const c = document.getElementById('v9CertCanvas'); if (!c) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    const g = ctx.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#09090b'); g.addColorStop(1, '#261808');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 8; ctx.strokeRect(20, 20, w - 40, h - 40);
+    ctx.lineWidth = 2; ctx.strokeRect(32, 32, w - 64, h - 64);
+    ctx.textAlign = 'center';
+    if (at.certMode === 'cert') {
+      ctx.fillStyle = '#fbbf24'; ctx.font = '800 22px system-ui'; ctx.fillText('👑 CERTIFICATE OF EXCELLENCE', w / 2, 102);
+      ctx.fillStyle = '#cbd5e1'; ctx.font = '600 18px Georgia, serif'; ctx.fillText('PROUDLY PRESENTED TO', w / 2, 165);
+      ctx.fillStyle = '#ffffff'; ctx.font = '900 58px Georgia, serif'; ctx.fillText(at.certName, w / 2, 245);
+      ctx.fillStyle = '#fde68a'; ctx.font = '700 24px system-ui'; ctx.fillText(at.certTitle, w / 2, 315);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '600 14px monospace'; ctx.fillText('SERIAL NO: ' + at.certSerial + ' • VERIFIED ROYAL STUDIO', w / 2, h - 64);
+    } else {
+      ctx.fillStyle = '#fbbf24'; ctx.fillRect(20, 20, w - 40, 86);
+      ctx.fillStyle = '#09090b'; ctx.font = '900 34px system-ui'; ctx.fillText('👑 VIP ALL-ACCESS PASS', w / 2, 76);
+      ctx.fillStyle = '#ffffff'; ctx.font = '900 54px Georgia, serif'; ctx.fillText(at.certName, w / 2, 225);
+      ctx.fillStyle = '#fde68a'; ctx.font = '700 24px system-ui'; ctx.fillText(at.certTitle, w / 2, 285);
+      ctx.fillStyle = '#10b981'; ctx.beginPath(); ctx.roundRect(w / 2 - 130, 330, 260, 48, 99); ctx.fill();
+      ctx.fillStyle = '#052e16'; ctx.font = '900 20px system-ui'; ctx.fillText('✓ VERIFIED VIP • ' + at.certSerial, w / 2, 362);
+    }
+  }
+
+  /* 7. Copyright-Free Royal Piano & Cinematic String Composer */
+  async function composeRoyalMusic(sendToVideo = false) {
+    try {
+      const sr = 44100, dur = 10;
+      const off = new OfflineAudioContext(1, sr * dur, sr);
+      const progMap = {
+        wedding: [[261.6, 329.6, 392.0, 493.9], [220.0, 261.6, 329.6, 392.0], [174.6, 220.0, 261.6, 349.2], [196.0, 246.9, 293.7, 392.0]],
+        strings: [[146.8, 220.0, 293.7, 349.2], [130.8, 196.0, 261.6, 329.6], [116.5, 174.6, 233.1, 293.7], [130.8, 196.0, 261.6, 392.0]],
+        harp: [[329.6, 392.0, 493.9, 659.3], [293.7, 370.0, 440.0, 587.3], [261.6, 329.6, 392.0, 523.3], [246.9, 293.7, 392.0, 493.9]]
+      };
+      const chords = progMap[at.pianoMood] || progMap.wedding;
+      chords.forEach((notes, ci) => {
+        const st = ci * 2.5;
+        notes.forEach((freq, ni) => {
+          const osc = off.createOscillator();
+          osc.type = at.pianoMood === 'strings' ? 'sawtooth' : 'triangle';
+          osc.frequency.value = freq;
+          const flt = off.createBiquadFilter(); flt.type = 'lowpass'; flt.frequency.value = at.pianoMood === 'strings' ? 950 : 2200;
+          const g = off.createGain();
+          const tNote = st + (at.pianoMood === 'harp' ? ni * 0.16 : 0);
+          g.gain.setValueAtTime(0.001, tNote);
+          g.gain.linearRampToValueAtTime(0.14, tNote + 0.18);
+          g.gain.exponentialRampToValueAtTime(0.001, st + 2.45);
+          osc.connect(flt); flt.connect(g); g.connect(off.destination);
+          osc.start(tNote); osc.stop(st + 2.48);
+        });
+      });
+      const rendered = await off.startRendering();
+      const ch = rendered.getChannelData(0), len = ch.length * 2;
+      const wav = new ArrayBuffer(44 + len), dv = new DataView(wav);
+      const ws = (o, s) => { for (let i = 0; i < s.length; i++) dv.setUint8(o + i, s.charCodeAt(i)); };
+      ws(0, 'RIFF'); dv.setUint32(4, 36 + len, true); ws(8, 'WAVE'); ws(12, 'fmt ');
+      dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+      dv.setUint32(24, sr, true); dv.setUint32(28, sr * 2, true); dv.setUint16(32, 2, true); dv.setUint16(34, 16, true);
+      ws(36, 'data'); dv.setUint32(40, len, true);
+      for (let i = 0; i < ch.length; i++) dv.setInt16(44 + i * 2, Math.max(-1, Math.min(1, ch[i])) * 32767, true);
+      const blob = new Blob([wav], { type: 'audio/wav' });
+
+      if (sendToVideo) {
+        const file = new File([blob], `Royal_${at.pianoMood}_BGM.wav`, { type: 'audio/wav' });
+        if (typeof VideoStudioEngine !== 'undefined' && VideoStudioEngine.setAudioTrack) {
+          await VideoStudioEngine.setAudioTrack(file);
+          toast(`🎹 10s Copyright-Free ${at.pianoMood.toUpperCase()} Track added to Master Video Studio!`, 'success');
+        }
+      } else {
+        new Audio(URL.createObjectURL(blob)).play().catch(() => {});
+        toast('🎹 Playing synthesized 10s Royal Music preview...', 'info');
+      }
+    } catch (err) { toast('Music synth error: ' + (err.message || err), 'error'); }
+  }
+
+  /* 8. Museum Gallery Mat & Leica EXIF Batch Framer */
+  function renderFramedPhotoToCanvas(im, c) {
+    c.width = 900; c.height = 1050;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = at.frameStyle === 'white' ? '#f8fafc' : '#09090b';
+    ctx.fillRect(0, 0, c.width, c.height);
+    if (im) {
+      const pad = 64, bw = c.width - pad * 2, bh = c.height - 230;
+      const sc = Math.min(bw / im.width, bh / im.height);
+      const dw = im.width * sc, dh = im.height * sc;
+      ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 24;
+      ctx.drawImage(im, (c.width - dw) / 2, pad + (bh - dh) / 2, dw, dh);
+      ctx.shadowBlur = 0;
+    }
+    ctx.fillStyle = at.frameStyle === 'white' ? '#0f172a' : '#fde68a';
+    ctx.font = '800 18px monospace'; ctx.textAlign = 'center';
+    ctx.fillText(at.frameExif, c.width / 2, c.height - 76);
+    ctx.fillStyle = '#94a3b8'; ctx.font = '600 13px Georgia, serif';
+    ctx.fillText('MAHA AI STUDIO • ARCHIVAL GALLERY PRINT', c.width / 2, c.height - 44);
+  }
+
+  /* 9. Multi-Tier Luxury Rate Card */
+  function drawRateCard() {
+    const c = document.getElementById('v9RcCanvas'); if (!c) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    ctx.fillStyle = '#07080d'; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 5; ctx.strokeRect(18, 18, w - 36, h - 36);
+    ctx.fillStyle = '#fde68a'; ctx.font = '900 38px Georgia, serif'; ctx.textAlign = 'center';
+    ctx.fillText('👑 ' + at.rcStudio + ' — LUXURY PACKAGES', w / 2, 78);
+    const tiers = [
+      { d: at.rcS, col: '#94a3b8', bg: '#111827' },
+      { d: at.rcG, col: '#fbbf24', bg: '#261a08' },
+      { d: at.rcP, col: '#e879f9', bg: '#1e1030' }
+    ];
+    const cw = (w - 104) / 3;
+    tiers.forEach((tr, i) => {
+      const rx = 36 + i * (cw + 16), ry = 124, ch = h - 170;
+      ctx.fillStyle = tr.bg; ctx.beginPath(); ctx.roundRect(rx, ry, cw, ch, 18); ctx.fill();
+      ctx.strokeStyle = tr.col; ctx.lineWidth = 3; ctx.stroke();
+      ctx.fillStyle = tr.col; ctx.font = '900 28px system-ui'; ctx.fillText(tr.d[0], rx + cw / 2, ry + 54);
+      ctx.fillStyle = '#ffffff'; ctx.font = '900 38px Georgia, serif'; ctx.fillText(tr.d[1], rx + cw / 2, ry + 118);
+      ctx.fillStyle = '#cbd5e1'; ctx.font = '600 17px system-ui';
+      tr.d[2].split('•').forEach((ln, li) => ctx.fillText('✦ ' + ln.trim(), rx + cw / 2, ry + 188 + li * 42));
+    });
+  }
+
+  /* 10. VIP Shoot Planner Brief */
+  function drawShootPlanner() {
+    const c = document.getElementById('v9PlCanvas'); if (!c) return;
+    const ctx = c.getContext('2d'); const w = c.width, h = c.height;
+    ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 5; ctx.strokeRect(20, 20, w - 40, h - 40);
+    ctx.textAlign = 'left'; ctx.fillStyle = '#fbbf24'; ctx.font = '900 34px Georgia, serif';
+    ctx.fillText('📋 ' + at.plTitle, 48, 82);
+    ctx.fillStyle = '#e2e8f0'; ctx.font = '700 18px system-ui';
+    ctx.fillText('📅 Date & Venue: ' + at.plDate, 48, 128);
+    ctx.fillText('👗 Wardrobe / Styling: ' + at.plOutfit, 48, 162);
+    ctx.fillStyle = '#fde68a'; ctx.font = '800 20px system-ui'; ctx.fillText('MUST-HAVE SHOT CHECKLIST:', 48, 218);
+    at.plShots.forEach((sh, i) => {
+      ctx.fillStyle = '#f8fafc'; ctx.font = '600 19px system-ui';
+      ctx.fillText(`☑  ${i + 1}. ${sh}`, 60, 260 + i * 44);
+    });
+  }
+
+  function renderAtelierHost() {
+    const root = document.getElementById('v7LuxuryRoot');
+    if (!root) return;
+    let host = document.getElementById('v9AtelierHost');
+    if (!host) {
+      host = document.createElement('div');
+      host.id = 'v9AtelierHost';
+      host.className = 'mt-4 space-y-3';
+      root.appendChild(host);
+    }
+
+    const tools = [
+      ['crest','🛡️ Royal Crest'],
+      ['foil','✨ 24K Gold Foil'],
+      ['countdown','⏳ Save-the-Date'],
+      ['slicer','🧩 IG 9-Grid Slice'],
+      ['fineart','🎨 Fine-Art Oil'],
+      ['cert','🏆 Cert & VIP Pass'],
+      ['piano','🎹 Royal Music'],
+      ['framer','🖼️ EXIF Framer'],
+      ['ratecard','💎 Rate Card'],
+      ['planner','📋 Shoot Planner']
+    ];
+
+    host.innerHTML = `
+      <div class="ng-card p-3 space-y-3 text-xs border-amber-400/40">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="font-extrabold text-amber-300">🏰 Royal Luxury Atelier — 10 Pro Premium Tools</div>
+          <span class="text-[10.5px] text-slate-400">Tap any tool to launch inline</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
+          ${tools.map(([k,lbl]) => `
+            <button type="button" data-v9-tool="${k}" class="py-2 px-2 rounded-xl font-bold border ${at.tool===k?'bg-gradient-to-r from-amber-500 to-yellow-400 text-black border-amber-200':'bg-white/5 text-slate-200 border-white/15'}">${lbl}</button>
+          `).join('')}
+        </div>
+
+        ${at.tool === 'crest' ? `
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 pt-1">
+            <div class="md:col-span-6 flex justify-center"><canvas id="v9CrestCanvas" width="540" height="540" class="max-w-full max-h-72 rounded-xl bg-slate-950 border border-amber-400/30"></canvas></div>
+            <div class="md:col-span-6 space-y-2.5">
+              <input id="v9CrestLet" value="${at.crestLetters}" maxlength="5" placeholder="Initials (e.g. M&A)" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <input id="v9CrestSub" value="${at.crestSub}" placeholder="Subtitle" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <button type="button" id="v9CrestDl" class="btn-primary w-full py-2.5 rounded-xl font-extrabold">⬇ Download Transparent Royal Crest PNG</button>
+            </div>
+          </div>
+        ` : at.tool === 'foil' ? `
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 pt-1">
+            <div class="md:col-span-7"><canvas id="v9FoilCanvas" width="900" height="520" class="w-full rounded-xl border border-amber-400/30"></canvas></div>
+            <div class="md:col-span-5 space-y-2.5">
+              <input id="v9FoilTxt" value="${at.foilText}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <input id="v9FoilSub" value="${at.foilSub}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <label class="flex items-center justify-between p-2 rounded-xl bg-white/5">Velvet Color <input id="v9FoilBg" type="color" value="${at.foilBg}"/></label>
+              <button type="button" id="v9FoilDl" class="btn-primary w-full py-2.5 rounded-xl font-extrabold">⬇ Download 24K Gold Foil PNG</button>
+            </div>
+          </div>
+        ` : at.tool === 'countdown' ? `
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 pt-1">
+            <div class="md:col-span-7"><canvas id="v9CdCanvas" width="840" height="520" class="w-full rounded-xl border border-amber-400/30"></canvas></div>
+            <div class="md:col-span-5 space-y-2.5">
+              <input id="v9CdTitle" value="${at.cdTitle}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <input id="v9CdNames" value="${at.cdNames}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <input id="v9CdDate" type="date" value="${at.cdDate}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <button type="button" id="v9CdVidBtn" class="btn-primary w-full py-2.5 rounded-xl font-extrabold">🎬 Export 5s Countdown Invite Video</button>
+            </div>
+          </div>
+        ` : at.tool === 'slicer' ? `
+          <div class="space-y-2.5 pt-1">
+            <div class="flex flex-wrap gap-2">
+              <label class="btn-primary px-3.5 py-2 rounded-xl font-bold cursor-pointer">📂 Upload Photo to Slice<input id="v9SliceInp" type="file" accept="image/*" class="hidden"/></label>
+              <select id="v9SliceSel" class="bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white">
+                <option value="3x1" ${at.sliceMode==='3x1'?'selected':''}>3-Slide Carousel (3×1)</option>
+                <option value="5x1" ${at.sliceMode==='5x1'?'selected':''}>5-Slide Panorama (5×1)</option>
+                <option value="3x3" ${at.sliceMode==='3x3'?'selected':''}>9-Tile IG Profile Grid (3×3)</option>
+              </select>
+              <button type="button" id="v9SliceExpBtn" class="px-4 py-2 rounded-xl font-extrabold bg-emerald-600 text-white">🧩 Export All Seamless Tiles</button>
+            </div>
+            <canvas id="v9SliceCanvas" width="900" height="420" class="w-full max-h-72 object-contain rounded-xl border border-white/15"></canvas>
+          </div>
+        ` : at.tool === 'fineart' ? `
+          <div class="space-y-2.5 pt-1">
+            <div class="flex flex-wrap gap-2">
+              <label class="btn-primary px-3.5 py-2 rounded-xl font-bold cursor-pointer">📂 Upload Portrait<input id="v9FaInp" type="file" accept="image/*" class="hidden"/></label>
+              ${[['oil','🎨 Oil Painting'],['goldleaf','✨ 24K Gold-Leaf'],['charcoal','✏️ Charcoal Sketch']].map(([k,lbl]) => `
+                <button type="button" data-v9-fa="${k}" class="px-3 py-2 rounded-xl font-bold border ${at.faStyle===k?'bg-amber-500 text-black':'bg-white/5 text-slate-200 border-white/15'}">${lbl}</button>
+              `).join('')}
+              <button type="button" id="v9FaDl" class="btn-secondary px-3 py-2 rounded-xl font-bold">⬇ Download Art PNG</button>
+            </div>
+            <canvas id="v9FaCanvas" width="720" height="480" class="w-full max-h-80 object-contain rounded-xl bg-black border border-white/15"></canvas>
+          </div>
+        ` : at.tool === 'cert' ? `
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 pt-1">
+            <div class="md:col-span-7"><canvas id="v9CertCanvas" width="840" height="500" class="w-full rounded-xl border border-amber-400/35"></canvas></div>
+            <div class="md:col-span-5 space-y-2">
+              <div class="grid grid-cols-2 gap-1.5">
+                <button type="button" data-v9-cmode="cert" class="py-1.5 rounded-lg font-bold ${at.certMode==='cert'?'bg-amber-500 text-black':'bg-white/10 text-white'}">Royal Certificate</button>
+                <button type="button" data-v9-cmode="pass" class="py-1.5 rounded-lg font-bold ${at.certMode==='pass'?'bg-amber-500 text-black':'bg-white/10 text-white'}">VIP Backstage Pass</button>
+              </div>
+              <input id="v9CertName" value="${at.certName}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="v9CertTitle" value="${at.certTitle}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="v9CertSer" value="${at.certSerial}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <button type="button" id="v9CertDl" class="btn-primary w-full py-2 rounded-xl font-extrabold">⬇ Download HD PNG</button>
+            </div>
+          </div>
+        ` : at.tool === 'piano' ? `
+          <div class="p-3 rounded-2xl bg-slate-950/80 border border-white/10 space-y-3">
+            <div class="font-bold text-amber-200">🎹 Synthesize 100% Copyright-Free Royal Background Music in Browser</div>
+            <div class="grid grid-cols-3 gap-2">
+              ${[['wedding','🎹 Soft Wedding Piano'],['strings','🎻 Cinematic Strings'],['harp','✨ Royal Harp Arpeggio']].map(([k,lbl]) => `
+                <button type="button" data-v9-pmood="${k}" class="py-2 rounded-xl font-bold border ${at.pianoMood===k?'bg-indigo-600 border-indigo-300 text-white':'bg-white/5 border-white/10 text-slate-300'}">${lbl}</button>
+              `).join('')}
+            </div>
+            <div class="flex gap-2">
+              <button type="button" id="v9PianoPlayBtn" class="btn-secondary flex-1 py-2.5 rounded-xl font-bold">▶ Preview 10s Music</button>
+              <button type="button" id="v9PianoAddBtn" class="btn-primary flex-1 py-2.5 rounded-xl font-extrabold">+ Add to Master Video Studio</button>
+            </div>
+          </div>
+        ` : at.tool === 'framer' ? `
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 pt-1">
+            <div class="md:col-span-6 flex justify-center"><canvas id="v9FrameCanvas" width="900" height="1050" class="max-w-full max-h-80 rounded-xl border border-white/15"></canvas></div>
+            <div class="md:col-span-6 space-y-2.5">
+              <label class="btn-primary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">📂 Select 1–10 Photos (${at.frameImgs.length} loaded)<input id="v9FrameInp" type="file" accept="image/*" multiple class="hidden"/></label>
+              <div class="grid grid-cols-2 gap-1.5">
+                <button type="button" data-v9-fstyle="white" class="py-1.5 rounded-lg font-bold ${at.frameStyle==='white'?'bg-white text-black':'bg-white/10 text-white'}">Museum White</button>
+                <button type="button" data-v9-fstyle="black" class="py-1.5 rounded-lg font-bold ${at.frameStyle==='black'?'bg-amber-500 text-black':'bg-white/10 text-white'}">Gallery Obsidian</button>
+              </div>
+              <input id="v9FrameExif" value="${at.frameExif}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <button type="button" id="v9FrameBatchBtn" class="btn-primary w-full py-2.5 rounded-xl font-extrabold">⬇ Batch Export All Framed Photos</button>
+            </div>
+          </div>
+        ` : at.tool === 'ratecard' ? `
+          <div class="space-y-2.5 pt-1">
+            <div class="flex flex-wrap gap-2">
+              <input id="v9RcStudio" value="${at.rcStudio}" class="flex-1 bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <button type="button" id="v9RcDl" class="btn-primary px-4 py-2 rounded-xl font-extrabold">⬇ Export Luxury Rate Card PNG</button>
+            </div>
+            <canvas id="v9RcCanvas" width="1080" height="560" class="w-full rounded-xl border border-amber-400/30"></canvas>
+          </div>
+        ` : at.tool === 'planner' ? `
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 pt-1">
+            <div class="md:col-span-7"><canvas id="v9PlCanvas" width="840" height="520" class="w-full rounded-xl border border-amber-400/30"></canvas></div>
+            <div class="md:col-span-5 space-y-2">
+              <input id="v9PlTitle" value="${at.plTitle}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="v9PlDate" value="${at.plDate}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="v9PlOutfit" value="${at.plOutfit}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <button type="button" id="v9PlDl" class="btn-primary w-full py-2 rounded-xl font-extrabold">⬇ Export Client Shoot Brief PNG</button>
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    if (at.tool === 'crest') drawCrest();
+    else if (at.tool === 'foil') drawFoil();
+    else if (at.tool === 'countdown') startCountdownLoop();
+    else if (at.tool === 'slicer') drawSlicerPreview();
+    else if (at.tool === 'fineart') drawFineArt();
+    else if (at.tool === 'cert') drawCertOrPass();
+    else if (at.tool === 'framer') { const c = document.getElementById('v9FrameCanvas'); if (c) renderFramedPhotoToCanvas(at.frameImgs[0], c); }
+    else if (at.tool === 'ratecard') drawRateCard();
+    else if (at.tool === 'planner') drawShootPlanner();
+  }
+
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+    const tb = t.closest('[data-v9-tool]');
+    if (tb) { const k = tb.getAttribute('data-v9-tool'); at.tool = at.tool === k ? null : k; renderAtelierHost(); return; }
+    if (t.closest('#v9CrestDl')) { dlCanvas('v9CrestCanvas', `Royal_Crest_${Date.now()}.png`); return; }
+    if (t.closest('#v9FoilDl')) { dlCanvas('v9FoilCanvas', `Gold_Foil_${Date.now()}.png`); return; }
+    if (t.closest('#v9CdVidBtn')) {
+      const c = document.getElementById('v9CdCanvas'); if (!c || typeof MediaRecorder === 'undefined') return;
+      const rec = new MediaRecorder(c.captureStream(30), { mimeType: 'video/webm' }); const ch = [];
+      rec.ondataavailable = (ev) => { if (ev.data.size) ch.push(ev.data); };
+      rec.onstop = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(ch, { type: 'video/webm' })); a.download = `SaveTheDate_${Date.now()}.webm`; a.click(); toast('⏳ 5s Countdown Invite exported!', 'success'); };
+      rec.start(); toast('⏺ Recording 5s Save-the-Date...', 'info'); setTimeout(() => { if (rec.state === 'recording') rec.stop(); }, 5000);
+      return;
+    }
+    if (t.closest('#v9SliceExpBtn')) { exportSlicedTiles(); return; }
+    const fa = t.closest('[data-v9-fa]'); if (fa) { at.faStyle = fa.getAttribute('data-v9-fa'); renderAtelierHost(); return; }
+    if (t.closest('#v9FaDl')) { dlCanvas('v9FaCanvas', `FineArt_${at.faStyle}_${Date.now()}.png`); return; }
+    const cm = t.closest('[data-v9-cmode]'); if (cm) { at.certMode = cm.getAttribute('data-v9-cmode'); renderAtelierHost(); return; }
+    if (t.closest('#v9CertDl')) { dlCanvas('v9CertCanvas', `Royal_${at.certMode}_${Date.now()}.png`); return; }
+    const pm = t.closest('[data-v9-pmood]'); if (pm) { at.pianoMood = pm.getAttribute('data-v9-pmood'); renderAtelierHost(); return; }
+    if (t.closest('#v9PianoPlayBtn')) { composeRoyalMusic(false); return; }
+    if (t.closest('#v9PianoAddBtn')) { composeRoyalMusic(true); return; }
+    const fs = t.closest('[data-v9-fstyle]'); if (fs) { at.frameStyle = fs.getAttribute('data-v9-fstyle'); renderAtelierHost(); return; }
+    if (t.closest('#v9FrameBatchBtn')) {
+      if (!at.frameImgs.length) { toast('Pehle photos select karein!', 'error'); return; }
+      at.frameImgs.forEach((im, idx) => {
+        setTimeout(() => {
+          const tc = document.createElement('canvas'); renderFramedPhotoToCanvas(im, tc);
+          const a = document.createElement('a'); a.download = `Gallery_Framed_${idx + 1}.png`; a.href = tc.toDataURL('image/png'); a.click();
+        }, idx * 200);
+      });
+      toast(`🖼️ Batch exporting ${at.frameImgs.length} framed gallery prints!`, 'success');
+      return;
+    }
+    if (t.closest('#v9RcDl')) { dlCanvas('v9RcCanvas', `Luxury_RateCard_${Date.now()}.png`); return; }
+    if (t.closest('#v9PlDl')) { dlCanvas('v9PlCanvas', `Shoot_Brief_${Date.now()}.png`); return; }
+  });
+
+  document.addEventListener('input', (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 'v9CrestLet') { at.crestLetters = el.value; drawCrest(); }
+    if (el.id === 'v9CrestSub') { at.crestSub = el.value; drawCrest(); }
+    if (el.id === 'v9FoilTxt') { at.foilText = el.value; drawFoil(); }
+    if (el.id === 'v9FoilSub') { at.foilSub = el.value; drawFoil(); }
+    if (el.id === 'v9FoilBg') { at.foilBg = el.value; drawFoil(); }
+    if (el.id === 'v9CdTitle') at.cdTitle = el.value;
+    if (el.id === 'v9CdNames') at.cdNames = el.value;
+    if (el.id === 'v9CdDate') at.cdDate = el.value;
+    if (el.id === 'v9CertName') { at.certName = el.value; drawCertOrPass(); }
+    if (el.id === 'v9CertTitle') { at.certTitle = el.value; drawCertOrPass(); }
+    if (el.id === 'v9CertSer') { at.certSerial = el.value; drawCertOrPass(); }
+    if (el.id === 'v9FrameExif') { at.frameExif = el.value; const c = document.getElementById('v9FrameCanvas'); if (c) renderFramedPhotoToCanvas(at.frameImgs[0], c); }
+    if (el.id === 'v9RcStudio') { at.rcStudio = el.value; drawRateCard(); }
+    if (el.id === 'v9PlTitle') { at.plTitle = el.value; drawShootPlanner(); }
+    if (el.id === 'v9PlDate') { at.plDate = el.value; drawShootPlanner(); }
+    if (el.id === 'v9PlOutfit') { at.plOutfit = el.value; drawShootPlanner(); }
+  });
+
+  document.addEventListener('change', async (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 'v9SliceSel') { at.sliceMode = el.value; drawSlicerPreview(); }
+    if (el.id === 'v9SliceInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const i = new Image(); i.onload = () => { at.sliceImg = i; drawSlicerPreview(); }; i.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'v9FaInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const i = new Image(); i.onload = () => { at.faImg = i; drawFineArt(); }; i.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'v9FrameInp' && el.files && el.files.length) {
+      at.frameImgs = [];
+      for (const f of Array.from(el.files).slice(0, 10)) {
+        const url = await new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); });
+        const im = await new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.src = url; });
+        at.frameImgs.push(im);
+      }
+      renderAtelierHost(); el.value = '';
+    }
+  });
+
+  function syncV9() {
+    const r = document.getElementById('v7LuxuryRoot');
+    if (r && !document.getElementById('v9AtelierHost')) renderAtelierHost();
+  }
+  const mo = new MutationObserver(() => requestAnimationFrame(syncV9));
+  mo.observe(document.body, { childList: true, subtree: true });
+  setInterval(syncV9, 850);
+  syncV9();
+})();
+</script>
+
 </body>
 </html>
