@@ -7782,7 +7782,8 @@ const StudioViews = (() => {
     { id: 'bg-remover', title: 'BACKGROUND REMOVER', desc: 'Remove background and create cutouts', emoji: '✂️', cat: 'photo', bg: 'linear-gradient(140deg, #059669 0%, #10b981 52%, #2dd4bf 100%)' },
     { id: 'bg-generator', title: 'BACKGROUND STUDIO', desc: 'Create and apply creative backdrops', emoji: '🌄', cat: 'photo', bg: 'linear-gradient(140deg, #0284c7 0%, #2563eb 52%, #60a5fa 100%)' },
     { id: 'enhance', title: 'IMAGE ENHANCER', desc: 'Enhance, sharpen, denoise and prompt tools', emoji: '✨', cat: 'ai', bg: 'linear-gradient(140deg, #d97706 0%, #f59e0b 52%, #fb923c 100%)' },
-    { id: 'broadcast-studio', title: 'BROADCAST & TELEPROMPTER', desc: 'Screen+Facecam recorder, teleprompter & stop-motion', emoji: '🎥', cat: 'video', bg: 'linear-gradient(135deg,#ef4444,#f97316,#eab308)' },
+    { id: 'ai-copilot-2035', title: '2035 AI COPILOT HUB', desc: 'Voice/Text agent, 3D relight, client proofing & store', emoji: '🤖', cat: 'ai', bg: 'linear-gradient(135deg,#6366f1,#a855f7,#ec4899)' },
+      { id: 'broadcast-studio', title: 'BROADCAST & TELEPROMPTER', desc: 'Screen+Facecam recorder, teleprompter & stop-motion', emoji: '🎥', cat: 'video', bg: 'linear-gradient(135deg,#ef4444,#f97316,#eab308)' },
       { id: 'cinemagraph-color-lab', title: 'CINEMAGRAPH & COLOR AI', desc: 'Living photos & movie Steal-the-Look color transfer', emoji: '✨', cat: 'photo', bg: 'linear-gradient(135deg,#14b8a6,#06b6d4,#6366f1)' },
       { id: 'ecommerce-restore-hub', title: 'PRODUCT, RESTORE & PWA', desc: 'Amazon/Flipkart podiums, old photo restore & AI/PWA', emoji: '🛍️', cat: 'tools', bg: 'linear-gradient(135deg,#10b981,#059669,#0284c7)' },
       { id: 'spatial-3d-lab', title: '3D PARALLAX & MOCKUPS', desc: '2D→3D zoom reels, 3D mockups & hologram titles', emoji: '🧊', cat: 'video', bg: 'linear-gradient(135deg,#06b6d4,#6366f1,#a855f7)' },
@@ -10900,6 +10901,7 @@ const App = (() => {
       ['bg-remover', 'BG Remover', 'eraser'],
       ['bg-generator', 'BG Generator', 'image'],
       ['enhance', 'Enhance & Prompt', 'zap'],
+      ['ai-copilot-2035', '2035 AI Copilot Hub', 'bot'],
       ['broadcast-studio', 'Broadcast & Teleprompter', 'video'],
       ['cinemagraph-color-lab', 'Cinemagraph & Color AI', 'sparkles'],
       ['ecommerce-restore-hub', 'Product, Restore & PWA', 'shopping-bag'],
@@ -10958,6 +10960,7 @@ const App = (() => {
       case 'dress-changer': main.innerHTML = StudioViews.renderDressChanger(state); break;
       case 'hairstyle': main.innerHTML = StudioViews.renderHairstyle(state); break;
       case 'enhance': main.innerHTML = StudioViews.renderEnhanceAndPrompt(state); break;
+      case 'ai-copilot-2035': main.innerHTML = '<div id="v6CopilotRoot"></div>'; break;
       case 'broadcast-studio': main.innerHTML = '<div id="v5BroadcastRoot"></div>'; break;
       case 'cinemagraph-color-lab': main.innerHTML = '<div id="v5CinemaColorRoot"></div>'; break;
       case 'ecommerce-restore-hub': main.innerHTML = '<div id="v5EcomRestoreRoot"></div>'; break;
@@ -18454,6 +18457,7 @@ window.MahaTouchTransform = (() => {
     { id: 'frame-generator', emoji: '🎨', title: 'Custom AI Frame Generator', sub: 'Design your own multi-photo frames' },
     { id: 'preset-library', emoji: '🎛️', title: 'Smart Preset Library', sub: '15 pro color grading categories' },
     { id: 'ai-movie-studio', emoji: '🎥', title: 'AI Photo & Video Generator', sub: '3D, Bollywood, Anime & AI movies' },
+    { id: 'ai-copilot-2035', emoji: '🤖', title: '2035 AI Studio Copilot, 3D Relight, Client Proofing & Store', sub: 'Voice/Text multi-tool agent, movable 3D light, watermark proofing & WebGPU/TWA' },
     { id: 'broadcast-studio', emoji: '🎥', title: 'Broadcast Screen+Facecam, Teleprompter & Stop-Motion', sub: 'PiP screen recorder, scrolling script prompter & onion-skin stop-motion' },
     { id: 'cinemagraph-color-lab', emoji: '✨', title: 'Living Photo (Cinemagraph) & Steal-the-Look Color Match', sub: 'Animate selected photo areas & extract movie color grading' },
     { id: 'ecommerce-restore-hub', emoji: '🛍️', title: 'E-Commerce Product Studio, Old Photo Restorer & PWA/AI', sub: 'Marketplace podiums, B&W photo restore, live subtitles & offline PWA' },
@@ -24493,6 +24497,421 @@ window.MahaTouchTransform = (() => {
   mo.observe(document.body, { childList: true, subtree: true });
   setInterval(syncV5Mounts, 750);
   syncV5Mounts();
+})();
+</script>
+
+
+<script>
+/* ============================================================================
+   MAHA AI STUDIO — 2035 AI COPILOT & FUTURE HUB v6 (Module 33)
+   1) Voice & Text AI Studio Copilot (Hindi/English natural command router +
+      floating quick-launch pill across all screens)
+   2) Interactive 3D Movable Light Relighting + AI Composition Critique Coach
+   3) Client Proofing & Watermarked Approval Standalone HTML Generator
+   4) Community Preset Marketplace + WebGPU/WebCodecs Diagnostics & TWA Kit
+   ============================================================================ */
+(() => {
+  const toast = (msg, type = 'info') => {
+    if (typeof window.showToast === 'function') window.showToast(msg, type);
+  };
+
+  const c2035 = {
+    tab: 'copilot', // copilot | relight | proofing | market
+    cmdText: '',
+    logs: ['🤖 AI Studio Copilot ready! Hindi ya English mein command bolein ya likhein.'],
+    listening: false,
+    sr: null,
+    // 3D Movable Light + Critique
+    relightImg: null,
+    lightX: 0.35,
+    lightY: 0.32,
+    lightColor: '#fbbf24',
+    lightInt: 70,
+    ambientDark: 45,
+    critique: null,
+    // Client Proofing
+    proofClient: 'Rahul & Priya Wedding',
+    proofWatermark: 'PREVIEW — MAHA AI STUDIO',
+    proofPin: '2035',
+    proofPhotos: [],
+    // Marketplace
+    installedPresets: []
+  };
+
+  const MARKET_PRESETS = [
+    { id: 'mk_wedding_gold', name: 'Royal Wedding Golden LUT', cat: 'Color Grade', author: 'Maha Pro Team', badge: '🔥 #1 Trending' },
+    { id: 'mk_cyber_neon', name: 'Tokyo Neon Night Pack', cat: 'Video + Photo', author: 'Creator Lab', badge: '⚡ 2035 FX' },
+    { id: 'mk_viral_hook', name: 'Viral Reels Hormozi Caption Pack', cat: 'Video Template', author: 'Reels Studio', badge: '🎬 Viral' },
+    { id: 'mk_ecom_white', name: 'Amazon/Flipkart Clean Studio Kit', cat: 'E-Commerce', author: 'Seller Hub', badge: '🛍️ Pro' }
+  ];
+
+  function executeCopilotCommand(rawCmd) {
+    const q = String(rawCmd || '').trim().toLowerCase();
+    if (!q) return;
+    c2035.logs.unshift(`👤 "${rawCmd}"`);
+    const go = (route, msg) => {
+      c2035.logs.unshift(`⚡ ${msg}`);
+      toast(msg, 'success');
+      if (typeof App !== 'undefined' && App.navigate) App.navigate(route);
+    };
+
+    if (/camera|selfie|dslr|photo khich|shoot/.test(q)) {
+      go('camera', 'Launching Pro DSLR Camera (200x Zoom + Bokeh + Voice Director)...');
+    } else if (/3d|parallax|mockup|iphone|billboard|hologram/.test(q)) {
+      go('spatial-3d-lab', 'Opening 3D Parallax Reel & 3D Mockup Studio...');
+    } else if (/screen|facecam|teleprompter|script|stop.?motion|time.?lapse/.test(q)) {
+      go('broadcast-studio', 'Opening Broadcast Screen+Facecam, Teleprompter & Stop-Motion Studio...');
+    } else if (/cinemagraph|living|steal|color match|movie look/.test(q)) {
+      go('cinemagraph-color-lab', 'Opening Living Photo (Cinemagraph) & Steal-the-Look Color AI...');
+    } else if (/product|amazon|flipkart|meesho|restore|old photo|purani|b&w|pwa/.test(q)) {
+      go('ecommerce-restore-hub', 'Opening E-Commerce Product Studio, Old Photo Restorer & PWA Hub...');
+    } else if (/thumbnail|viral|reel|card|qr|visiting|diwali|wedding invite|\.maha/.test(q)) {
+      go('viral-creator-hub', 'Opening Viral Reel Director, Thumbnail Lab & Digital QR Card Hub...');
+    } else if (/poster|layer|design|brand kit|logo/.test(q)) {
+      go('design-studio', 'Opening Next-Gen Layer Design Studio & Brand Kit...');
+    } else if (/pdf/.test(q)) {
+      go('photo-to-pdf', 'Opening Unlimited Photo to PDF Studio...');
+    } else if (/video|edit|clip|song|karaoke|caption|chroma|green screen/.test(q)) {
+      go('video-maker', 'Opening Video Maker & Next-Gen Video Pro Suite...');
+    } else if (/bg|background|remove|cutout/.test(q)) {
+      go('bg-remover', 'Opening AI Background Remover...');
+    } else if (/beauty|makeup|dress|hair/.test(q)) {
+      go('beauty', 'Opening AI Beauty & Portrait Studio...');
+    } else if (/photo|filter|hsl|expand|blur|privacy|censor|golden|wedding/.test(q)) {
+      go('photo-editor', 'Opening AI Photo Editor & Next-Gen Pro Photo Lab...');
+    } else {
+      c2035.logs.unshift('🤖 Tip: Try "Camera kholo", "3D parallax reel banao", "Thumbnail banao", "Purani photo restore karo", ya "Video edit karo".');
+      renderCopilotUI();
+    }
+  }
+
+  /* --- Interactive 3D Movable Light & AI Critique --- */
+  function renderRelightCanvas() {
+    const c = document.getElementById('v6RelightCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const w = c.width, h = c.height;
+    ctx.clearRect(0, 0, w, h);
+    if (!c2035.relightImg) {
+      ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '700 20px system-ui'; ctx.textAlign = 'center';
+      ctx.fillText('Upload a Photo & Drag the Glowing 3D Light Orb!', w / 2, h / 2);
+      return;
+    }
+    const sc = Math.min(w / c2035.relightImg.width, h / c2035.relightImg.height);
+    const dw = c2035.relightImg.width * sc, dh = c2035.relightImg.height * sc;
+    const ox = (w - dw) / 2, oy = (h - dh) / 2;
+    ctx.fillStyle = '#05060b'; ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(c2035.relightImg, ox, oy, dw, dh);
+
+    // Ambient shadow falloff away from 3D light source
+    const lx = c2035.lightX * w, ly = c2035.lightY * h;
+    const rad = Math.max(w, h) * 0.72;
+    const amb = ctx.createRadialGradient(lx, ly, rad * 0.12, lx, ly, rad);
+    amb.addColorStop(0, 'rgba(0,0,0,0)');
+    amb.addColorStop(1, `rgba(0,0,0,${(c2035.ambientDark / 100).toFixed(2)})`);
+    ctx.fillStyle = amb; ctx.fillRect(0, 0, w, h);
+
+    // Directional colored studio light bloom (screen blend)
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    const lg = ctx.createRadialGradient(lx, ly, 8, lx, ly, rad * 0.78);
+    lg.addColorStop(0, c2035.lightColor);
+    lg.addColorStop(0.45, c2035.lightColor + '55');
+    lg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.globalAlpha = c2035.lightInt / 100;
+    ctx.fillStyle = lg; ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+
+    // Draggable Light Orb Handle
+    ctx.save();
+    ctx.beginPath(); ctx.arc(lx, ly, 16, 0, Math.PI * 2);
+    ctx.fillStyle = c2035.lightColor; ctx.shadowColor = c2035.lightColor; ctx.shadowBlur = 22; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+    ctx.restore();
+  }
+
+  function runAICritique() {
+    if (!c2035.relightImg) { toast('Pehle photo upload karein!', 'error'); return; }
+    const tc = document.createElement('canvas'); tc.width = 160; tc.height = 160;
+    const tctx = tc.getContext('2d'); tctx.drawImage(c2035.relightImg, 0, 0, 160, 160);
+    const d = tctx.getImageData(0, 0, 160, 160).data;
+    let sumL = 0, sumSat = 0, edge = 0, n = d.length / 4;
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i], g = d[i+1], b = d[i+2];
+      const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+      sumL += (r * 0.299 + g * 0.587 + b * 0.114);
+      sumSat += mx ? (mx - mn) / mx : 0;
+      if (i + 4 < d.length) edge += Math.abs(r - d[i+4]);
+    }
+    const avgL = sumL / n;
+    const avgSat = (sumSat / n) * 100;
+    const sharp = Math.min(100, Math.round((edge / n) * 4.5));
+    const expScore = Math.max(45, 100 - Math.round(Math.abs(avgL - 128) * 0.7));
+    const total = Math.min(99, Math.round((expScore * 0.4) + (sharp * 0.35) + (Math.min(100, avgSat * 2.1) * 0.25)));
+    const tips = [];
+    if (avgL < 95) tips.push('Photo thodi dark hai — 3D Light Orb ko chehre ke paas laakar Intensity 75% karein.');
+    else if (avgL > 175) tips.push('Highlights zyada bright hain — Ambient Depth badha kar cinematic contrast laayein.');
+    else tips.push('Exposure balance solid hai — Golden Rim Light se studio depth aur nikhar sakti hai.');
+    if (sharp < 55) tips.push('Sharpness medium hai — Photo Editor ka 5x Auto Enhance chalane se clarity boost hogi.');
+    c2035.critique = { total, expScore, sharp, sat: Math.round(avgSat), tips };
+    renderCopilotUI();
+  }
+
+  function bindRelightDrag() {
+    const c = document.getElementById('v6RelightCanvas');
+    if (!c || c._rlBound) return;
+    c._rlBound = true;
+    let drag = false;
+    const upd = (e) => {
+      const r = c.getBoundingClientRect();
+      const pt = e.touches ? e.touches[0] : e;
+      c2035.lightX = Math.max(0.05, Math.min(0.95, (pt.clientX - r.left) / r.width));
+      c2035.lightY = Math.max(0.05, Math.min(0.95, (pt.clientY - r.top) / r.height));
+      renderRelightCanvas();
+    };
+    c.addEventListener('mousedown', (e) => { drag = true; upd(e); });
+    window.addEventListener('mousemove', (e) => { if (drag) upd(e); });
+    window.addEventListener('mouseup', () => { drag = false; });
+    c.addEventListener('touchstart', (e) => { drag = true; upd(e); }, { passive: true });
+    c.addEventListener('touchmove', (e) => { if (drag) upd(e); }, { passive: true });
+    c.addEventListener('touchend', () => { drag = false; });
+  }
+
+  /* --- Client Proofing Watermarked Standalone HTML Generator --- */
+  function generateClientProofingHtml() {
+    if (!c2035.proofPhotos.length) { toast('Pehle kam se kam 1 photo upload karein!', 'error'); return; }
+    const cards = c2035.proofPhotos.map((p, idx) => `
+      <div style="background:#111426;border:1px solid #312e81;border-radius:16px;padding:12px;text-align:center;">
+        <img src="${p.wmUrl}" style="width:100%;border-radius:12px;margin-bottom:8px;"/>
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px;">Photo #${idx + 1}</div>
+        <button onclick="this.textContent='✅ Approved!';this.style.background='#10b981'" style="width:100%;padding:8px;border:none;border-radius:10px;background:#6366f1;color:#fff;font-weight:700;cursor:pointer;">👍 Approve Photo</button>
+      </div>
+    `).join('');
+    const pageHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${c2035.proofClient} — Client Proofing</title></head><body style="margin:0;background:#07080d;color:#fff;font-family:system-ui;padding:20px;"><h2 style="text-align:center;color:#fde68a;">👑 ${c2035.proofClient} — Studio Proofing</h2><p style="text-align:center;color:#94a3b8;font-size:13px;">PIN: ${c2035.proofPin} • Tap Approve on your favorite photos &amp; share screenshot back!</p><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;max-width:1080px;margin:20px auto;">${cards}</div></body></html>`;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([pageHtml], { type: 'text/html' }));
+    a.download = `Client_Proofing_${Date.now()}.html`;
+    a.click();
+    toast('🤝 Watermarked Client Proofing HTML gallery downloaded — WhatsApp par share karein!', 'success');
+  }
+
+  function renderCopilotUI() {
+    const root = document.getElementById('v6CopilotRoot');
+    if (!root) return;
+    const hw = {
+      webgpu: !!navigator.gpu,
+      webcodecs: typeof VideoEncoder !== 'undefined',
+      webgl2: !!document.createElement('canvas').getContext('webgl2'),
+      mediarec: typeof MediaRecorder !== 'undefined',
+      speech: !!(window.SpeechRecognition || window.webkitSpeechRecognition)
+    };
+
+    root.innerHTML = `
+      <div class="space-y-4 fade-in">
+        <div>
+          <h2 class="text-xl font-extrabold text-white">🤖 2035 AI Studio Copilot, 3D Relight, Client Proofing &amp; Store</h2>
+          <p class="text-xs text-slate-400">Hindi/English voice commands se pura studio chalayein, interactive 3D light ghumayein, client proofing links banayein aur hardware/Play Store kit check karein.</p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl text-xs">
+          <button type="button" data-v6-tab="copilot" class="ng-tab-btn py-2 rounded-xl font-bold ${c2035.tab==='copilot'?'active':'text-slate-300'}">🎙️ AI Copilot Agent</button>
+          <button type="button" data-v6-tab="relight" class="ng-tab-btn py-2 rounded-xl font-bold ${c2035.tab==='relight'?'active':'text-slate-300'}">💡 3D Relight &amp; Critique</button>
+          <button type="button" data-v6-tab="proofing" class="ng-tab-btn py-2 rounded-xl font-bold ${c2035.tab==='proofing'?'active':'text-slate-300'}">🤝 Client Proofing</button>
+          <button type="button" data-v6-tab="market" class="ng-tab-btn py-2 rounded-xl font-bold ${c2035.tab==='market'?'active':'text-slate-300'}">🏪 Store &amp; WebGPU/TWA</button>
+        </div>
+
+        ${c2035.tab === 'copilot' ? `
+          <div class="ng-card p-4 space-y-3 text-xs">
+            <div class="flex flex-wrap gap-2">
+              <input id="v6CmdInp" type="text" value="${c2035.cmdText.replace(/"/g,'&quot;')}" placeholder="Bolein ya likhein: e.g. '3D parallax reel banao' ya 'Purani photo restore karo'..." class="flex-1 bg-slate-900 border border-indigo-400/40 rounded-xl px-3 py-2.5 text-white"/>
+              <button type="button" id="v6CmdVoiceBtn" class="px-3.5 py-2 rounded-xl font-bold ${c2035.listening?'bg-rose-600 text-white':'bg-emerald-500/20 border border-emerald-400/45 text-emerald-200'}">${c2035.listening?'⏹ Stop Mic':'🎙️ Speak'}</button>
+              <button type="button" id="v6CmdRunBtn" class="btn-primary px-4 py-2 rounded-xl font-extrabold">🚀 Run</button>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              ${['Camera kholo','3D parallax reel banao','Viral thumbnail banao','Screen record karo','Purani photo restore karo','Wedding QR card banao','Layer poster design karo'].map((q) => `
+                <button type="button" data-v6-quick="${q}" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-indigo-500/25 border border-white/10 text-slate-200">${q}</button>
+              `).join('')}
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-950/85 border border-white/10 space-y-1.5 max-h-48 overflow-y-auto font-mono text-[11px]">
+              ${c2035.logs.map((l) => `<div class="text-slate-200">${l}</div>`).join('')}
+            </div>
+          </div>
+        ` : c2035.tab === 'relight' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 text-xs">
+            <div class="lg:col-span-7 ng-card p-3">
+              <canvas id="v6RelightCanvas" width="720" height="720" class="w-full max-h-[56dvh] object-contain rounded-xl bg-black cursor-grab touch-none"></canvas>
+            </div>
+            <div class="lg:col-span-5 ng-card p-3.5 space-y-2.5">
+              <label class="btn-primary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">📂 Upload Photo for 3D Relighting<input id="v6RelightInp" type="file" accept="image/*" class="hidden"/></label>
+              <p class="text-[11px] text-amber-200">💡 Canvas par glowing light orb ko finger/mouse se drag karke real-time shadows aur lighting angle badlein!</p>
+              <div class="flex items-center justify-between p-2 rounded-xl bg-white/5"><span>3D Light Color</span><input id="v6LightCol" type="color" value="${c2035.lightColor}"/></div>
+              <label class="block">Light Intensity (${c2035.lightInt}%) <input id="v6LightInt" type="range" min="10" max="100" value="${c2035.lightInt}" class="w-full studio-slider"/></label>
+              <label class="block">Ambient Shadow Depth (${c2035.ambientDark}%) <input id="v6AmbDark" type="range" min="0" max="85" value="${c2035.ambientDark}" class="w-full studio-slider"/></label>
+              <div class="flex gap-2">
+                <button type="button" id="v6CritiqueBtn" class="btn-secondary flex-1 py-2 rounded-xl font-bold text-cyan-300">🧠 AI Critique Score</button>
+                <button type="button" id="v6RelightExpBtn" class="btn-primary flex-1 py-2 rounded-xl font-bold">⬇ Export PNG</button>
+              </div>
+              ${c2035.critique ? `
+                <div class="p-3 rounded-2xl bg-indigo-500/15 border border-indigo-400/35 space-y-1">
+                  <div class="font-extrabold text-white text-sm">🏆 AI Studio Score: ${c2035.critique.total}/100</div>
+                  <div class="text-[10.5px] text-slate-300">Exposure: ${c2035.critique.expScore}% • Sharpness: ${c2035.critique.sharp}% • Color Pop: ${c2035.critique.sat}%</div>
+                  ${c2035.critique.tips.map((tp) => `<div class="text-[11px] text-amber-200">• ${tp}</div>`).join('')}
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        ` : c2035.tab === 'proofing' ? `
+          <div class="ng-card p-4 space-y-3 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <input id="v6ProofClient" type="text" value="${c2035.proofClient}" placeholder="Client Album Name" class="bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <input id="v6ProofWm" type="text" value="${c2035.proofWatermark}" placeholder="Watermark Text" class="bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <input id="v6ProofPin" type="text" value="${c2035.proofPin}" placeholder="PIN Code" class="bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <label class="btn-secondary px-3.5 py-2 rounded-xl font-bold cursor-pointer">📂 Add Client Photos (${c2035.proofPhotos.length} watermarked)<input id="v6ProofFilesInp" type="file" accept="image/*" multiple class="hidden"/></label>
+              <button type="button" id="v6ProofGenBtn" class="btn-primary px-4 py-2 rounded-xl font-extrabold">🤝 Download Shareable Client Proofing Page</button>
+            </div>
+          </div>
+        ` : `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="ng-card p-4 space-y-2.5">
+              <div class="font-extrabold text-white text-sm">🏪 Community Preset &amp; Template Marketplace</div>
+              ${MARKET_PRESETS.map((p) => {
+                const inst = c2035.installedPresets.includes(p.id);
+                return `
+                  <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+                    <div>
+                      <div class="font-bold text-white">${p.name} <span class="text-[10px] text-amber-300">${p.badge}</span></div>
+                      <div class="text-[10px] text-slate-400">${p.cat} • by ${p.author}</div>
+                    </div>
+                    <button type="button" data-v6-inst="${p.id}" class="px-3 py-1.5 rounded-lg font-bold ${inst?'bg-emerald-600 text-white':'btn-primary'}">${inst?'✅ Installed':'Install Free'}</button>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+            <div class="ng-card p-4 space-y-2.5">
+              <div class="font-extrabold text-white text-sm">⚡ WebGPU Hardware Check &amp; Play Store TWA Kit</div>
+              <div class="grid grid-cols-2 gap-2">
+                ${[['WebGPU 8K', hw.webgpu], ['WebCodecs Video', hw.webcodecs], ['WebGL2 Shaders', hw.webgl2], ['Voice Copilot', hw.speech]].map(([lbl, ok]) => `
+                  <div class="p-2.5 rounded-xl bg-white/5 border ${ok?'border-emerald-400/40 text-emerald-200':'border-amber-400/30 text-amber-200'} font-bold">${ok?'✅':'⚠️'} ${lbl}</div>
+                `).join('')}
+              </div>
+              <button type="button" id="v6DownTwaBtn" class="btn-primary w-full py-2.5 rounded-xl font-extrabold">📱 Download Android Play Store TWA Config</button>
+            </div>
+          </div>
+        `}
+      </div>
+    `;
+    if (c2035.tab === 'relight') { bindRelightDrag(); renderRelightCanvas(); }
+  }
+
+  // Floating Quick Copilot Pill (bottom-right above mobile nav)
+  function ensureFloatingCopilotPill() {
+    if (document.getElementById('v6FloatingCopilotBtn')) return;
+    const btn = document.createElement('button');
+    btn.id = 'v6FloatingCopilotBtn';
+    btn.type = 'button';
+    btn.title = 'Open 2035 AI Studio Copilot';
+    btn.textContent = '🤖 AI Copilot';
+    btn.style.cssText = 'position:fixed;right:14px;bottom:76px;z-index:42;padding:9px 14px;border-radius:999px;background:linear-gradient(135deg,#6366f1,#ec4899);color:#fff;font-size:11px;font-weight:800;border:1px solid rgba(255,255,255,0.35);box-shadow:0 8px 24px rgba(99,102,241,0.55);cursor:pointer;';
+    btn.onclick = () => { if (typeof App !== 'undefined' && App.navigate) App.navigate('ai-copilot-2035'); };
+    document.body.appendChild(btn);
+  }
+
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+    const tb = t.closest('[data-v6-tab]');
+    if (tb) { c2035.tab = tb.getAttribute('data-v6-tab'); renderCopilotUI(); return; }
+    const qk = t.closest('[data-v6-quick]');
+    if (qk) { executeCopilotCommand(qk.getAttribute('data-v6-quick')); return; }
+    if (t.closest('#v6CmdRunBtn')) { executeCopilotCommand(document.getElementById('v6CmdInp')?.value || c2035.cmdText); return; }
+    if (t.closest('#v6CmdVoiceBtn')) {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { toast('Voice Copilot works in Chrome / Edge over HTTPS.', 'error'); return; }
+      if (c2035.listening && c2035.sr) { c2035.sr.stop(); c2035.listening = false; renderCopilotUI(); return; }
+      c2035.sr = new SR(); c2035.sr.lang = 'hi-IN';
+      c2035.sr.onresult = (ev) => {
+        const txt = ev.results[0][0].transcript;
+        c2035.cmdText = txt; c2035.listening = false;
+        executeCopilotCommand(txt);
+      };
+      c2035.sr.onend = () => { c2035.listening = false; };
+      c2035.sr.start(); c2035.listening = true; renderCopilotUI();
+      return;
+    }
+    if (t.closest('#v6CritiqueBtn')) { runAICritique(); return; }
+    if (t.closest('#v6RelightExpBtn')) {
+      const c = document.getElementById('v6RelightCanvas');
+      if (c) { const a = document.createElement('a'); a.download = `MahaAI_3DRelight_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); toast('💡 3D Relit PNG exported!', 'success'); }
+      return;
+    }
+    if (t.closest('#v6ProofGenBtn')) { generateClientProofingHtml(); return; }
+    const inst = t.closest('[data-v6-inst]');
+    if (inst) {
+      const id = inst.getAttribute('data-v6-inst');
+      if (!c2035.installedPresets.includes(id)) c2035.installedPresets.push(id);
+      toast('✅ Community Preset installed into your Studio!', 'success');
+      renderCopilotUI();
+      return;
+    }
+    if (t.closest('#v6DownTwaBtn')) {
+      const twa = { packageId: 'com.mahaindustries.aistudio', host: 'your-domain.com', name: 'Maha AI STUDIO', launcherName: 'Maha AI', startUrl: '/v1.html', display: 'standalone', themeColor: '#07080d', backgroundColor: '#07080d', enableNotifications: true };
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(twa, null, 2)], { type: 'application/json' }));
+      a.download = 'twa-manifest.json'; a.click();
+      toast('📱 Downloaded Android Play Store TWA config (twa-manifest.json)!', 'success');
+      return;
+    }
+  });
+
+  document.addEventListener('input', (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 'v6CmdInp') c2035.cmdText = el.value;
+    if (el.id === 'v6LightCol') { c2035.lightColor = el.value; renderRelightCanvas(); }
+    if (el.id === 'v6LightInt') { c2035.lightInt = Number(el.value); renderRelightCanvas(); }
+    if (el.id === 'v6AmbDark') { c2035.ambientDark = Number(el.value); renderRelightCanvas(); }
+    if (el.id === 'v6ProofClient') c2035.proofClient = el.value;
+    if (el.id === 'v6ProofWm') c2035.proofWatermark = el.value;
+    if (el.id === 'v6ProofPin') c2035.proofPin = el.value;
+  });
+
+  document.addEventListener('change', async (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 'v6RelightInp' && el.files && el.files[0]) {
+      const r = new FileReader();
+      r.onload = () => { const im = new Image(); im.onload = () => { c2035.relightImg = im; c2035.critique = null; renderRelightCanvas(); }; im.src = r.result; };
+      r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'v6ProofFilesInp' && el.files && el.files.length) {
+      c2035.proofPhotos = [];
+      for (const f of Array.from(el.files)) {
+        const dataUrl = await new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); });
+        const im = await new Promise((res) => { const img = new Image(); img.onload = () => res(img); img.src = dataUrl; });
+        const wc = document.createElement('canvas'); wc.width = Math.min(800, im.width); wc.height = Math.round(wc.width * (im.height / im.width));
+        const wctx = wc.getContext('2d');
+        wctx.drawImage(im, 0, 0, wc.width, wc.height);
+        wctx.save(); wctx.translate(wc.width / 2, wc.height / 2); wctx.rotate(-0.45);
+        wctx.fillStyle = 'rgba(255,255,255,0.42)'; wctx.font = '900 30px system-ui'; wctx.textAlign = 'center';
+        wctx.fillText(c2035.proofWatermark, 0, 0);
+        wctx.restore();
+        c2035.proofPhotos.push({ name: f.name, wmUrl: wc.toDataURL('image/jpeg', 0.82) });
+      }
+      renderCopilotUI();
+      toast(`🤝 ${c2035.proofPhotos.length} watermarked proofing photo(s) ready!`, 'success');
+      el.value = '';
+    }
+  });
+
+  function syncV6() {
+    ensureFloatingCopilotPill();
+    const r = document.getElementById('v6CopilotRoot');
+    if (r && !r.dataset.v6m) { r.dataset.v6m = '1'; renderCopilotUI(); }
+  }
+  const mo = new MutationObserver(() => requestAnimationFrame(syncV6));
+  mo.observe(document.body, { childList: true, subtree: true });
+  setInterval(syncV6, 800);
+  syncV6();
 })();
 </script>
 
