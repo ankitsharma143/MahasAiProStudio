@@ -1075,6 +1075,29 @@ html, body { min-height: 100dvh; }
       transition: background 0.25s ease, box-shadow 0.25s ease;
     }
 
+
+    /* === ROYAL LUXURY VIP THEMES (v7) === */
+    body.lux-theme-emerald { background: #021410 !important; }
+    body.lux-theme-emerald .studio-card, body.lux-theme-emerald .ng-card, body.lux-theme-emerald .royal-hero-card {
+      border-color: rgba(52, 211, 153, 0.36) !important;
+      background: linear-gradient(145deg, rgba(6, 40, 32, 0.94), rgba(3, 22, 18, 0.96)) !important;
+    }
+    body.lux-theme-rose { background: #16050c !important; }
+    body.lux-theme-rose .studio-card, body.lux-theme-rose .ng-card, body.lux-theme-rose .royal-hero-card {
+      border-color: rgba(244, 114, 182, 0.38) !important;
+      background: linear-gradient(145deg, rgba(46, 12, 28, 0.94), rgba(24, 6, 15, 0.96)) !important;
+    }
+    body.lux-theme-sapphire { background: #040b1a !important; }
+    body.lux-theme-sapphire .studio-card, body.lux-theme-sapphire .ng-card, body.lux-theme-sapphire .royal-hero-card {
+      border-color: rgba(56, 189, 248, 0.38) !important;
+      background: linear-gradient(145deg, rgba(11, 25, 56, 0.94), rgba(6, 14, 34, 0.96)) !important;
+    }
+    body.lux-theme-champagne { background: #1c1712 !important; }
+    body.lux-theme-champagne .studio-card, body.lux-theme-champagne .ng-card, body.lux-theme-champagne .royal-hero-card {
+      border-color: rgba(251, 191, 36, 0.52) !important;
+      background: linear-gradient(145deg, rgba(42, 33, 22, 0.94), rgba(26, 20, 14, 0.96)) !important;
+    }
+
   </style>
 </head>
 <body class="bg-[#07080d] text-slate-100 min-h-screen">
@@ -7782,7 +7805,8 @@ const StudioViews = (() => {
     { id: 'bg-remover', title: 'BACKGROUND REMOVER', desc: 'Remove background and create cutouts', emoji: '✂️', cat: 'photo', bg: 'linear-gradient(140deg, #059669 0%, #10b981 52%, #2dd4bf 100%)' },
     { id: 'bg-generator', title: 'BACKGROUND STUDIO', desc: 'Create and apply creative backdrops', emoji: '🌄', cat: 'photo', bg: 'linear-gradient(140deg, #0284c7 0%, #2563eb 52%, #60a5fa 100%)' },
     { id: 'enhance', title: 'IMAGE ENHANCER', desc: 'Enhance, sharpen, denoise and prompt tools', emoji: '✨', cat: 'ai', bg: 'linear-gradient(140deg, #d97706 0%, #f59e0b 52%, #fb923c 100%)' },
-    { id: 'ai-copilot-2035', title: '2035 AI COPILOT HUB', desc: 'Voice/Text agent, 3D relight, client proofing & store', emoji: '🤖', cat: 'ai', bg: 'linear-gradient(135deg,#6366f1,#a855f7,#ec4899)' },
+    { id: 'luxury-vip-suite', title: 'ROYAL LUXURY VIP SUITE', desc: 'Themes, 3D intros, wax seal signature, flipbook & SFX', emoji: '👑', cat: 'ai', bg: 'linear-gradient(135deg,#b45309,#f59e0b,#78350f)' },
+      { id: 'ai-copilot-2035', title: '2035 AI COPILOT HUB', desc: 'Voice/Text agent, 3D relight, client proofing & store', emoji: '🤖', cat: 'ai', bg: 'linear-gradient(135deg,#6366f1,#a855f7,#ec4899)' },
       { id: 'broadcast-studio', title: 'BROADCAST & TELEPROMPTER', desc: 'Screen+Facecam recorder, teleprompter & stop-motion', emoji: '🎥', cat: 'video', bg: 'linear-gradient(135deg,#ef4444,#f97316,#eab308)' },
       { id: 'cinemagraph-color-lab', title: 'CINEMAGRAPH & COLOR AI', desc: 'Living photos & movie Steal-the-Look color transfer', emoji: '✨', cat: 'photo', bg: 'linear-gradient(135deg,#14b8a6,#06b6d4,#6366f1)' },
       { id: 'ecommerce-restore-hub', title: 'PRODUCT, RESTORE & PWA', desc: 'Amazon/Flipkart podiums, old photo restore & AI/PWA', emoji: '🛍️', cat: 'tools', bg: 'linear-gradient(135deg,#10b981,#059669,#0284c7)' },
@@ -10901,6 +10925,7 @@ const App = (() => {
       ['bg-remover', 'BG Remover', 'eraser'],
       ['bg-generator', 'BG Generator', 'image'],
       ['enhance', 'Enhance & Prompt', 'zap'],
+      ['luxury-vip-suite', 'Royal Luxury VIP Suite', 'crown'],
       ['ai-copilot-2035', '2035 AI Copilot Hub', 'bot'],
       ['broadcast-studio', 'Broadcast & Teleprompter', 'video'],
       ['cinemagraph-color-lab', 'Cinemagraph & Color AI', 'sparkles'],
@@ -10910,13 +10935,12 @@ const App = (() => {
       ['design-studio', 'Next-Gen Design Studio', 'layers'],
       ['photo-to-pdf', 'Photo to PDF (Unlimited)', 'file-text'],
       ['pro-tools', 'Pro+ Free Tools', 'layers'],
-      ['video-maker', 'Video Maker', 'clapperboard'],
       ['ai-movie-studio', 'AI Photo & Video Gen', 'sparkles'],
       ['ai-control-center', 'AI Control Center', 'cpu'],
       ['preset-library', 'Smart Presets (15)', 'sliders'],
       ['photo-frame', 'Photo Frame (6,048+)', 'frame'],
       ['frame-generator', 'AI Frame Generator', 'wand-2'],
-      ['video-editor', 'AI Video Editor', 'film'],
+      ['video-editor', 'Master Video Studio', 'film'],
       ['cinematic-video', 'Cinematic Video', 'clapperboard'],
       ['gallery', 'My Gallery', 'images'],
       ['projects', 'Projects', 'folder-kanban'],
@@ -10960,6 +10984,7 @@ const App = (() => {
       case 'dress-changer': main.innerHTML = StudioViews.renderDressChanger(state); break;
       case 'hairstyle': main.innerHTML = StudioViews.renderHairstyle(state); break;
       case 'enhance': main.innerHTML = StudioViews.renderEnhanceAndPrompt(state); break;
+      case 'luxury-vip-suite': main.innerHTML = '<div id="v7LuxuryRoot"></div>'; break;
       case 'ai-copilot-2035': main.innerHTML = '<div id="v6CopilotRoot"></div>'; break;
       case 'broadcast-studio': main.innerHTML = '<div id="v5BroadcastRoot"></div>'; break;
       case 'cinemagraph-color-lab': main.innerHTML = '<div id="v5CinemaColorRoot"></div>'; break;
@@ -18457,6 +18482,7 @@ window.MahaTouchTransform = (() => {
     { id: 'frame-generator', emoji: '🎨', title: 'Custom AI Frame Generator', sub: 'Design your own multi-photo frames' },
     { id: 'preset-library', emoji: '🎛️', title: 'Smart Preset Library', sub: '15 pro color grading categories' },
     { id: 'ai-movie-studio', emoji: '🎥', title: 'AI Photo & Video Generator', sub: '3D, Bollywood, Anime & AI movies' },
+    { id: 'luxury-vip-suite', emoji: '👑', title: 'Royal Luxury VIP Suite (Themes, 3D Intros, Signature, Flipbook & SFX)', sub: 'Luxury themes, 3D intro bumpers, gold wax seal signature, 3D flipbook album & foley SFX' },
     { id: 'ai-copilot-2035', emoji: '🤖', title: '2035 AI Studio Copilot, 3D Relight, Client Proofing & Store', sub: 'Voice/Text multi-tool agent, movable 3D light, watermark proofing & WebGPU/TWA' },
     { id: 'broadcast-studio', emoji: '🎥', title: 'Broadcast Screen+Facecam, Teleprompter & Stop-Motion', sub: 'PiP screen recorder, scrolling script prompter & onion-skin stop-motion' },
     { id: 'cinemagraph-color-lab', emoji: '✨', title: 'Living Photo (Cinemagraph) & Steal-the-Look Color Match', sub: 'Animate selected photo areas & extract movie color grading' },
@@ -24912,6 +24938,1004 @@ window.MahaTouchTransform = (() => {
   mo.observe(document.body, { childList: true, subtree: true });
   setInterval(syncV6, 800);
   syncV6();
+})();
+</script>
+
+
+<script>
+(() => {
+  function mountMasterVideoSwitcher() {
+    const main = document.getElementById('mainContent');
+    if (!main) return;
+    const isEditor = !!main.querySelector('#vproStudioHostVE');
+    const isMaker = !!main.querySelector('#vproStudioHostVM');
+    if (!isEditor && !isMaker) return;
+    if (main.querySelector('#masterVideoModeBar')) return;
+    const bar = document.createElement('div');
+    bar.id = 'masterVideoModeBar';
+    bar.className = 'mb-2 p-1.5 rounded-2xl bg-slate-950/90 border border-indigo-400/35 grid grid-cols-2 gap-1.5 text-xs shadow-lg';
+    bar.innerHTML = `
+      <button type="button" id="mvModeEditorBtn" class="py-2 px-3 rounded-xl font-extrabold transition ${isEditor ? 'bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white shadow' : 'text-slate-300 hover:bg-white/5'}">🎬 Timeline Video Editor</button>
+      <button type="button" id="mvModeMakerBtn" class="py-2 px-3 rounded-xl font-extrabold transition ${isMaker ? 'bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white shadow' : 'text-slate-300 hover:bg-white/5'}">✨ Photo → Video Reel Maker</button>
+    `;
+    const shell = main.querySelector('.video-split-shell');
+    if (shell) shell.prepend(bar);
+    bar.querySelector('#mvModeEditorBtn').onclick = () => { if (!isEditor && typeof App !== 'undefined' && App.navigate) App.navigate('video-editor'); };
+    bar.querySelector('#mvModeMakerBtn').onclick = () => { if (!isMaker && typeof App !== 'undefined' && App.navigate) App.navigate('video-maker'); };
+  }
+  const mo = new MutationObserver(() => requestAnimationFrame(mountMasterVideoSwitcher));
+  mo.observe(document.body, { childList: true, subtree: true });
+  setInterval(mountMasterVideoSwitcher, 600);
+  mountMasterVideoSwitcher();
+})();
+</script>
+
+
+<script>
+/* ============================================================================
+   MAHA AI STUDIO — ROYAL LUXURY VIP SUITE v7
+   1) Luxury Studio Theme Switcher (Obsidian Gold / Emerald / Rose Velvet /
+      Midnight Sapphire / Champagne Gold)
+   2) 3D Luxury Intro & Outro Bumper Video Generator (5s HD WebM Export)
+   3) VIP Handwritten Signature & 24K Gold Wax Seal Pen Studio
+   4) 3D Page-Flip Interactive Digital Wedding / Portfolio Album Exporter
+   5) Cinematic Foley & Luxury SFX Web Audio Soundboard (Preview + Timeline)
+   ============================================================================ */
+(() => {
+  const THEME_KEY = 'maha_luxury_theme_v7';
+  const SIG_KEY = 'maha_vip_signature_v7';
+  const toast = (msg, type = 'info') => {
+    if (typeof window.showToast === 'function') window.showToast(msg, type);
+  };
+
+  const lux = {
+    tab: 'intro', // intro | sig | album | sfx | theme
+    theme: localStorage.getItem(THEME_KEY) || 'obsidian',
+    // Intro bumper
+    introStyle: 'gold', // gold | velvet | diamond | wedding
+    introTitle: 'MAHA AI STUDIO',
+    introSub: 'ROYAL CINEMA PRODUCTIONS',
+    introLogo: null,
+    introRaf: null,
+    introT0: performance.now(),
+    // Signature
+    sigColor: '#fbbf24',
+    sigWidth: 5,
+    sigSeal: false,
+    sigInitials: 'AS',
+    // Flipbook Album
+    albumTitle: 'Royal Wedding Memories',
+    albumSub: 'Exclusive 3D Digital Photo Book • Maha AI STUDIO',
+    albumTheme: 'maroon',
+    albumPhotos: []
+  };
+
+  function applyLuxuryTheme(name) {
+    lux.theme = name || 'obsidian';
+    try { localStorage.setItem(THEME_KEY, lux.theme); } catch (_) {}
+    document.body.classList.remove('lux-theme-emerald', 'lux-theme-rose', 'lux-theme-sapphire', 'lux-theme-champagne');
+    if (lux.theme !== 'obsidian') document.body.classList.add('lux-theme-' + lux.theme);
+  }
+  applyLuxuryTheme(lux.theme);
+
+  /* --- 2. 3D Luxury Intro & Outro Bumper --- */
+  function startIntroLoop() {
+    cancelAnimationFrame(lux.introRaf);
+    const tick = () => {
+      const c = document.getElementById('v7IntroCanvas');
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      const w = c.width, h = c.height;
+      const t = ((performance.now() - lux.introT0) / 1000) % 5;
+      const prog = Math.min(1, t / 2.2);
+      const ease = 1 - Math.pow(1 - prog, 3);
+
+      // Background
+      const palettes = {
+        gold: ['#07070b', '#2b1804', '#fbbf24'],
+        velvet: ['#120309', '#4c0519', '#f472b6'],
+        diamond: ['#020617', '#1e293b', '#38bdf8'],
+        wedding: ['#2e040e', '#7f1d1d', '#fde047']
+      };
+      const [c1, c2, acc] = palettes[lux.introStyle] || palettes.gold;
+      const gr = ctx.createRadialGradient(w / 2, h / 2, 20, w / 2, h / 2, w * 0.72);
+      gr.addColorStop(0, c2); gr.addColorStop(1, c1);
+      ctx.fillStyle = gr; ctx.fillRect(0, 0, w, h);
+
+      // Luxury golden dust particles
+      for (let i = 0; i < 42; i++) {
+        const px = ((i * 97 + t * (28 + (i % 6) * 10)) % w);
+        const py = ((i * 61 - t * (18 + (i % 4) * 8)) % h + h) % h;
+        const a = 0.25 + 0.65 * Math.abs(Math.sin(t * 2.5 + i));
+        ctx.fillStyle = acc; ctx.globalAlpha = a;
+        ctx.beginPath(); ctx.arc(px, py, 1.5 + (i % 3), 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      // Sweeping metallic light beam
+      const bx = (t / 5) * (w + 300) - 150;
+      const beam = ctx.createLinearGradient(bx - 120, 0, bx + 120, h);
+      beam.addColorStop(0, 'rgba(255,255,255,0)');
+      beam.addColorStop(0.5, 'rgba(255,255,255,0.16)');
+      beam.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = beam; ctx.fillRect(0, 0, w, h);
+
+      // Royal border frame reveal
+      ctx.save();
+      ctx.strokeStyle = acc; ctx.lineWidth = 4; ctx.globalAlpha = ease * 0.85;
+      const pad = 28 + (1 - ease) * 40;
+      ctx.strokeRect(pad, pad, w - pad * 2, h - pad * 2);
+      ctx.restore();
+
+      // Optional Logo Reveal
+      ctx.save();
+      ctx.translate(w / 2, h / 2);
+      const sc = 0.72 + ease * 0.28;
+      ctx.scale(sc, sc);
+      ctx.globalAlpha = ease;
+      if (lux.introLogo) {
+        const ls = Math.min(140 / lux.introLogo.width, 140 / lux.introLogo.height);
+        ctx.drawImage(lux.introLogo, -(lux.introLogo.width * ls) / 2, -165, lux.introLogo.width * ls, lux.introLogo.height * ls);
+      }
+      // 3D Extruded Luxury Title
+      ctx.font = '900 72px Georgia, serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (let z = 6; z >= 1; z--) {
+        ctx.fillStyle = 'rgba(0,0,0,0.45)';
+        ctx.fillText(lux.introTitle, z * 1.5, z * 1.5);
+      }
+      const tg = ctx.createLinearGradient(0, -40, 0, 40);
+      tg.addColorStop(0, '#ffffff'); tg.addColorStop(0.5, acc); tg.addColorStop(1, '#ffffff');
+      ctx.fillStyle = tg; ctx.shadowColor = acc; ctx.shadowBlur = 24;
+      ctx.fillText(lux.introTitle, 0, 0);
+
+      // Subtitle with animated letter reveal
+      ctx.shadowBlur = 0; ctx.fillStyle = '#f8fafc';
+      ctx.font = '700 22px system-ui, sans-serif';
+      ctx.fillText(lux.introSub, 0, 62);
+      ctx.restore();
+
+      lux.introRaf = requestAnimationFrame(tick);
+    };
+    lux.introRaf = requestAnimationFrame(tick);
+  }
+
+  function exportIntroVideo() {
+    const c = document.getElementById('v7IntroCanvas');
+    if (!c || typeof MediaRecorder === 'undefined') { toast('Video recording not supported in this browser.', 'error'); return; }
+    lux.introT0 = performance.now();
+    const rec = new MediaRecorder(c.captureStream(30), { mimeType: 'video/webm' });
+    const chunks = [];
+    rec.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+    rec.onstop = async () => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `MahaAI_LuxuryIntro_${Date.now()}.webm`; a.click();
+      if (typeof StudioStorage !== 'undefined' && StudioStorage.saveMedia) {
+        try { await StudioStorage.saveMedia({ name: `LuxuryIntro_${Date.now()}.webm`, type: 'video', blob, mimeType: 'video/webm', album: 'Luxury Intros' }); } catch (_) {}
+      }
+      toast('🎬 5s Luxury Intro Video exported & saved to My Gallery!', 'success');
+    };
+    rec.start(); toast('⏺ Recording 5s Luxury Intro...', 'info');
+    setTimeout(() => { if (rec.state === 'recording') rec.stop(); }, 5000);
+  }
+
+  /* --- 3. VIP Handwritten Signature & Gold Wax Seal --- */
+  function bindSignaturePad() {
+    const c = document.getElementById('v7SigCanvas');
+    if (!c || c._sigBound) return;
+    c._sigBound = true;
+    const ctx = c.getContext('2d');
+    let drawing = false, last = null;
+    const pt = (e) => {
+      const r = c.getBoundingClientRect();
+      const p = e.touches ? e.touches[0] : e;
+      return { x: ((p.clientX - r.left) / r.width) * c.width, y: ((p.clientY - r.top) / r.height) * c.height };
+    };
+    const start = (e) => { e.preventDefault(); drawing = true; last = pt(e); };
+    const move = (e) => {
+      if (!drawing || !last) return;
+      e.preventDefault();
+      const cur = pt(e);
+      ctx.save();
+      ctx.strokeStyle = lux.sigColor;
+      ctx.lineWidth = lux.sigWidth;
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.shadowColor = lux.sigColor; ctx.shadowBlur = 4;
+      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(cur.x, cur.y); ctx.stroke();
+      ctx.restore();
+      last = cur;
+    };
+    const end = () => { drawing = false; last = null; };
+    c.addEventListener('mousedown', start); window.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
+    c.addEventListener('touchstart', start, { passive: false }); c.addEventListener('touchmove', move, { passive: false }); c.addEventListener('touchend', end);
+  }
+
+  function drawWaxSealOnSigCanvas() {
+    const c = document.getElementById('v7SigCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const cx = c.width - 96, cy = c.height / 2, r = 64;
+    ctx.save();
+    const g = ctx.createRadialGradient(cx - 16, cy - 16, 8, cx, cy, r);
+    g.addColorStop(0, '#fde047'); g.addColorStop(0.55, '#d97706'); g.addColorStop(1, '#78350f');
+    ctx.fillStyle = g; ctx.shadowColor = 'rgba(0,0,0,0.65)'; ctx.shadowBlur = 16;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#fef08a'; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.arc(cx, cy, r - 10, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = '#451a03'; ctx.font = '900 38px Georgia, serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText((lux.sigInitials || 'AS').slice(0, 3).toUpperCase(), cx, cy);
+    ctx.restore();
+    toast('👑 Royal 24K Gold Wax Seal stamped!', 'success');
+  }
+
+  /* --- 4. 3D Page-Flip Digital Wedding / Portfolio Album Exporter --- */
+  function export3DFlipbookAlbum() {
+    if (lux.albumPhotos.length < 2) { toast('Kam se kam 2 photos upload karein 3D Flipbook ke liye!', 'error'); return; }
+    const bgMap = { maroon: '#2b0612', obsidian: '#07080d', ivory: '#1f1a14' };
+    const bg = bgMap[lux.albumTheme] || '#2b0612';
+    const pagesJson = JSON.stringify(lux.albumPhotos.map((p) => p.dataUrl));
+    const doc = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${lux.albumTitle}</title><style>body{margin:0;background:${bg};color:#fde68a;font-family:Georgia,serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:16px;box-sizing:border-box;} .book{width:min(92vw,520px);aspect-ratio:4/5;perspective:1600px;position:relative;} .page{position:absolute;inset:0;border-radius:16px;overflow:hidden;border:3px solid #fbbf24;box-shadow:0 20px 50px rgba(0,0,0,0.7);background:#09090b;transform-origin:left center;transition:transform 0.75s cubic-bezier(.4,0,.2,1);backface-visibility:hidden;} .page img{width:100%;height:100%;object-fit:cover;} .page.flipped{transform:rotateY(-180deg);} .ctrl{margin-top:18px;display:flex;gap:12px;} button{padding:10px 20px;border-radius:999px;border:1px solid #fbbf24;background:rgba(251,191,36,0.18);color:#fde68a;font-weight:700;cursor:pointer;}</style></head><body><h2 style="margin:0 0 4px;">👑 ${lux.albumTitle}</h2><div style="font-size:12px;color:#cbd5e1;margin-bottom:14px;">${lux.albumSub}</div><div class="book" id="bk"></div><div class="ctrl"><button onclick="prev()">◀ Prev Page</button><span id="pg">1</span><button onclick="next()">Next Page ▶</button></div><script>const imgs=${pagesJson};let idx=0;const bk=document.getElementById('bk');imgs.forEach((src,i)=>{const d=document.createElement('div');d.className='page';d.style.zIndex=imgs.length-i;d.innerHTML='<img src="'+src+'"/>';bk.appendChild(d);});function upd(){document.querySelectorAll('.page').forEach((p,i)=>p.classList.toggle('flipped',i<idx));document.getElementById('pg').textContent=(idx+1)+' / '+imgs.length;}function next(){if(idx<imgs.length-1){idx++;upd();}}function prev(){if(idx>0){idx--;upd();}}upd();<\/script></body></html>`;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([doc], { type: 'text/html' }));
+    a.download = `Royal_3D_Flipbook_${Date.now()}.html`;
+    a.click();
+    toast('📖 3D Page-Flip Digital Album exported! WhatsApp par clients ko bhejein.', 'success');
+  }
+
+  /* --- 5. Cinematic Foley & Luxury SFX Soundboard (Offline Web Audio Synth) --- */
+  async function synthSfxWav(kind, attachToVideo = false) {
+    try {
+      const sr = 44100;
+      const dur = kind === 'shutter' ? 0.25 : kind === 'heartbeat' ? 1.4 : 1.8;
+      const off = new OfflineAudioContext(1, Math.floor(sr * dur), sr);
+      const t0 = 0;
+
+      if (kind === 'whoosh') {
+        const buf = off.createBuffer(1, sr * dur, sr);
+        const ch = buf.getChannelData(0);
+        for (let i = 0; i < ch.length; i++) ch[i] = (Math.random() * 2 - 1) * Math.sin((i / ch.length) * Math.PI);
+        const src = off.createBufferSource(); src.buffer = buf;
+        const flt = off.createBiquadFilter(); flt.type = 'bandpass';
+        flt.frequency.setValueAtTime(180, t0); flt.frequency.exponentialRampToValueAtTime(2200, dur * 0.5); flt.frequency.exponentialRampToValueAtTime(200, dur);
+        src.connect(flt); flt.connect(off.destination); src.start(0);
+      } else if (kind === 'boom') {
+        const osc = off.createOscillator(); osc.type = 'sine';
+        osc.frequency.setValueAtTime(140, 0); osc.frequency.exponentialRampToValueAtTime(34, dur);
+        const g = off.createGain(); g.gain.setValueAtTime(0.95, 0); g.gain.exponentialRampToValueAtTime(0.001, dur);
+        osc.connect(g); g.connect(off.destination); osc.start(0); osc.stop(dur);
+      } else if (kind === 'shutter') {
+        const buf = off.createBuffer(1, sr * dur, sr);
+        const ch = buf.getChannelData(0);
+        for (let i = 0; i < ch.length; i++) ch[i] = (Math.random() * 2 - 1) * Math.exp(-i / (sr * 0.03));
+        const src = off.createBufferSource(); src.buffer = buf; src.connect(off.destination); src.start(0);
+      } else if (kind === 'sparkle') {
+        [880, 1174, 1396, 1760, 2349].forEach((freq, idx) => {
+          const osc = off.createOscillator(); osc.type = 'triangle'; osc.frequency.value = freq;
+          const g = off.createGain();
+          g.gain.setValueAtTime(0.001, idx * 0.14); g.gain.linearRampToValueAtTime(0.28, idx * 0.14 + 0.04); g.gain.exponentialRampToValueAtTime(0.001, dur);
+          osc.connect(g); g.connect(off.destination); osc.start(idx * 0.14); osc.stop(dur);
+        });
+      } else if (kind === 'heartbeat') {
+        [0, 0.35].forEach((st) => {
+          const osc = off.createOscillator(); osc.type = 'sine'; osc.frequency.setValueAtTime(72, st); osc.frequency.exponentialRampToValueAtTime(36, st + 0.22);
+          const g = off.createGain(); g.gain.setValueAtTime(0.85, st); g.gain.exponentialRampToValueAtTime(0.001, st + 0.25);
+          osc.connect(g); g.connect(off.destination); osc.start(st); osc.stop(st + 0.26);
+        });
+      } else {
+        const buf = off.createBuffer(1, sr * dur, sr);
+        const ch = buf.getChannelData(0);
+        for (let i = 0; i < ch.length; i++) ch[i] = (Math.random() * 2 - 1) * 0.45 * Math.sin((i / ch.length) * Math.PI);
+        const src = off.createBufferSource(); src.buffer = buf; src.connect(off.destination); src.start(0);
+      }
+
+      const rendered = await off.startRendering();
+      const ch = rendered.getChannelData(0);
+      const len = ch.length * 2;
+      const wav = new ArrayBuffer(44 + len);
+      const dv = new DataView(wav);
+      const ws = (o, s) => { for (let i = 0; i < s.length; i++) dv.setUint8(o + i, s.charCodeAt(i)); };
+      ws(0, 'RIFF'); dv.setUint32(4, 36 + len, true); ws(8, 'WAVE'); ws(12, 'fmt ');
+      dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+      dv.setUint32(24, sr, true); dv.setUint32(28, sr * 2, true); dv.setUint16(32, 2, true); dv.setUint16(34, 16, true);
+      ws(36, 'data'); dv.setUint32(40, len, true);
+      for (let i = 0; i < ch.length; i++) dv.setInt16(44 + i * 2, Math.max(-1, Math.min(1, ch[i])) * 32767, true);
+      const blob = new Blob([wav], { type: 'audio/wav' });
+
+      if (attachToVideo) {
+        const file = new File([blob], `MahaSFX_${kind}.wav`, { type: 'audio/wav' });
+        if (typeof VideoStudioEngine !== 'undefined' && VideoStudioEngine.setAudioTrack) {
+          await VideoStudioEngine.setAudioTrack(file);
+          toast(`🔊 ${kind.toUpperCase()} SFX added to Master Video Studio audio track!`, 'success');
+        }
+      } else {
+        const aud = new Audio(URL.createObjectURL(blob));
+        aud.play().catch(() => {});
+      }
+    } catch (err) { toast('SFX error: ' + (err.message || err), 'error'); }
+  }
+
+  function renderLuxuryVIPUI() {
+    const root = document.getElementById('v7LuxuryRoot');
+    if (!root) return;
+    root.innerHTML = `
+      <div class="space-y-4 fade-in">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-xl font-extrabold text-amber-300">👑 Royal Luxury VIP Suite</h2>
+            <p class="text-xs text-slate-300">Luxury App Themes, 3D Cinematic Intro Bumpers, 24K Gold Wax Seal Signature, 3D Page-Flip Digital Albums &amp; Foley SFX Soundboard.</p>
+          </div>
+          <div class="flex flex-wrap gap-1">
+            ${[['obsidian','🖤 Obsidian'],['emerald','💚 Emerald'],['rose','🌹 Rose'],['sapphire','💎 Sapphire'],['champagne','🥂 Champagne']].map(([k,lbl]) => `
+              <button type="button" data-v7-theme="${k}" class="px-2.5 py-1 rounded-full text-[11px] font-bold border ${lux.theme===k?'bg-amber-500 text-black border-amber-200':'bg-white/5 text-slate-200 border-white/15'}">${lbl}</button>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl text-xs">
+          <button type="button" data-v7-tab="intro" class="ng-tab-btn py-2 rounded-xl font-bold ${lux.tab==='intro'?'active':'text-slate-300'}">🎬 3D Luxury Intros</button>
+          <button type="button" data-v7-tab="sig" class="ng-tab-btn py-2 rounded-xl font-bold ${lux.tab==='sig'?'active':'text-slate-300'}">✍️ Signature &amp; Wax Seal</button>
+          <button type="button" data-v7-tab="album" class="ng-tab-btn py-2 rounded-xl font-bold ${lux.tab==='album'?'active':'text-slate-300'}">📖 3D Flipbook Album</button>
+          <button type="button" data-v7-tab="sfx" class="ng-tab-btn py-2 rounded-xl font-bold ${lux.tab==='sfx'?'active':'text-slate-300'}">🔊 Foley SFX Board</button>
+        </div>
+
+        ${lux.tab === 'intro' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 text-xs">
+            <div class="lg:col-span-7 ng-card p-3">
+              <canvas id="v7IntroCanvas" width="960" height="540" class="w-full aspect-video rounded-xl bg-black border border-amber-400/30"></canvas>
+            </div>
+            <div class="lg:col-span-5 ng-card p-3.5 space-y-2.5">
+              <div class="grid grid-cols-2 gap-1.5">
+                ${[['gold','👑 Gold Dust'],['velvet','🌹 Velvet Rose'],['diamond','💎 Diamond'],['wedding','💍 Royal Crest']].map(([k,lbl]) => `
+                  <button type="button" data-v7-istyle="${k}" class="py-2 rounded-xl font-bold border ${lux.introStyle===k?'bg-amber-500 text-black border-amber-200':'bg-white/5 text-slate-200 border-white/10'}">${lbl}</button>
+                `).join('')}
+              </div>
+              <input id="v7IntroTitle" type="text" value="${lux.introTitle}" placeholder="Channel / Studio Name" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <input id="v7IntroSub" type="text" value="${lux.introSub}" placeholder="Subtitle / Tagline" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <label class="btn-secondary w-full py-2 rounded-xl font-semibold text-center block cursor-pointer">🏷️ Optional Logo Overlay<input id="v7IntroLogoInp" type="file" accept="image/*" class="hidden"/></label>
+              <button type="button" id="v7ExportIntroBtn" class="btn-primary w-full py-2.5 rounded-xl font-extrabold">🎬 Export 5s HD Intro Video</button>
+            </div>
+          </div>
+        ` : lux.tab === 'sig' ? `
+          <div class="ng-card p-4 space-y-3 text-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <label class="flex items-center gap-1.5">Ink <input id="v7SigCol" type="color" value="${lux.sigColor}" class="w-8 h-7 rounded"/></label>
+                <label class="flex items-center gap-1.5">Pen <input id="v7SigW" type="range" min="2" max="14" value="${lux.sigWidth}" class="w-24 studio-slider"/></label>
+                <input id="v7SigInit" type="text" value="${lux.sigInitials}" maxlength="3" placeholder="Initials" class="w-16 bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white text-center font-bold"/>
+                <button type="button" id="v7AddSealBtn" class="px-3 py-1.5 rounded-xl font-bold bg-amber-500 text-black">👑 Add Gold Wax Seal</button>
+              </div>
+              <div class="flex gap-2">
+                <button type="button" id="v7SigClearBtn" class="btn-secondary px-3 py-1.5 rounded-xl">Clear</button>
+                <button type="button" id="v7SigDownBtn" class="btn-primary px-3 py-1.5 rounded-xl font-bold">⬇ Save Transparent PNG</button>
+              </div>
+            </div>
+            <canvas id="v7SigCanvas" width="840" height="280" class="w-full rounded-2xl bg-slate-950/90 border border-amber-400/35 cursor-crosshair touch-none"></canvas>
+          </div>
+        ` : lux.tab === 'album' ? `
+          <div class="ng-card p-4 space-y-3 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <input id="v7AlbTitle" type="text" value="${lux.albumTitle}" placeholder="Album Title" class="bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <input id="v7AlbSub" type="text" value="${lux.albumSub}" placeholder="Subtitle" class="bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white"/>
+              <select id="v7AlbTheme" class="bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-white">
+                <option value="maroon" ${lux.albumTheme==='maroon'?'selected':''}>Royal Maroon &amp; Gold</option>
+                <option value="obsidian" ${lux.albumTheme==='obsidian'?'selected':''}>Obsidian Luxury</option>
+                <option value="ivory" ${lux.albumTheme==='ivory'?'selected':''}>Champagne Ivory</option>
+              </select>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <label class="btn-secondary px-4 py-2 rounded-xl font-bold cursor-pointer">📂 Select 2–20 Album Photos (${lux.albumPhotos.length} loaded)<input id="v7AlbFilesInp" type="file" accept="image/*" multiple class="hidden"/></label>
+              <button type="button" id="v7AlbExportBtn" class="btn-primary px-4 py-2 rounded-xl font-extrabold">📖 Export 3D Page-Flip Album (.html)</button>
+            </div>
+          </div>
+        ` : `
+          <div class="ng-card p-4 space-y-3 text-xs">
+            <div class="font-bold text-amber-200">Tap ▶ to preview live studio SFX, or "+ Video Track" to send straight into Master Video Studio!</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+              ${[
+                ['whoosh','🌪️ Cinematic Whoosh','Smooth transition swoosh'],
+                ['boom','💥 Sub-Bass Drop Boom','Dramatic trailer impact'],
+                ['shutter','📸 DSLR Camera Shutter','Crisp mechanical click'],
+                ['sparkle','✨ 24K Gold Sparkle Chime','Luxury magic reveal'],
+                ['heartbeat','💓 Cinematic Heartbeat','Emotional suspense thump'],
+                ['applause','👏 Studio Swell / Ambience','Celebration crowd wash']
+              ].map(([k,title,sub]) => `
+                <div class="p-3 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                  <div class="font-extrabold text-white">${title}</div>
+                  <div class="text-[10.5px] text-slate-400">${sub}</div>
+                  <div class="flex gap-1.5">
+                    <button type="button" data-v7-sfx-play="${k}" class="btn-secondary flex-1 py-1.5 rounded-lg font-bold">▶ Preview</button>
+                    <button type="button" data-v7-sfx-add="${k}" class="btn-primary flex-1 py-1.5 rounded-lg font-bold">+ Video Track</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `}
+      </div>
+    `;
+    if (lux.tab === 'intro') startIntroLoop();
+    if (lux.tab === 'sig') bindSignaturePad();
+  }
+
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+    const th = t.closest('[data-v7-theme]');
+    if (th) { applyLuxuryTheme(th.getAttribute('data-v7-theme')); renderLuxuryVIPUI(); toast('👑 Luxury Theme Applied!', 'success'); return; }
+    const tb = t.closest('[data-v7-tab]');
+    if (tb) { lux.tab = tb.getAttribute('data-v7-tab'); renderLuxuryVIPUI(); return; }
+    const is = t.closest('[data-v7-istyle]');
+    if (is) { lux.introStyle = is.getAttribute('data-v7-istyle'); lux.introT0 = performance.now(); renderLuxuryVIPUI(); return; }
+    if (t.closest('#v7ExportIntroBtn')) { exportIntroVideo(); return; }
+    if (t.closest('#v7AddSealBtn')) { drawWaxSealOnSigCanvas(); return; }
+    if (t.closest('#v7SigClearBtn')) { const c = document.getElementById('v7SigCanvas'); if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height); return; }
+    if (t.closest('#v7SigDownBtn')) {
+      const c = document.getElementById('v7SigCanvas');
+      if (c) {
+        const url = c.toDataURL('image/png');
+        try { localStorage.setItem(SIG_KEY, url); } catch (_) {}
+        const a = document.createElement('a'); a.download = `VIP_Signature_${Date.now()}.png`; a.href = url; a.click();
+        toast('✍️ Transparent VIP Signature saved!', 'success');
+      }
+      return;
+    }
+    if (t.closest('#v7AlbExportBtn')) { export3DFlipbookAlbum(); return; }
+    const sp = t.closest('[data-v7-sfx-play]');
+    if (sp) { synthSfxWav(sp.getAttribute('data-v7-sfx-play'), false); return; }
+    const sa = t.closest('[data-v7-sfx-add]');
+    if (sa) { synthSfxWav(sa.getAttribute('data-v7-sfx-add'), true); return; }
+  });
+
+  document.addEventListener('input', (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 'v7IntroTitle') lux.introTitle = el.value;
+    if (el.id === 'v7IntroSub') lux.introSub = el.value;
+    if (el.id === 'v7SigCol') lux.sigColor = el.value;
+    if (el.id === 'v7SigW') lux.sigWidth = Number(el.value);
+    if (el.id === 'v7SigInit') lux.sigInitials = el.value;
+    if (el.id === 'v7AlbTitle') lux.albumTitle = el.value;
+    if (el.id === 'v7AlbSub') lux.albumSub = el.value;
+  });
+
+  document.addEventListener('change', async (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 'v7AlbTheme') lux.albumTheme = el.value;
+    if (el.id === 'v7IntroLogoInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => { lux.introLogo = im; }; im.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'v7AlbFilesInp' && el.files && el.files.length) {
+      lux.albumPhotos = [];
+      for (const f of Array.from(el.files).slice(0, 20)) {
+        const dataUrl = await new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); });
+        lux.albumPhotos.push({ name: f.name, dataUrl });
+      }
+      renderLuxuryVIPUI();
+      toast(`📖 ${lux.albumPhotos.length} photos loaded into 3D Flipbook!`, 'success');
+      el.value = '';
+    }
+  });
+
+  function syncV7() {
+    const r = document.getElementById('v7LuxuryRoot');
+    if (r && !r.dataset.v7m) { r.dataset.v7m = '1'; renderLuxuryVIPUI(); }
+  }
+  const mo = new MutationObserver(() => requestAnimationFrame(syncV7));
+  mo.observe(document.body, { childList: true, subtree: true });
+  setInterval(syncV7, 800);
+  syncV7();
+})();
+</script>
+
+
+<script>
+/* ============================================================================
+   MAHA AI STUDIO — ROYAL LUXURY VIP EXTENSION PACK v8
+   Mounts 5 Ultra-Luxury Tabs seamlessly inside Royal Luxury VIP Suite:
+   1) Luxury Client Quotation & GST Invoice Generator (Black & Gold PNG / Print)
+   2) Vogue Editorial Cover, Leica 35mm Film Contact Sheet & Polaroid Wall
+   3) VIP 4-Digit PIN-Locked Private Photo Vault
+   4) Hollywood 2.39:1 Cinema Scope, Anamorphic Lens Flares & 35mm Film-Burn
+   5) Luxury Shoot Moodboard & Auto Color-Story Palette Builder
+   ============================================================================ */
+(() => {
+  const VAULT_PIN_KEY = 'maha_vip_vault_pin_v8';
+  const VAULT_ITEMS_KEY = 'maha_vip_vault_items_v8';
+  const toast = (msg, type = 'info') => {
+    if (typeof window.showToast === 'function') window.showToast(msg, type);
+  };
+
+  const v8 = {
+    activePanel: null, // null | invoice | editorial | vault | anamorphic | moodboard
+    // 1. Invoice
+    invStudio: 'Maha AI STUDIO Productions',
+    invClient: 'Royal Wedding Client',
+    invItem1: 'Candid Photo + 4K Cinema Video', invPrice1: 45000,
+    invItem2: 'Drone Aerial + 3D Album Flipbook', invPrice2: 18000,
+    invItem3: 'Luxury Color Grading & Same-Day Reel', invPrice3: 12000,
+    invGst: 18,
+    // 2. Editorial
+    edMode: 'vogue', // vogue | film35 | polaroid
+    edTitle: 'MAHA VOGUE',
+    edHeadline: 'THE ROYAL EDITION • 2035',
+    edExif: 'LEICA M11 • 50mm f/1.4 • ISO 200 • 1/500s',
+    edImgs: [],
+    // 3. Vault
+    vaultUnlocked: false,
+    vaultPinInput: '',
+    // 4. Anamorphic
+    anaImg: null,
+    anaFlare: 'gold', // gold | blue | sunset
+    anaLeak: 45,
+    anaSub: 'A ROYAL CINEMA ORIGINAL FILM',
+    // 5. Moodboard
+    mbTitle: 'ROYAL BRIDAL COLOR STORY',
+    mbSub: 'Luxury Shoot Direction & Aesthetic Palette',
+    mbImgs: [],
+    mbSwatches: ['#0f172a', '#78350f', '#fbbf24', '#991b1b', '#f8fafc', '#6366f1']
+  };
+
+  /* --- 1. Luxury Black & Gold Invoice Canvas --- */
+  function renderInvoiceCanvas() {
+    const c = document.getElementById('v8InvCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const w = c.width, h = c.height;
+    const gr = ctx.createLinearGradient(0, 0, w, h);
+    gr.addColorStop(0, '#09090b'); gr.addColorStop(1, '#1c150c');
+    ctx.fillStyle = gr; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 6; ctx.strokeRect(22, 22, w - 44, h - 44);
+
+    ctx.fillStyle = '#fbbf24'; ctx.font = '900 34px Georgia, serif'; ctx.textAlign = 'left';
+    ctx.fillText('👑 ' + v8.invStudio, 52, 86);
+    ctx.fillStyle = '#cbd5e1'; ctx.font = '600 16px system-ui';
+    ctx.fillText('OFFICIAL STUDIO QUOTATION & INVOICE', 52, 114);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#fde68a';
+    ctx.fillText('Date: ' + new Date().toLocaleDateString(), w - 52, 86);
+    ctx.fillStyle = '#94a3b8'; ctx.fillText('Client: ' + v8.invClient, w - 52, 114);
+
+    // Table Header
+    ctx.textAlign = 'left';
+    ctx.fillStyle = 'rgba(251,191,36,0.16)'; ctx.fillRect(48, 150, w - 96, 42);
+    ctx.fillStyle = '#fde68a'; ctx.font = '800 17px system-ui';
+    ctx.fillText('SERVICE / DELIVERABLE', 64, 177);
+    ctx.textAlign = 'right'; ctx.fillText('AMOUNT (₹)', w - 64, 177);
+
+    const rows = [
+      [v8.invItem1, Number(v8.invPrice1) || 0],
+      [v8.invItem2, Number(v8.invPrice2) || 0],
+      [v8.invItem3, Number(v8.invPrice3) || 0]
+    ];
+    let y = 228;
+    rows.forEach(([desc, amt]) => {
+      ctx.textAlign = 'left'; ctx.fillStyle = '#f8fafc'; ctx.font = '600 18px system-ui';
+      ctx.fillText(desc, 64, y);
+      ctx.textAlign = 'right'; ctx.fillStyle = '#fde68a'; ctx.font = '700 18px monospace';
+      ctx.fillText('₹' + amt.toLocaleString('en-IN'), w - 64, y);
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(48, y + 18); ctx.lineTo(w - 48, y + 18); ctx.stroke();
+      y += 56;
+    });
+
+    const sub = rows.reduce((a, b) => a + b[1], 0);
+    const gst = Math.round(sub * (Number(v8.invGst) || 0) / 100);
+    const total = sub + gst;
+
+    y += 20;
+    ctx.textAlign = 'right'; ctx.fillStyle = '#cbd5e1'; ctx.font = '600 18px system-ui';
+    ctx.fillText(`Subtotal: ₹${sub.toLocaleString('en-IN')}`, w - 64, y);
+    ctx.fillText(`GST (${v8.invGst}%): ₹${gst.toLocaleString('en-IN')}`, w - 64, y + 32);
+    ctx.fillStyle = '#fbbf24'; ctx.font = '900 28px Georgia, serif';
+    ctx.fillText(`GRAND TOTAL: ₹${total.toLocaleString('en-IN')}`, w - 64, y + 78);
+
+    // Stamp Saved VIP Signature if available
+    const sigUrl = localStorage.getItem('maha_vip_signature_v7');
+    if (sigUrl) {
+      const im = new Image();
+      im.onload = () => { ctx.drawImage(im, 52, h - 165, 220, 74); };
+      im.src = sigUrl;
+    }
+    ctx.textAlign = 'left'; ctx.fillStyle = '#94a3b8'; ctx.font = '600 14px system-ui';
+    ctx.fillText('Authorized Signature & 24K Studio Seal', 52, h - 68);
+  }
+
+  /* --- 2. Editorial Magazine / 35mm Film Strip / Polaroid Wall --- */
+  function renderEditorialCanvas() {
+    const c = document.getElementById('v8EdCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const w = c.width, h = c.height;
+    ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, w, h);
+
+    if (v8.edMode === 'vogue') {
+      const im = v8.edImgs[0];
+      if (im) {
+        const sc = Math.max(w / im.width, h / im.height);
+        ctx.drawImage(im, (w - im.width * sc) / 2, (h - im.height * sc) / 2, im.width * sc, im.height * sc);
+      } else {
+        const g = ctx.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#1e1b4b'); g.addColorStop(1, '#4c0519');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+      }
+      const vg = ctx.createLinearGradient(0, 0, 0, h);
+      vg.addColorStop(0, 'rgba(0,0,0,0.55)'); vg.addColorStop(0.28, 'rgba(0,0,0,0)'); vg.addColorStop(0.72, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.75)');
+      ctx.fillStyle = vg; ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = '#ffffff'; ctx.font = '900 108px Georgia, serif'; ctx.textAlign = 'center';
+      ctx.fillText(v8.edTitle, w / 2, 128);
+      ctx.fillStyle = '#fbbf24'; ctx.font = '800 26px system-ui'; ctx.textAlign = 'left';
+      ctx.fillText(v8.edHeadline, 42, h - 108);
+      ctx.fillStyle = '#f8fafc'; ctx.font = '600 18px system-ui';
+      ctx.fillText('EXCLUSIVE COLLECTOR ISSUE • MAHA AI STUDIO', 42, h - 72);
+      ctx.strokeStyle = 'rgba(255,255,255,0.65)'; ctx.lineWidth = 4; ctx.strokeRect(18, 18, w - 36, h - 36);
+    } else if (v8.edMode === 'film35') {
+      ctx.fillStyle = '#111111'; ctx.fillRect(0, 0, w, h);
+      // Sprocket holes top & bottom
+      ctx.fillStyle = '#e2e8f0';
+      for (let x = 22; x < w - 20; x += 48) {
+        ctx.beginPath(); ctx.roundRect(x, 18, 24, 34, 5); ctx.fill();
+        ctx.beginPath(); ctx.roundRect(x, h - 52, 24, 34, 5); ctx.fill();
+      }
+      ctx.fillStyle = '#f59e0b'; ctx.font = '700 16px monospace'; ctx.textAlign = 'left';
+      ctx.fillText('KODAK PORTRA 400 • 35MM • ' + v8.edExif, 24, 76);
+      const cols = 2, rows = 2, pad = 26;
+      const cw = (w - pad * 3) / 2, ch = (h - 170 - pad * 2) / 2;
+      for (let i = 0; i < 4; i++) {
+        const rx = pad + (i % 2) * (cw + pad), ry = 92 + Math.floor(i / 2) * (ch + pad);
+        ctx.fillStyle = '#1e293b'; ctx.fillRect(rx, ry, cw, ch);
+        const im = v8.edImgs[i % Math.max(1, v8.edImgs.length)];
+        if (im) {
+          ctx.save(); ctx.beginPath(); ctx.rect(rx, ry, cw, ch); ctx.clip();
+          const sc = Math.max(cw / im.width, ch / im.height);
+          ctx.drawImage(im, rx + (cw - im.width * sc) / 2, ry + (ch - im.height * sc) / 2, im.width * sc, im.height * sc);
+          ctx.restore();
+        }
+        ctx.fillStyle = '#fbbf24'; ctx.font = '700 14px monospace'; ctx.fillText(`35A • 0${i + 1}`, rx + 8, ry + ch - 10);
+      }
+    } else {
+      const g = ctx.createRadialGradient(w / 2, h / 2, 40, w / 2, h / 2, w * 0.75);
+      g.addColorStop(0, '#2e1065'); g.addColorStop(1, '#07080d');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+      const spots = [[-130, -140, -0.11], [140, -110, 0.09], [-110, 150, 0.07], [135, 160, -0.08]];
+      spots.forEach(([ox, oy, ang], idx) => {
+        ctx.save(); ctx.translate(w / 2 + ox, h / 2 + oy); ctx.rotate(ang);
+        ctx.shadowColor = 'rgba(0,0,0,0.65)'; ctx.shadowBlur = 24;
+        ctx.fillStyle = '#f8fafc'; ctx.fillRect(-130, -155, 260, 315);
+        ctx.shadowBlur = 0; ctx.fillStyle = '#1e293b'; ctx.fillRect(-114, -138, 228, 232);
+        const im = v8.edImgs[idx % Math.max(1, v8.edImgs.length)];
+        if (im) {
+          ctx.save(); ctx.beginPath(); ctx.rect(-114, -138, 228, 232); ctx.clip();
+          const sc = Math.max(228 / im.width, 232 / im.height);
+          ctx.drawImage(im, -(im.width * sc) / 2, -22 - (im.height * sc) / 2, im.width * sc, im.height * sc);
+          ctx.restore();
+        }
+        ctx.fillStyle = '#334155'; ctx.font = '700 18px Georgia, serif'; ctx.textAlign = 'center';
+        ctx.fillText(v8.edTitle + ' #' + (idx + 1), 0, 134);
+        ctx.restore();
+      });
+    }
+  }
+
+  /* --- 4. Hollywood 2.39:1 Anamorphic & Film-Burn Canvas --- */
+  function renderAnamorphicCanvas() {
+    const c = document.getElementById('v8AnaCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const w = c.width, h = c.height;
+    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h);
+    const barH = Math.round(h * 0.13);
+    if (v8.anaImg) {
+      const sc = Math.max(w / v8.anaImg.width, (h - barH * 2) / v8.anaImg.height);
+      ctx.drawImage(v8.anaImg, (w - v8.anaImg.width * sc) / 2, (h - v8.anaImg.height * sc) / 2, v8.anaImg.width * sc, v8.anaImg.height * sc);
+    } else {
+      const g = ctx.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#0f172a'); g.addColorStop(1, '#312e81');
+      ctx.fillStyle = g; ctx.fillRect(0, barH, w, h - barH * 2);
+    }
+    // Horizontal Anamorphic Streak Flare
+    const flareCol = v8.anaFlare === 'blue' ? '56,189,248' : v8.anaFlare === 'sunset' ? '249,115,22' : '251,191,36';
+    ctx.save(); ctx.globalCompositeOperation = 'screen';
+    const fg = ctx.createLinearGradient(0, h * 0.44, w, h * 0.44);
+    fg.addColorStop(0, `rgba(${flareCol},0)`);
+    fg.addColorStop(0.5, `rgba(${flareCol},0.85)`);
+    fg.addColorStop(1, `rgba(${flareCol},0)`);
+    ctx.fillStyle = fg; ctx.fillRect(0, h * 0.43, w, 14);
+    // 35mm Film-Burn Edge Light Leak
+    const lk = v8.anaLeak / 100;
+    if (lk > 0) {
+      const lg = ctx.createRadialGradient(w * 0.08, h * 0.5, 10, w * 0.08, h * 0.5, w * 0.45);
+      lg.addColorStop(0, `rgba(249,115,22,${(lk * 0.85).toFixed(2)})`);
+      lg.addColorStop(0.5, `rgba(239,68,68,${(lk * 0.45).toFixed(2)})`);
+      lg.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = lg; ctx.fillRect(0, barH, w, h - barH * 2);
+    }
+    ctx.restore();
+    // Crisp 2.39:1 Cinema Scope Black Bars + Subtitle
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, w, barH);
+    ctx.fillRect(0, h - barH, w, barH);
+    ctx.fillStyle = '#fde68a'; ctx.font = '700 20px Georgia, serif'; ctx.textAlign = 'center';
+    ctx.fillText(v8.anaSub, w / 2, h - Math.round(barH * 0.38));
+  }
+
+  /* --- 5. Luxury Shoot Moodboard & Color-Story Canvas --- */
+  function renderMoodboardCanvas() {
+    const c = document.getElementById('v8MbCanvas');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const w = c.width, h = c.height;
+    ctx.fillStyle = '#0c0a09'; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = 'rgba(251,191,36,0.45)'; ctx.lineWidth = 4; ctx.strokeRect(18, 18, w - 36, h - 36);
+
+    ctx.fillStyle = '#fde68a'; ctx.font = '900 36px Georgia, serif'; ctx.textAlign = 'left';
+    ctx.fillText(v8.mbTitle, 44, 74);
+    ctx.fillStyle = '#a8a29e'; ctx.font = '600 16px system-ui';
+    ctx.fillText(v8.mbSub, 44, 102);
+
+    // 3x2 Aesthetic Photo Grid
+    const gx = 44, gy = 128, gw = (w - 116) / 3, gh = 260;
+    for (let i = 0; i < 6; i++) {
+      const rx = gx + (i % 3) * (gw + 14), ry = gy + Math.floor(i / 3) * (gh + 14);
+      ctx.fillStyle = '#1c1917'; ctx.fillRect(rx, ry, gw, gh);
+      const im = v8.mbImgs[i % Math.max(1, v8.mbImgs.length)];
+      if (im) {
+        ctx.save(); ctx.beginPath(); ctx.rect(rx, ry, gw, gh); ctx.clip();
+        const sc = Math.max(gw / im.width, gh / im.height);
+        ctx.drawImage(im, rx + (gw - im.width * sc) / 2, ry + (gh - im.height * sc) / 2, im.width * sc, im.height * sc);
+        ctx.restore();
+      }
+    }
+    // Extracted Luxury Swatches Bar
+    const sy = h - 132, sw = (w - 138) / 6;
+    v8.mbSwatches.slice(0, 6).forEach((hex, idx) => {
+      const sx = 44 + idx * (sw + 10);
+      ctx.fillStyle = hex; ctx.beginPath(); ctx.roundRect(sx, sy, sw, 68, 12); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = '#e7e5e4'; ctx.font = '700 13px monospace'; ctx.textAlign = 'center';
+      ctx.fillText(hex.toUpperCase(), sx + sw / 2, sy + 90);
+    });
+  }
+
+  function extractHexSwatches(imgs) {
+    if (!imgs.length) return;
+    const out = [];
+    const tc = document.createElement('canvas'); tc.width = 40; tc.height = 40;
+    const tctx = tc.getContext('2d');
+    imgs.slice(0, 6).forEach((im) => {
+      tctx.drawImage(im, 0, 0, 40, 40);
+      const d = tctx.getImageData(20, 20, 1, 1).data;
+      const toHex = (n) => n.toString(16).padStart(2, '0');
+      out.push('#' + toHex(d[0]) + toHex(d[1]) + toHex(d[2]));
+    });
+    while (out.length < 6) out.push(v8.mbSwatches[out.length] || '#fbbf24');
+    v8.mbSwatches = out;
+  }
+
+  function renderV8ExtensionHost() {
+    const root = document.getElementById('v7LuxuryRoot');
+    if (!root) return;
+    let host = document.getElementById('v8VipExtHost');
+    if (!host) {
+      host = document.createElement('div');
+      host.id = 'v8VipExtHost';
+      host.className = 'mt-4 space-y-3';
+      root.appendChild(host);
+    }
+
+    const vaultItems = (() => { try { return JSON.parse(localStorage.getItem(VAULT_ITEMS_KEY) || '[]'); } catch (_) { return []; } })();
+
+    host.innerHTML = `
+      <div class="ng-card p-3 space-y-3 text-xs border-amber-400/35">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="font-extrabold text-amber-300">✨ Ultra-Luxury Studio Extensions (5 VIP Tools)</div>
+          <span class="text-[10.5px] text-slate-400">Tap any tool below to open inline</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
+          ${[
+            ['invoice','🧾 Luxury Invoice'],
+            ['editorial','📰 Vogue & 35mm'],
+            ['vault','🔐 PIN Vault'],
+            ['anamorphic','🎞️ 2.39:1 Scope'],
+            ['moodboard','🎨 Moodboard']
+          ].map(([k,lbl]) => `
+            <button type="button" data-v8-panel="${k}" class="py-2 px-2 rounded-xl font-bold border ${v8.activePanel===k?'bg-amber-500 text-black border-amber-200':'bg-white/5 text-slate-200 border-white/15'}">${lbl}</button>
+          `).join('')}
+        </div>
+
+        ${v8.activePanel === 'invoice' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 pt-1">
+            <div class="lg:col-span-7"><canvas id="v8InvCanvas" width="840" height="620" class="w-full rounded-xl border border-amber-400/35"></canvas></div>
+            <div class="lg:col-span-5 space-y-2">
+              <input id="v8InvStudio" type="text" value="${v8.invStudio}" placeholder="Studio Name" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="v8InvClient" type="text" value="${v8.invClient}" placeholder="Client Name" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <div class="grid grid-cols-3 gap-1.5"><input id="v8InvI1" value="${v8.invItem1}" class="col-span-2 bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white"/><input id="v8InvP1" type="number" value="${v8.invPrice1}" class="bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-amber-300"/></div>
+              <div class="grid grid-cols-3 gap-1.5"><input id="v8InvI2" value="${v8.invItem2}" class="col-span-2 bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white"/><input id="v8InvP2" type="number" value="${v8.invPrice2}" class="bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-amber-300"/></div>
+              <div class="grid grid-cols-3 gap-1.5"><input id="v8InvI3" value="${v8.invItem3}" class="col-span-2 bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-white"/><input id="v8InvP3" type="number" value="${v8.invPrice3}" class="bg-slate-900 border border-white/15 rounded-lg px-2 py-1 text-amber-300"/></div>
+              <label class="flex items-center justify-between p-2 rounded-xl bg-white/5">GST % <input id="v8InvGst" type="number" value="${v8.invGst}" class="w-16 bg-slate-900 border border-white/15 rounded px-2 py-0.5 text-white text-right"/></label>
+              <button type="button" id="v8InvDownBtn" class="btn-primary w-full py-2 rounded-xl font-extrabold">⬇ Export Luxury Invoice PNG</button>
+            </div>
+          </div>
+        ` : v8.activePanel === 'editorial' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 pt-1">
+            <div class="lg:col-span-7 flex justify-center"><canvas id="v8EdCanvas" width="760" height="940" class="max-w-full max-h-[54dvh] rounded-xl border border-white/15"></canvas></div>
+            <div class="lg:col-span-5 space-y-2.5">
+              <div class="grid grid-cols-3 gap-1">
+                ${[['vogue','Vogue Cover'],['film35','35mm Film'],['polaroid','Polaroid Wall']].map(([k,lbl]) => `
+                  <button type="button" data-v8-edmode="${k}" class="py-1.5 rounded-lg font-bold border ${v8.edMode===k?'bg-indigo-600 border-indigo-300 text-white':'bg-white/5 border-white/10 text-slate-300'}">${lbl}</button>
+                `).join('')}
+              </div>
+              <label class="btn-primary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">📂 Upload 1–4 Photos<input id="v8EdFilesInp" type="file" accept="image/*" multiple class="hidden"/></label>
+              <input id="v8EdTitle" type="text" value="${v8.edTitle}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="v8EdHead" type="text" value="${v8.edHeadline}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="v8EdExif" type="text" value="${v8.edExif}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <button type="button" id="v8EdDownBtn" class="btn-primary w-full py-2 rounded-xl font-extrabold">⬇ Export Editorial HD PNG</button>
+            </div>
+          </div>
+        ` : v8.activePanel === 'vault' ? `
+          <div class="p-3 rounded-2xl bg-slate-950/80 border border-white/10 space-y-3">
+            ${!v8.vaultUnlocked ? `
+              <div class="max-w-xs mx-auto text-center space-y-2.5 py-4">
+                <div class="text-3xl">🔐</div>
+                <div class="font-extrabold text-white text-sm">VIP PIN-Locked Private Vault</div>
+                <div class="text-[11px] text-slate-400">Default PIN: <strong>2035</strong> (Unlock karke change kar sakte hain)</div>
+                <input id="v8VaultPinInp" type="password" maxlength="4" placeholder="Enter 4-Digit PIN" class="w-full text-center tracking-[0.5em] text-lg font-black bg-slate-900 border border-amber-400/45 rounded-xl py-2 text-amber-300"/>
+                <button type="button" id="v8VaultUnlockBtn" class="btn-primary w-full py-2 rounded-xl font-extrabold">🔓 Unlock Private Vault</button>
+              </div>
+            ` : `
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="font-bold text-emerald-300">🔓 Vault Unlocked (${vaultItems.length} private photos)</div>
+                <div class="flex gap-2">
+                  <label class="btn-primary px-3 py-1.5 rounded-xl font-bold cursor-pointer">+ Add Private Photos<input id="v8VaultAddInp" type="file" accept="image/*" multiple class="hidden"/></label>
+                  <button type="button" id="v8VaultLockBtn" class="px-3 py-1.5 rounded-xl font-bold bg-rose-600 text-white">🔒 Lock Vault</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                ${vaultItems.length === 0 ? '<div class="col-span-full text-center text-slate-400 py-4">Vault abhi khali hai — private shoots yahan lock karein.</div>' :
+                  vaultItems.map((it, idx) => `
+                    <div class="relative rounded-xl overflow-hidden border border-white/15 bg-black aspect-square">
+                      <img src="${it.url}" class="w-full h-full object-cover"/>
+                      <button type="button" data-v8-vdel="${idx}" class="absolute top-1 right-1 w-6 h-6 rounded-full bg-rose-600 text-white text-[10px] font-bold">✕</button>
+                    </div>
+                  `).join('')}
+              </div>
+            `}
+          </div>
+        ` : v8.activePanel === 'anamorphic' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 pt-1">
+            <div class="lg:col-span-7"><canvas id="v8AnaCanvas" width="960" height="540" class="w-full aspect-video rounded-xl border border-white/15"></canvas></div>
+            <div class="lg:col-span-5 space-y-2.5">
+              <label class="btn-primary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">📂 Upload Photo for 2.39:1 Scope<input id="v8AnaImgInp" type="file" accept="image/*" class="hidden"/></label>
+              <div class="grid grid-cols-3 gap-1">
+                ${[['gold','✨ Gold Flare'],['blue','💎 Sci-Fi Blue'],['sunset','🌅 Sunset']].map(([k,lbl]) => `
+                  <button type="button" data-v8-flare="${k}" class="py-1.5 rounded-lg font-bold border ${v8.anaFlare===k?'bg-amber-500 text-black border-amber-200':'bg-white/5 border-white/10 text-slate-300'}">${lbl}</button>
+                `).join('')}
+              </div>
+              <label class="block">35mm Film-Burn Leak (${v8.anaLeak}%) <input id="v8AnaLeak" type="range" min="0" max="100" value="${v8.anaLeak}" class="w-full studio-slider"/></label>
+              <input id="v8AnaSub" type="text" value="${v8.anaSub}" placeholder="Cinema Bar Title" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <button type="button" id="v8AnaDownBtn" class="btn-primary w-full py-2 rounded-xl font-extrabold">⬇ Export Hollywood 2.39:1 Still</button>
+            </div>
+          </div>
+        ` : v8.activePanel === 'moodboard' ? `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 pt-1">
+            <div class="lg:col-span-7"><canvas id="v8MbCanvas" width="1080" height="820" class="w-full rounded-xl border border-amber-400/30"></canvas></div>
+            <div class="lg:col-span-5 space-y-2.5">
+              <label class="btn-primary w-full py-2 rounded-xl font-bold text-center block cursor-pointer">📂 Upload 2–6 Inspiration Photos<input id="v8MbFilesInp" type="file" accept="image/*" multiple class="hidden"/></label>
+              <input id="v8MbTitle" type="text" value="${v8.mbTitle}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <input id="v8MbSub" type="text" value="${v8.mbSub}" class="w-full bg-slate-900 border border-white/15 rounded-xl px-3 py-1.5 text-white"/>
+              <button type="button" id="v8MbDownBtn" class="btn-primary w-full py-2 rounded-xl font-extrabold">⬇ Export Client Moodboard PNG</button>
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    if (v8.activePanel === 'invoice') renderInvoiceCanvas();
+    if (v8.activePanel === 'editorial') renderEditorialCanvas();
+    if (v8.activePanel === 'anamorphic') renderAnamorphicCanvas();
+    if (v8.activePanel === 'moodboard') renderMoodboardCanvas();
+  }
+
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+    const p = t.closest('[data-v8-panel]');
+    if (p) {
+      const k = p.getAttribute('data-v8-panel');
+      v8.activePanel = v8.activePanel === k ? null : k;
+      renderV8ExtensionHost();
+      return;
+    }
+    const em = t.closest('[data-v8-edmode]');
+    if (em) { v8.edMode = em.getAttribute('data-v8-edmode'); renderV8ExtensionHost(); return; }
+    const fl = t.closest('[data-v8-flare]');
+    if (fl) { v8.anaFlare = fl.getAttribute('data-v8-flare'); renderV8ExtensionHost(); return; }
+
+    if (t.closest('#v8InvDownBtn')) { const c = document.getElementById('v8InvCanvas'); if (c) { const a = document.createElement('a'); a.download = `Luxury_Invoice_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); toast('🧾 Luxury Invoice downloaded!', 'success'); } return; }
+    if (t.closest('#v8EdDownBtn')) { const c = document.getElementById('v8EdCanvas'); if (c) { const a = document.createElement('a'); a.download = `Editorial_${v8.edMode}_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); toast('📰 Editorial HD PNG downloaded!', 'success'); } return; }
+    if (t.closest('#v8AnaDownBtn')) { const c = document.getElementById('v8AnaCanvas'); if (c) { const a = document.createElement('a'); a.download = `Hollywood_Scope_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); toast('🎞️ 2.39:1 Cinema Still downloaded!', 'success'); } return; }
+    if (t.closest('#v8MbDownBtn')) { const c = document.getElementById('v8MbCanvas'); if (c) { const a = document.createElement('a'); a.download = `Luxury_Moodboard_${Date.now()}.png`; a.href = c.toDataURL('image/png'); a.click(); toast('🎨 Moodboard PNG downloaded!', 'success'); } return; }
+
+    if (t.closest('#v8VaultUnlockBtn')) {
+      const savedPin = localStorage.getItem(VAULT_PIN_KEY) || '2035';
+      const entered = (document.getElementById('v8VaultPinInp')?.value || '').trim();
+      if (entered === savedPin) { v8.vaultUnlocked = true; renderV8ExtensionHost(); toast('🔓 VIP Vault Unlocked!', 'success'); }
+      else toast('Galat PIN! Default PIN: 2035', 'error');
+      return;
+    }
+    if (t.closest('#v8VaultLockBtn')) { v8.vaultUnlocked = false; renderV8ExtensionHost(); toast('🔒 VIP Vault Locked!', 'info'); return; }
+    const vd = t.closest('[data-v8-vdel]');
+    if (vd) {
+      try {
+        const arr = JSON.parse(localStorage.getItem(VAULT_ITEMS_KEY) || '[]');
+        arr.splice(Number(vd.getAttribute('data-v8-vdel')), 1);
+        localStorage.setItem(VAULT_ITEMS_KEY, JSON.stringify(arr));
+        renderV8ExtensionHost();
+      } catch (_) {}
+      return;
+    }
+  });
+
+  document.addEventListener('input', (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 'v8InvStudio') { v8.invStudio = el.value; renderInvoiceCanvas(); }
+    if (el.id === 'v8InvClient') { v8.invClient = el.value; renderInvoiceCanvas(); }
+    if (el.id === 'v8InvI1') { v8.invItem1 = el.value; renderInvoiceCanvas(); }
+    if (el.id === 'v8InvP1') { v8.invPrice1 = el.value; renderInvoiceCanvas(); }
+    if (el.id === 'v8InvI2') { v8.invItem2 = el.value; renderInvoiceCanvas(); }
+    if (el.id === 'v8InvP2') { v8.invPrice2 = el.value; renderInvoiceCanvas(); }
+    if (el.id === 'v8InvI3') { v8.invItem3 = el.value; renderInvoiceCanvas(); }
+    if (el.id === 'v8InvP3') { v8.invPrice3 = el.value; renderInvoiceCanvas(); }
+    if (el.id === 'v8InvGst') { v8.invGst = el.value; renderInvoiceCanvas(); }
+    if (el.id === 'v8EdTitle') { v8.edTitle = el.value; renderEditorialCanvas(); }
+    if (el.id === 'v8EdHead') { v8.edHeadline = el.value; renderEditorialCanvas(); }
+    if (el.id === 'v8EdExif') { v8.edExif = el.value; renderEditorialCanvas(); }
+    if (el.id === 'v8AnaLeak') { v8.anaLeak = Number(el.value); renderAnamorphicCanvas(); }
+    if (el.id === 'v8AnaSub') { v8.anaSub = el.value; renderAnamorphicCanvas(); }
+    if (el.id === 'v8MbTitle') { v8.mbTitle = el.value; renderMoodboardCanvas(); }
+    if (el.id === 'v8MbSub') { v8.mbSub = el.value; renderMoodboardCanvas(); }
+  });
+
+  document.addEventListener('change', async (e) => {
+    const el = e.target; if (!el) return;
+    if (el.id === 'v8EdFilesInp' && el.files && el.files.length) {
+      v8.edImgs = [];
+      for (const f of Array.from(el.files).slice(0, 4)) {
+        const url = await new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); });
+        const im = await new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.src = url; });
+        v8.edImgs.push(im);
+      }
+      renderEditorialCanvas(); el.value = '';
+    }
+    if (el.id === 'v8AnaImgInp' && el.files && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { const i = new Image(); i.onload = () => { v8.anaImg = i; renderAnamorphicCanvas(); }; i.src = r.result; }; r.readAsDataURL(el.files[0]); el.value = '';
+    }
+    if (el.id === 'v8MbFilesInp' && el.files && el.files.length) {
+      v8.mbImgs = [];
+      for (const f of Array.from(el.files).slice(0, 6)) {
+        const url = await new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); });
+        const im = await new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.src = url; });
+        v8.mbImgs.push(im);
+      }
+      extractHexSwatches(v8.mbImgs);
+      renderMoodboardCanvas(); el.value = '';
+    }
+    if (el.id === 'v8VaultAddInp' && el.files && el.files.length) {
+      let arr = [];
+      try { arr = JSON.parse(localStorage.getItem(VAULT_ITEMS_KEY) || '[]'); } catch (_) {}
+      for (const f of Array.from(el.files).slice(0, 8)) {
+        const url = await new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); });
+        const im = await new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.src = url; });
+        const tc = document.createElement('canvas'); tc.width = Math.min(540, im.width); tc.height = Math.round(tc.width * (im.height / im.width));
+        tc.getContext('2d').drawImage(im, 0, 0, tc.width, tc.height);
+        arr.unshift({ name: f.name, url: tc.toDataURL('image/jpeg', 0.78) });
+      }
+      try { localStorage.setItem(VAULT_ITEMS_KEY, JSON.stringify(arr.slice(0, 16))); } catch (_) {}
+      renderV8ExtensionHost(); toast('🔐 Photos locked inside VIP Private Vault!', 'success');
+      el.value = '';
+    }
+  });
+
+  function syncV8() {
+    const r = document.getElementById('v7LuxuryRoot');
+    if (r && !document.getElementById('v8VipExtHost')) renderV8ExtensionHost();
+  }
+  const mo = new MutationObserver(() => requestAnimationFrame(syncV8));
+  mo.observe(document.body, { childList: true, subtree: true });
+  setInterval(syncV8, 800);
+  syncV8();
 })();
 </script>
 
